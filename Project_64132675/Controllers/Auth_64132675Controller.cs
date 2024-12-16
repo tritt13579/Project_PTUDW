@@ -13,16 +13,16 @@ namespace Project_64132675.Controllers
     {
         private readonly AuthService_64132675 _authService = new AuthService_64132675();
 
-        // GET: Auth/Login
+        // GET: Auth_64132675/Login
         public ActionResult Login()
         {
             return View();
         }
 
-        // POST: Auth/Login
+        // POST: Auth_64132675/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel_6132675 model)
+        public ActionResult Login(LoginViewModel_64132675 model)
         {
             if (!ModelState.IsValid)
             {
@@ -42,14 +42,16 @@ namespace Project_64132675.Controllers
                 switch (session.Role)
                 {
                     case "Quản trị viên":
-                        return RedirectToAction("Index", "Admin_64132675");
+                        return RedirectToAction("Index", "Dashboard_64132675", new { area = "Admin_64132675" });
                     case "Lễ tân":
-                        return RedirectToAction("Index", "Receptionist_64132675");
+                        return RedirectToAction("Index", "Dashboard_64132675", new { area = "Receptionist_64132675" });
                     case "Khách hàng":
-                        return RedirectToAction("Index", "Customer_64132675");
+                        return RedirectToAction("Index", "Home_64132675", new { area = "Customer_64132675" });
                     default:
                         return RedirectToAction("Login", "Auth_64132675");
+
                 }
+
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -59,7 +61,43 @@ namespace Project_64132675.Controllers
             }
         }
 
-        // GET: Auth/Logout
+        // GET: Auth_64132675/Register
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        // POST: Auth_64132675/Register
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Register(RegisterViewModel_64132675 model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model); // Trả về view với thông báo lỗi nếu model không hợp lệ
+            }
+            try
+            {
+                // Gọi phương thức đăng ký từ AuthService
+                _authService.RegisterCustomer(model.FirstName, model.LastName, model.Gender, model.DateOfBirth, model.Email, model.PhoneNumber, model.Password);
+
+                // Đăng ký thành công, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Login", "Auth_64132675");
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Nếu email đã tồn tại, hiển thị thông báo lỗi
+                ModelState.AddModelError("Email", ex.Message);
+                return View(model); // Trả về view với thông báo lỗi
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi chung
+                ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi trong quá trình đăng ký.");
+                return View(model); // Trả về view nếu có lỗi
+            }
+        }
+        // GET: Auth_64132675/Logout
         public ActionResult Logout()
         {
             Session.Clear(); // Xóa toàn bộ session

@@ -1,0 +1,104 @@
+﻿:root {
+    --primary-color: #2c3e50; /* Deep blue-gray */
+    --secondary-color: #34495e; /* Slightly lighter blue-gray */
+    --accent-color: #f39c12; /* Bright blue */
+    --background-light: #ecf0f1; /* Light gray-blue */
+    --text-color-light: #ecf0f1; /* White for dark backgrounds */
+    --text-color-dark: #2c3e50; /* Dark blue-gray for light backgrounds */
+}
+
+body {
+    background-color: var(--background-light);
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-color-dark);
+    line-height: 1.6;
+}
+
+.navbar-customer {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    color: var(--text-color-light) !important;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+ 
+}
+
+.navbar-brand img {
+    height: 50px;
+    margin: 0 10px;
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-color-light);
+    transition: all 0.3s ease;
+    position: relative;
+    margin: 0 10px;
+}
+
+.navbar-nav .nav-link.show {
+    color: var(--text-color-light);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--accent-color);
+}
+
+.navbar-nav .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::before,
+.navbar-nav .nav-link.active::before {
+    width: 100%;
+}
+
+.navbar-nav .nav-item.dropdown .nav-link::before {
+    display: none;
+}
+
+.dropdown-menu {
+    background-color: white;
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    color: var(--text-color-dark);
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--background-light);
+    color: var(--accent-color);
+}
+
+.main-content {
+    padding-top: 80px;
+    min-height: calc(100vh - 80px);
+}
+
+.footer {
+    background-color: var(--primary-color);
+    padding: 20px 0;
+    margin-top: 20px;
+}
+
+.link-hover {
+    transition: all 0.3s ease;
+}
+
+.link-hover:hover {
+    color: var(--accent-color) !important;
+}

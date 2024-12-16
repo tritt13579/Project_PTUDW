@@ -1,0 +1,116 @@
+﻿@model Project_64132675.ViewModels.RegisterViewModel_64132675
+
+@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_LayoutAuth.cshtml";
+}
+
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+        <!-- Cột hình ảnh bên trái, chỉ hiển thị trên màn hình lớn -->
+        <div class="col-md-6 p-0 d-none d-md-block">
+            <img src="~/Public/Images/register_bg.jpg" alt="bg" class="img-fluid h-100 w-100 object-fit-cover" />
+        </div>
+
+        <!-- Cột form đăng ký bên phải, chiếm nửa phải và căn giữa -->
+        <div class="col-12 col-md-6 d-flex justify-content-center align-items-center p-4">
+            <div class="w-100" style="max-width: 400px;">
+                <div class="d-flex align-items-center mb-4">
+                    <!-- Logo -->
+                    <div class="me-3">
+                        <img src="~/Public/Images/logo_login.svg" alt="Logo" class="img-fluid me-3" style="max-width: 80px;">
+                    </div>
+                    <!-- Tiêu đề -->
+                    <h4 class="mb-0 text-center font-weight-bold">Đăng ký tài khoản</h4>
+                </div>
+                <!-- Hiển thị lỗi nếu có -->
+                @if (!string.IsNullOrEmpty(ViewBag.Error))
+                {
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        @ViewBag.Error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @using (Html.BeginForm("Register", "Auth_64132675", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <!-- Gộp Họ và Tên trên cùng một dòng -->
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-6">
+                                @Html.LabelFor(model => model.LastName, new { @class = "form-label" })
+                                @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", placeholder = "Họ" })
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-6">
+                                @Html.LabelFor(model => model.FirstName, new { @class = "form-label" })
+                                @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", placeholder = "Tên" })
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gộp Giới tính và Ngày sinh trên cùng một dòng -->
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-6">
+                                @Html.LabelFor(model => model.Gender, new { @class = "form-label" })
+                                @Html.DropDownListFor(model => model.Gender, new List<SelectListItem> {
+                                    new SelectListItem { Text = "Nam", Value = "M" },
+                                    new SelectListItem { Text = "Nữ", Value = "F" }
+                                }, "Chọn giới tính", new { @class = "form-select" })
+                                @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-6">
+                                @Html.LabelFor(model => model.DateOfBirth, new { @class = "form-label" })
+                                @Html.TextBoxFor(model => model.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Email, new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "Email" })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Số điện thoại -->
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.PhoneNumber, new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", placeholder = "Số điện thoại" })
+                        @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Mật khẩu -->
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Password, new { @class = "form-label" })
+                        @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Mật khẩu" })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Xác nhận mật khẩu -->
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.ConfirmPassword, new { @class = "form-label" })
+                        @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control", placeholder = "Xác nhận mật khẩu" })
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
+
+
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill">Đăng ký</button>
+
+                    <div class="text-center mt-3">
+                        <p class="mb-2 text-muted">
+                            Bạn đã có tài khoản? <a class="text-decoration-none" href="@Url.Action("Login", "Auth_64132675")">Đăng nhập ngay</a>
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

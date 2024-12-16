@@ -42,7 +42,7 @@ namespace Project_64132675.Services
                     {
                         UserId = employee.EMPLOYEE_ID,
                         Role = employee.ROLE_NAME,
-                        FullName = $"{employee.FIRST_NAME} {employee.LAST_NAME}"
+                        FullName = $"{employee.LAST_NAME} {employee.FIRST_NAME}"
                     };
                 }
             }
@@ -55,6 +55,39 @@ namespace Project_64132675.Services
             public long UserId { get; set; }
             public string Role { get; set; }
             public string FullName { get; set; }
+        }
+
+        // Kiểm tra email đã tồn tại hay chưa
+        public bool IsEmailExists(string email)
+        {
+            // Kiểm tra trong cơ sở dữ liệu xem email có tồn tại không
+            return _dbContext.CUSTOMER.Any(c => c.EMAIL == email);
+        }
+
+        // Đăng ký khách hàng mới
+        public void RegisterCustomer(string firstName, string lastName, string gender, DateTime dateOfBirth, string email, string phoneNumber ,string password)
+        {
+            if (IsEmailExists(email))
+            {
+                throw new InvalidOperationException("Email này đã được đăng ký.");
+            }
+
+            // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            var customer = new CUSTOMER
+            {
+                FIRST_NAME = firstName,
+                LAST_NAME = lastName,
+                GENDER = gender,
+                DATE_OF_BIRTH = dateOfBirth,
+                EMAIL = email,
+                PHONE_NUMBER = phoneNumber,
+                PASSWORD = hashedPassword
+            };
+
+            _dbContext.CUSTOMER.Add(customer);
+            _dbContext.SaveChanges();
         }
     }
 }
