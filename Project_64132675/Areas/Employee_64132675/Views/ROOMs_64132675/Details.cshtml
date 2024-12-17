@@ -1,0 +1,73 @@
+﻿@model Project_64132675.Models.ROOM
+
+@{
+    ViewBag.Title = "Chi tiết thông tin phòng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-2">CHI TIẾT THÔNG TIN PHÒNG</h2>
+
+            <div class="form-horizontal p-4 border rounded bg-light">
+                <!-- Room ID -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Mã phòng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.ROOM_ID, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Floor -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Tầng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.FLOOR.FLOOR_ID, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Room Class -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Loại phòng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.ROOMCLASS.CLASS_NAME, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Room Status -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Trạng thái phòng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.ROOMSTATUS.ROOM_STATUS_NAME, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Room Number -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Số phòng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.ROOM_NUMBER, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6 offset-md-3">
+                        @Html.ActionLink("Chỉnh sửa", "Edit", new { id = Model.ROOM_ID }, new { @class = "btn btn-warning me-2" })
+                        <a href="javascript:history.back()" class="btn btn-primary">Quay lại</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -42,9 +42,9 @@ namespace Project_64132675.Controllers
                 switch (session.Role)
                 {
                     case "Quản trị viên":
-                        return RedirectToAction("Index", "Dashboard_64132675", new { area = "Admin_64132675" });
+                        return RedirectToAction("Index", "Dashboard_64132675", new { area = "Employee_64132675" });
                     case "Lễ tân":
-                        return RedirectToAction("Index", "Dashboard_64132675", new { area = "Receptionist_64132675" });
+                        return RedirectToAction("Index", "Dashboard_64132675", new { area = "Employee_64132675" });
                     case "Khách hàng":
                         return RedirectToAction("Index", "Home_64132675", new { area = "Customer_64132675" });
                     default:

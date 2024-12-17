@@ -1,0 +1,75 @@
+﻿@model Project_64132675.Models.ROOM
+
+@{
+    ViewBag.Title = "Delete Room";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-3">XÁC NHẬN XÓA PHÒNG</h2>
+            <div class="form-horizontal p-4 border rounded bg-light">
+                <p class="text-center text-danger fw-bold">
+                    Bạn có chắc chắn muốn xóa phòng này? Thao tác này không thể hoàn tác!
+                </p>
+
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Mã phòng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.ROOM_ID</p>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Tầng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.FLOOR.FLOOR_ID</p>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Loại phòng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.ROOMCLASS.CLASS_NAME</p>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Trạng thái:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.ROOMSTATUS.ROOM_STATUS_NAME</p>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Số phòng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.ROOM_NUMBER</p>
+                    </div>
+                </div>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group row">
+                        <div class="col-md-6 offset-md-3 text-center">
+                            <input type="submit" value="Xóa" class="btn btn-danger me-2" />
+                            @Html.ActionLink("Hủy bỏ", "Index", new { area = "Employee_64132675" }, new { @class = "btn btn-secondary" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

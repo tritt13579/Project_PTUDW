@@ -1,0 +1,91 @@
+﻿@model Project_64132675.Models.EMPLOYEE
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>EMPLOYEE</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FIRST_NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FIRST_NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LAST_NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LAST_NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GENDER)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GENDER)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DATE_OF_BIRTH)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DATE_OF_BIRTH)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EMAIL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EMAIL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PHONE_NUMBER)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PHONE_NUMBER)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HIRE_DATE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HIRE_DATE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ROLE_NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ROLE_NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PASSWORD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PASSWORD)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EMPLOYEE_ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

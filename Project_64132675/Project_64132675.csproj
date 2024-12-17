@@ -136,15 +136,16 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Areas\Admin_64132675\Admin_64132675AreaRegistration.cs" />
-    <Compile Include="Areas\Admin_64132675\Controllers\Adminbase_64132675Controller.cs" />
-    <Compile Include="Areas\Admin_64132675\Controllers\Dashboard_64132675Controller.cs" />
     <Compile Include="Areas\Customer_64132675\Controllers\Customerbase_64132675Controller.cs" />
     <Compile Include="Areas\Customer_64132675\Controllers\Home_64132675Controller.cs" />
     <Compile Include="Areas\Customer_64132675\Customer_64132675AreaRegistration.cs" />
-    <Compile Include="Areas\Receptionist_64132675\Controllers\Dashboard_64132675Controller.cs" />
-    <Compile Include="Areas\Receptionist_64132675\Controllers\Receptionistbase_64132675Controller.cs" />
-    <Compile Include="Areas\Receptionist_64132675\Receptionist_64132675AreaRegistration.cs" />
+    <Compile Include="Areas\Employee_64132675\Controllers\Adminbase_64132675Controller.cs" />
+    <Compile Include="Areas\Employee_64132675\Controllers\CUSTOMERs_64132675Controller.cs" />
+    <Compile Include="Areas\Employee_64132675\Controllers\Dashboard_64132675Controller.cs" />
+    <Compile Include="Areas\Employee_64132675\Controllers\Employeebase_64132675Controller.cs" />
+    <Compile Include="Areas\Employee_64132675\Controllers\EMPLOYEEs_64132675Controller.cs" />
+    <Compile Include="Areas\Employee_64132675\Controllers\ROOMs_64132675Controller.cs" />
+    <Compile Include="Areas\Employee_64132675\Employee_64132675AreaRegistration.cs" />
     <Compile Include="Controllers\Auth_64132675Controller.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -216,12 +217,25 @@
     <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
-    <Content Include="Areas\Admin_64132675\Views\web.config" />
-    <Content Include="Areas\Receptionist_64132675\Views\web.config" />
     <Content Include="Areas\Customer_64132675\Views\web.config" />
-    <Content Include="Areas\Admin_64132675\Views\Dashboard_64132675\Index.cshtml" />
     <Content Include="Areas\Customer_64132675\Views\Home_64132675\Index.cshtml" />
-    <Content Include="Areas\Receptionist_64132675\Views\Dashboard_64132675\Index.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\web.config" />
+    <Content Include="Areas\Employee_64132675\Views\Dashboard_64132675\Index.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Create.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Delete.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Details.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Edit.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Index.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\CUSTOMERs_64132675\Create.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\CUSTOMERs_64132675\Delete.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\CUSTOMERs_64132675\Details.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\CUSTOMERs_64132675\Edit.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\CUSTOMERs_64132675\Index.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\EMPLOYEEs_64132675\Create.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\EMPLOYEEs_64132675\Delete.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\EMPLOYEEs_64132675\Details.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\EMPLOYEEs_64132675\Edit.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\EMPLOYEEs_64132675\Index.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -253,12 +267,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin_64132675\Data\" />
-    <Folder Include="Areas\Admin_64132675\Views\Shared\" />
     <Folder Include="Areas\Customer_64132675\Data\" />
     <Folder Include="Areas\Customer_64132675\Views\Shared\" />
-    <Folder Include="Areas\Receptionist_64132675\Data\" />
-    <Folder Include="Areas\Receptionist_64132675\Views\Shared\" />
+    <Folder Include="Areas\Employee_64132675\Data\" />
+    <Folder Include="Areas\Employee_64132675\Views\Shared\" />
     <Folder Include="Public\Images\" />
   </ItemGroup>
   <ItemGroup>

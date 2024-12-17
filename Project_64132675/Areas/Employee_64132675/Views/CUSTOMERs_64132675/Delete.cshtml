@@ -1,0 +1,107 @@
+﻿@model Project_64132675.Models.CUSTOMER
+
+@{
+    ViewBag.Title = "Delete Customer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-3">XÁC NHẬN XÓA KHÁCH HÀNG</h2>
+            <div class="form-horizontal p-4 border rounded bg-light">
+                <p class="text-center text-danger fw-bold">
+                    Bạn có chắc chắn muốn xóa khách hàng này? Thao tác này không thể hoàn tác!
+                </p>
+
+                <!-- Last Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Họ:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.LAST_NAME</p>
+                    </div>
+                </div>
+
+                <!-- First Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Tên:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.FIRST_NAME</p>
+                    </div>
+                </div>
+
+                <!-- Gender -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Giới tính:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">
+                            @if (Model.GENDER == "F")
+                            {
+                                @:Nữ
+                            }
+                            else if (Model.GENDER == "M")
+                            {
+                                @:Nam
+                            }
+                            else if (Model.GENDER == "O")
+                            {
+                                @:Khác
+                            }
+                            else
+                            {
+                                @:Không xác định
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Ngày sinh:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.DATE_OF_BIRTH.ToShortDateString()</p>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Email:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.EMAIL</p>
+                    </div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Số điện thoại:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.PHONE_NUMBER</p>
+                    </div>
+                </div>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group row">
+                        <div class="col-md-6 offset-md-3 text-center">
+                            <input type="submit" value="Xóa" class="btn btn-danger me-2" />
+                            @Html.ActionLink("Hủy bỏ", "Index", null, new { @class = "btn btn-secondary" })
+                        </div>
+                    </div>
+                }
+            </div>
+</div>
+</div>
+</div>

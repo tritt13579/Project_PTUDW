@@ -5,10 +5,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Project_64132675.Areas.Receptionist_64132675.Controllers
+namespace Project_64132675.Areas.Employee_64132675.Controllers
 {
-    [CustomAuthorizeAttribute_64132675(Role = "Lễ tân")]
-    public class Receptionistbase_64132675Controller : Controller
+    [CustomAuthorizeAttribute_64132675(Roles = "Quản trị viên, Lễ tân")]
+    public class Employeebase_64132675Controller : Controller
     {
         protected string GetSessionUserId()
         {

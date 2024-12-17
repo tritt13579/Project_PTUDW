@@ -1,0 +1,110 @@
+﻿@model Project_64132675.Models.CUSTOMER
+
+@{
+    ViewBag.Title = "Chi tiết thông tin khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-2">CHI TIẾT THÔNG TIN KHÁCH HÀNG</h2>
+
+            <div class="form-horizontal p-4 border rounded bg-light">
+                <!-- Customer ID -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Mã khách hàng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.CUSTOMER_ID, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Họ:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.LAST_NAME, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- First Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Tên:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.FIRST_NAME, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Gender -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Giới tính:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">
+                            @if (Model.GENDER == "F")
+                            {
+                                @:Nữ
+                            }
+                            else if (Model.GENDER == "M")
+                            {
+                                @:Nam
+                            }
+                            else if (Model.GENDER == "O")
+                            {
+                                @:Khác
+                            }
+                            else
+                            {
+                                @:Không xác định
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Ngày sinh:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.DATE_OF_BIRTH, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Email:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.EMAIL, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Số điện thoại:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.PHONE_NUMBER, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6 offset-md-3">
+                        @Html.ActionLink("Chỉnh sửa", "Edit", new { id = Model.CUSTOMER_ID }, new { @class = "btn btn-warning me-2" })
+                        <a href="javascript:history.back()" class="btn btn-primary">Quay lại</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

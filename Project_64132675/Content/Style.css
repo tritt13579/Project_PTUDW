@@ -102,3 +102,127 @@ body {
 .link-hover:hover {
     color: var(--accent-color) !important;
 }
+
+.pagination .active > .page-link {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--text-color-light);
+}
+
+.page-link {
+    color: var(--text-color-dark);
+}
+
+.table-title {
+    font-size: 1.75rem; /* Tăng kích thước font */
+    color: var(--primary-color); /* Màu chữ chính */
+    text-transform: uppercase; /* Viết hoa toàn bộ chữ */
+    letter-spacing: 1px; /* Khoảng cách giữa các chữ */
+    color: transparent; /* Ẩn màu chữ để gradient xuất hiện */
+    padding: 10px 15px; /* Khoảng cách padding xung quanh */
+    border-radius: 5px; /* Làm mượt các góc */
+    margin-bottom: 15px; /* Khoảng cách dưới tiêu đề */
+}
+
+.create-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-color); 
+    color: var(--text-color-light); 
+    border: none;
+    border-radius: 30px; 
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.create-btn:hover {
+    background-color: var(--primary-color);
+    color: var(--background-light); 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+    transform: translateY(-2px); 
+}
+
+.create-btn .icon {
+    margin-right: 10px; 
+}
+
+.create-btn .text {
+    font-weight: 600; 
+}
+
+.create-btn .icon i {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease; 
+}
+
+.create-btn:hover .icon i {
+    transform: rotate(90deg);
+}
+
+
+/* Kiểu dáng chung cho các nút trong nhóm */
+.btn-group {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+
+.btn-group .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 25px; 
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.8s ease;
+    text-decoration: none;
+    border: none;
+}
+
+/* Nút Edit */
+.btn-edit {
+    color: #4f66e3;
+}
+
+.btn-edit:hover {
+    background-color: #2b42c2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Nút Details */
+.btn-details {
+    color: #2ecc71;
+}
+
+.btn-details:hover {
+    background-color: #27ae60; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Nút Delete */
+.btn-delete {
+    color: #e74c3c;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hiệu ứng khi hover vào từng nút */
+.btn-group .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    color: #ddd;
+}
+
+/* Tạo hiệu ứng khi hover vào cả 3 nút */
+.btn-group .btn:hover i {
+    transform: rotate(15deg);
+}

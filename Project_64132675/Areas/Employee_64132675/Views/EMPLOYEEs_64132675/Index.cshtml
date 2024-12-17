@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Project_64132675.Models.EMPLOYEE>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FIRST_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LAST_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GENDER)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DATE_OF_BIRTH)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMAIL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PHONE_NUMBER)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HIRE_DATE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ROLE_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PASSWORD)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FIRST_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LAST_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GENDER)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DATE_OF_BIRTH)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMAIL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PHONE_NUMBER)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HIRE_DATE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ROLE_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PASSWORD)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.EMPLOYEE_ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.EMPLOYEE_ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.EMPLOYEE_ID })
+        </td>
+    </tr>
+}
+
+</table>

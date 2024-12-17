@@ -5,9 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Project_64132675.Areas.Admin_64132675.Controllers
+namespace Project_64132675.Areas.Employee_64132675.Controllers
 {
-    [CustomAuthorizeAttribute_64132675(Role = "Quản trị viên")]
+    [CustomAuthorizeAttribute_64132675(Roles = "Quản trị viên")]
     public class Adminbase_64132675Controller : Controller
     {
         protected string GetSessionUserId()
