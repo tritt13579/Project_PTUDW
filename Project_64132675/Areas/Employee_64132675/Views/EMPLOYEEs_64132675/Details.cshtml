@@ -1,91 +1,130 @@
 ﻿@model Project_64132675.Models.EMPLOYEE
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Chi tiết thông tin nhân viên";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-2">CHI TIẾT THÔNG TIN NHÂN VIÊN</h2>
 
-<div>
-    <h4>EMPLOYEE</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FIRST_NAME)
-        </dt>
+            <div class="form-horizontal p-4 border rounded bg-light">
+                <!-- Employee ID -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Mã nhân viên:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.EMPLOYEE_ID, new { @class = "form-control" })
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.FIRST_NAME)
-        </dd>
+                <!-- First Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Tên:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.FIRST_NAME, new { @class = "form-control" })
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LAST_NAME)
-        </dt>
+                <!-- Last Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Họ:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.LAST_NAME, new { @class = "form-control" })
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.LAST_NAME)
-        </dd>
+                <!-- Gender -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Giới tính:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">
+                            @if (Model.GENDER == "F")
+                            {
+                                @:Nữ
+                            }
+                            else if (Model.GENDER == "M")
+                            {
+                                @:Nam
+                            }
+                            else if (Model.GENDER == "O")
+                            {
+                                @:Khác
+                            }
+                            else
+                            {
+                                @:Không xác định
+                            }
+                        </p>
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.GENDER)
-        </dt>
+                <!-- Date of Birth -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Ngày sinh:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @(Model.DATE_OF_BIRTH.ToString("dd/MM/yyyy"))
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.GENDER)
-        </dd>
+                <!-- Email -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Email:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.EMAIL, new { @class = "form-control" })
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DATE_OF_BIRTH)
-        </dt>
+                <!-- Phone Number -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Số điện thoại:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.PHONE_NUMBER, new { @class = "form-control" })
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.DATE_OF_BIRTH)
-        </dd>
+                <!-- Hire Date -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Ngày vào làm:</strong>
+                    </label>
+                    <div class="col-md-6">
+                       @(Model.HIRE_DATE.ToString("dd/MM/yyyy"))
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.EMAIL)
-        </dt>
+                <!-- Role -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Chức vụ:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.ROLE_NAME, new { @class = "form-control" })
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.EMAIL)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PHONE_NUMBER)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PHONE_NUMBER)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HIRE_DATE)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HIRE_DATE)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ROLE_NAME)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ROLE_NAME)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PASSWORD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PASSWORD)
-        </dd>
-
-    </dl>
+                <div class="form-group row">
+                    <div class="col-md-6 offset-md-3">
+                        @Html.ActionLink("Chỉnh sửa", "Edit", new { id = Model.EMPLOYEE_ID }, new { @class = "btn btn-warning me-2" })
+                        <a href="javascript:history.back()" class="btn btn-primary">Quay lại</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.EMPLOYEE_ID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

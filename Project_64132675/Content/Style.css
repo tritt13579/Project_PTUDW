@@ -226,3 +226,17 @@ body {
 .btn-group .btn:hover i {
     transform: rotate(15deg);
 }
+.section-title {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+}
+
+.form-label {
+    color: var(--text-color-dark);
+}
+
+.readonly-field {
+    background-color: var(--background-light) !important;
+    color: var(--text-color-dark);
+}

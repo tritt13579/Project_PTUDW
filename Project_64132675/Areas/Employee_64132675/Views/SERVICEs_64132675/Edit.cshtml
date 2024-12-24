@@ -1,0 +1,67 @@
+﻿@model Project_64132675.Models.SERVICE
+
+@{
+    ViewBag.Title = "Chỉnh sửa thông tin dịch vụ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-2">CHỈNH SỬA THÔNG TIN DỊCH VỤ</h2>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal p-4 border rounded bg-light">
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <!-- Service ID -->
+                    @Html.HiddenFor(model => model.SERVICE_ID)
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">
+                            <strong>Mã dịch vụ:</strong>
+                        </label>
+                        <div class="col-md-6 ms-2">
+                            @Html.DisplayFor(model => model.SERVICE_ID, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <!-- Service Name -->
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">
+                            <strong>Tên dịch vụ:</strong>
+                        </label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.SERVICE_NAME, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.SERVICE_NAME, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <!-- Service Price -->
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">
+                            <strong>Giá dịch vụ:</strong>
+                        </label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="PRICE" value="@Model.PRICE.ToString("F0")" />
+                            @Html.ValidationMessageFor(model => model.PRICE, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-6 offset-md-3">
+                            <input type="submit" value="Lưu thay đổi" class="btn btn-warning" />
+                            <a href="javascript:history.back()" class="btn btn-primary">Quay lại</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

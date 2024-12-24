@@ -1,82 +1,112 @@
 ﻿@model IEnumerable<Project_64132675.Models.EMPLOYEE>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Danh sách nhân viên";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<div class="container-fluid px-4">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary table-title">Danh sách nhân viên</h6>
+            <a href="@Url.Action("Create")" class="btn create-btn btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span class="text">Thêm nhân viên mới</span>
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="employeeTable" class="table table-striped table-bordered" style="width:100%">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="text-center">Mã nhân viên</th>
+                            <th class="text-center">Họ và tên</th>
+                            <th class="text-center">Giới tính</th>
+                            <th class="text-center">Ngày sinh</th>
+                            <th class="text-center">Ngày vào làm</th>
+                            <th class="text-center">Chức vụ</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@item.EMPLOYEE_ID</td>
+                                <td class="text-center">@item.LAST_NAME @item.FIRST_NAME</td>
+                                <td class="text-center">
+                                    @if (item.GENDER == "F")
+                                    {
+                                        @:Nữ
+                                    }
+                                    else if (item.GENDER == "M")
+                                    {
+                                        @:Nam
+                                    }
+                                    else if (item.GENDER == "O")
+                                    {
+                                        @:Khác
+                                    }
+                                    else
+                                    {
+                                        @:Không xác định
+                                    }
+                                </td>
+                                <td class="text-center">@item.DATE_OF_BIRTH.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center">@item.HIRE_DATE.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center">@item.ROLE_NAME</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("Edit", new { id = item.EMPLOYEE_ID })" class="btn btn-edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="@Url.Action("Details", new { id = item.EMPLOYEE_ID })" class="btn btn-details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = item.EMPLOYEE_ID })" class="btn btn-delete">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.FIRST_NAME)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LAST_NAME)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.GENDER)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DATE_OF_BIRTH)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EMAIL)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PHONE_NUMBER)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.HIRE_DATE)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ROLE_NAME)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PASSWORD)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.FIRST_NAME)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LAST_NAME)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.GENDER)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DATE_OF_BIRTH)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EMAIL)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PHONE_NUMBER)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HIRE_DATE)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ROLE_NAME)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PASSWORD)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.EMPLOYEE_ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.EMPLOYEE_ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.EMPLOYEE_ID })
-        </td>
-    </tr>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#employeeTable').DataTable({
+                "pageLength": 5,
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Tất cả"]],
+                "pagingType": "full_numbers",
+                "language": {
+                    "search": "Tìm kiếm nhân viên:",
+                    "lengthMenu": "Hiển thị _MENU_ nhân viên mỗi trang",
+                    "zeroRecords": "Không tìm thấy nhân viên nào",
+                    "info": "Hiển thị trang _PAGE_ của _PAGES_",
+                    "infoEmpty": "Không có dữ liệu để hiển thị",
+                    "infoFiltered": "(lọc từ tổng số _MAX_ bản ghi)",
+                    "paginate": {
+                        "first": "<<",
+                        "previous": "<",
+                        "next": ">",
+                        "last": ">>"
+                    }
+                },
+                "columnDefs": [{
+                    "targets": 6,
+                    "orderable": false,
+                    "width": "100px"
+                }],
+                "order": [[0, 'asc']]
+            });
+        });
+    </script>
 }
-
-</table>

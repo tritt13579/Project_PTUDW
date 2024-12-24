@@ -1,0 +1,231 @@
+﻿@model Project_64132675.Models.BOOKING
+
+@{
+    ViewBag.Title = "Chỉnh sửa Đặt Phòng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-2">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="custom-card">
+                <div class="text-center py-3">
+                    <h2 class="mb-0 section-title">CHỈNH SỬA ĐẶT PHÒNG</h2>
+                </div>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.BOOKING_ID)
+
+                    <div class="card-body p-4">
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger shadow-sm mb-4">
+                                <ul class="mb-0">
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <!-- Customer Section -->
+                                <div class="mb-4">
+                                    <div class="mb-4">
+                                        <h4 class="section-title mb-3">Thông tin khách hàng</h4>
+                                        <div class="form-group mb-3">
+                                            <label class="form-label fw-bold">Khách hàng</label>
+                                            <div>
+                                                <input type="text" class="form-control readonly-field" value="@ViewBag.CustomerFullName" readonly />
+                                                @Html.HiddenFor(model => model.CUSTOMER_ID)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dates Section -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label class="form-label fw-bold">Ngày nhận phòng</label>
+                                                @Html.EditorFor(model => model.CHECKIN_DATE, new { htmlAttributes = new { @class = "form-control", Type = "date", required = "required", @Value = Model.CHECKIN_DATE.ToString("yyyy-MM-dd") } })
+                                                @Html.ValidationMessageFor(model => model.CHECKIN_DATE, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-2">
+                                                <label class="form-label fw-bold">Ngày trả phòng</label>
+                                                @Html.EditorFor(model => model.CHECKOUT_DATE, new { htmlAttributes = new { @class = "form-control", Type = "date", required = "required", @Value = Model.CHECKOUT_DATE.ToString("yyyy-MM-dd") } })
+                                                @Html.ValidationMessageFor(model => model.CHECKOUT_DATE, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Guest Numbers Section -->
+                                <div class="mb-3">
+                                    <h4 class="section-title mb-3">Số lượng khách</h4>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label class="form-label fw-bold">Người lớn</label>
+                                                @Html.EditorFor(model => model.NUM_ADULT, new { htmlAttributes = new { @class = "form-control", @min = "1", required = "required" } })
+                                                @Html.ValidationMessageFor(model => model.NUM_ADULT, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label class="form-label fw-bold">Trẻ em</label>
+                                                @Html.EditorFor(model => model.NUM_CHILDREN, new { htmlAttributes = new { @class = "form-control", @min = "0", required = "required" } })
+                                                @Html.ValidationMessageFor(model => model.NUM_CHILDREN, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Special Requests -->
+                                <div class="form-group">
+                                    <label class="form-label fw-bold">Yêu cầu đặc biệt</label>
+                                    @Html.TextAreaFor(model => model.SPECIAL_REQUESTS, new { @class = "form-control", rows = "3" })
+                                    @Html.ValidationMessageFor(model => model.SPECIAL_REQUESTS, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <!-- Room Selection -->
+                                <div class="mb-4">
+                                    <h4 class="section-title mb-3">Chọn phòng và dịch vụ</h4>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Phòng</label>
+                                        @Html.ListBox("selectedRooms", ViewBag.ROOMS as MultiSelectList,
+                                            new { @class = "form-select", size = 4, required = "required" })
+                                        <small class="text-muted d-block mt-1">Giữ phím Ctrl để chọn nhiều phòng</small>
+                                    </div>
+
+                                    <!-- Services Selection -->
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Dịch vụ</label>
+                                        @Html.ListBox("selectedServices", ViewBag.SERVICES as MultiSelectList,
+                                            new { @class = "form-select", size = 4 })
+                                        <small class="text-muted d-block mt-1">Giữ phím Ctrl để chọn nhiều dịch vụ</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-bold">Trạng thái thanh toán</label>
+                                    <div>
+                                        @Html.DropDownList("PAYMENT_STATUS_ID", null, new
+                                        {
+                                            @class = "form-select"
+                                        })
+                                        @Html.ValidationMessageFor(model => model.PAYMENT_STATUS_ID, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+                                <!-- Total Amount -->
+                                <div class="form-group mb-4">
+                                    <label class="form-label fw-bold">Thành tiền</label>
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.BOOKING_AMOUNT,
+                                            new
+                                            {
+                                                htmlAttributes = new
+                                                {
+                                                    @class = "form-control readonly-field",
+                                                    @readonly = "readonly"
+                                                }
+                                            })
+                                        <span class="input-group-text" style="background-color: var(--background-light)">₫</span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.BOOKING_AMOUNT, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(model => model.BOOKING_DATE)
+                        @Html.HiddenFor(model => model.BOOKING_SOURCE)
+
+                        <!-- Submit Buttons -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary me-2">
+                                Lưu Thay Đổi
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                Quay lại
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            var roomPrices = @Html.Raw(Json.Encode(ViewBag.RoomPrices));
+            var servicePrices = @Html.Raw(Json.Encode(ViewBag.ServicePrices));
+            var selectedRooms = @Html.Raw(Json.Encode(ViewBag.SelectedRooms));
+            var selectedServices = @Html.Raw(Json.Encode(ViewBag.SelectedServices));
+
+            // Pre-select rooms and services
+            if (selectedRooms) {
+                $('#selectedRooms').val(selectedRooms);
+            }
+            if (selectedServices) {
+                $('#selectedServices').val(selectedServices);
+            }
+
+            function calculateTotal() {
+                var total = 0;
+
+                var checkinDate = new Date($('#CHECKIN_DATE').val());
+                var checkoutDate = new Date($('#CHECKOUT_DATE').val());
+                var days = Math.floor((checkoutDate - checkinDate) / (1000 * 60 * 60 * 24));
+
+                if (days > 0) {
+                    $('#selectedRooms option:selected').each(function() {
+                        var roomId = $(this).val().toString();
+                        if (roomPrices[roomId]) {
+                            total += parseFloat(roomPrices[roomId]) * days;
+                        }
+                    });
+                }
+
+                $('#selectedServices option:selected').each(function() {
+                    var serviceId = $(this).val().toString();
+                    if (servicePrices[serviceId]) {
+                        total += parseFloat(servicePrices[serviceId]);
+                    }
+                });
+
+                var formattedTotal = Math.round(total);
+                $('#BOOKING_AMOUNT').val(formattedTotal);
+            }
+
+            $('#selectedRooms, #selectedServices, #CHECKIN_DATE, #CHECKOUT_DATE').change(calculateTotal);
+
+            $('#CHECKIN_DATE, #CHECKOUT_DATE').change(function() {
+                var checkinDate = new Date($('#CHECKIN_DATE').val());
+                var checkoutDate = new Date($('#CHECKOUT_DATE').val());
+
+                if(checkoutDate <= checkinDate) {
+                    alert('Ngày trả phòng phải sau ngày nhận phòng!');
+                    $('#CHECKOUT_DATE').val('');
+                    $('#BOOKING_AMOUNT').val('0');
+                }
+            });
+
+            // Calculate initial total
+            calculateTotal();
+        });
+    </script>
+}

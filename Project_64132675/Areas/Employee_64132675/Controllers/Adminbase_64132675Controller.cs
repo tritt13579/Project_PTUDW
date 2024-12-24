@@ -19,5 +19,17 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
         {
             return Session["FullName"] as string;
         }
+
+        // Kiểm tra Session trước khi thực hiện hành động
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (Session["Role"] == null)
+            {
+                // Nếu không có session Role, chuyển hướng đến trang đăng nhập
+                filterContext.Result = RedirectToAction("Login", "Account");
+            }
+
+            base.OnActionExecuting(filterContext);
+        }
     }
 }

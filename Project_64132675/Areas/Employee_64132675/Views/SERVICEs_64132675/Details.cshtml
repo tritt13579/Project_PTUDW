@@ -1,0 +1,53 @@
+﻿@model Project_64132675.Models.SERVICE
+
+@{
+    ViewBag.Title = "Chi tiết dịch vụ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-2">CHI TIẾT DỊCH VỤ</h2>
+
+            <div class="form-horizontal p-4 border rounded bg-light">
+                <!-- Service ID -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Mã dịch vụ:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.SERVICE_ID, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Service Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Tên dịch vụ:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.SERVICE_NAME, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Service Price -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Giá dịch vụ:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @(Model.PRICE.ToString("C0"))
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6 offset-md-3">
+                        @Html.ActionLink("Chỉnh sửa", "Edit", new { id = Model.SERVICE_ID }, new { @class = "btn btn-warning me-2" })
+                        <a href="javascript:history.back()" class="btn btn-primary">Quay lại</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

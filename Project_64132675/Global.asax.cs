@@ -16,6 +16,7 @@ namespace Project_64132675
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            Services.RoomStatusUpdater_64132675.Start();
         }
     }
 }

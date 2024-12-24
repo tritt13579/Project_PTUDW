@@ -74,7 +74,7 @@
                         <strong>Ngày sinh:</strong>
                     </label>
                     <div class="col-md-6">
-                        @Html.DisplayFor(model => model.DATE_OF_BIRTH, new { @class = "form-control" })
+                        @(Model.DATE_OF_BIRTH.ToString("dd/MM/yyyy"))
                     </div>
                 </div>
 

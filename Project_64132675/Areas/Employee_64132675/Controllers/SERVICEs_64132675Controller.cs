@@ -10,110 +10,107 @@ using Project_64132675.Models;
 
 namespace Project_64132675.Areas.Employee_64132675.Controllers
 {
-    public class EMPLOYEEs_64132675Controller : Adminbase_64132675Controller
+    public class SERVICEs_64132675Controller : Controller
     {
         private readonly Model_64132675 db = new Model_64132675();
 
-        // GET: Employee_64132675/EMPLOYEEs_64132675
+        // GET: Employee_64132675/SERVICEs_64132675
         public ActionResult Index()
         {
-            return View(db.EMPLOYEE.ToList());
+            return View(db.SERVICE.ToList());
         }
 
-        // GET: Employee_64132675/EMPLOYEEs_64132675/Details/5
+        // GET: Employee_64132675/SERVICEs_64132675/Details/5
         public ActionResult Details(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EMPLOYEE eMPLOYEE = db.EMPLOYEE.Find(id);
-            if (eMPLOYEE == null)
+            SERVICE sERVICE = db.SERVICE.Find(id);
+            if (sERVICE == null)
             {
                 return HttpNotFound();
             }
-            return View(eMPLOYEE);
+            return View(sERVICE);
         }
 
-        // GET: Employee_64132675/EMPLOYEEs_64132675/Create
+        // GET: Employee_64132675/SERVICEs_64132675/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Employee_64132675/EMPLOYEEs_64132675/Create
+        // POST: Employee_64132675/SERVICEs_64132675/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "EMPLOYEE_ID,FIRST_NAME,LAST_NAME,GENDER,DATE_OF_BIRTH,EMAIL,PHONE_NUMBER,HIRE_DATE,ROLE_NAME,PASSWORD")] EMPLOYEE eMPLOYEE)
+        public ActionResult Create([Bind(Include = "SERVICE_ID,SERVICE_NAME,PRICE")] SERVICE sERVICE)
         {
             if (ModelState.IsValid)
             {
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(eMPLOYEE.PASSWORD);
-                eMPLOYEE.PASSWORD = hashedPassword;
-
-                db.EMPLOYEE.Add(eMPLOYEE);
+                db.SERVICE.Add(sERVICE);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(eMPLOYEE);
+            return View(sERVICE);
         }
 
-        // GET: Employee_64132675/EMPLOYEEs_64132675/Edit/5
+        // GET: Employee_64132675/SERVICEs_64132675/Edit/5
         public ActionResult Edit(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EMPLOYEE eMPLOYEE = db.EMPLOYEE.Find(id);
-            if (eMPLOYEE == null)
+            SERVICE sERVICE = db.SERVICE.Find(id);
+            if (sERVICE == null)
             {
                 return HttpNotFound();
             }
-            return View(eMPLOYEE);
+            return View(sERVICE);
         }
 
-        // POST: Employee_64132675/EMPLOYEEs_64132675/Edit/5
+        // POST: Employee_64132675/SERVICEs_64132675/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "EMPLOYEE_ID,FIRST_NAME,LAST_NAME,GENDER,DATE_OF_BIRTH,EMAIL,PHONE_NUMBER,HIRE_DATE,ROLE_NAME,PASSWORD")] EMPLOYEE eMPLOYEE)
+        public ActionResult Edit([Bind(Include = "SERVICE_ID,SERVICE_NAME,PRICE")] SERVICE sERVICE)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(eMPLOYEE).State = EntityState.Modified;
+                db.Entry(sERVICE).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(eMPLOYEE);
+            return View(sERVICE);
         }
 
-        // GET: Employee_64132675/EMPLOYEEs_64132675/Delete/5
+        // GET: Employee_64132675/SERVICEs_64132675/Delete/5
         public ActionResult Delete(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EMPLOYEE eMPLOYEE = db.EMPLOYEE.Find(id);
-            if (eMPLOYEE == null)
+            SERVICE sERVICE = db.SERVICE.Find(id);
+            if (sERVICE == null)
             {
                 return HttpNotFound();
             }
-            return View(eMPLOYEE);
+            return View(sERVICE);
         }
 
-        // POST: Employee_64132675/EMPLOYEEs_64132675/Delete/5
+        // POST: Employee_64132675/SERVICEs_64132675/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(long id)
         {
-            EMPLOYEE eMPLOYEE = db.EMPLOYEE.Find(id);
-            db.EMPLOYEE.Remove(eMPLOYEE);
+            SERVICE sERVICE = db.SERVICE.Find(id);
+            db.SERVICE.Remove(sERVICE);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

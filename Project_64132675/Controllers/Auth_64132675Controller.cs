@@ -56,7 +56,7 @@ namespace Project_64132675.Controllers
             catch (UnauthorizedAccessException ex)
             {
                 // Nếu thông tin đăng nhập sai, thêm lỗi vào ModelState để hiển thị thông báo cho người dùng
-                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không đúng.");
+                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không đúng." + ex);
                 return View(model); // Trả về view với lỗi đăng nhập
             }
         }
@@ -93,7 +93,7 @@ namespace Project_64132675.Controllers
             catch (Exception ex)
             {
                 // Xử lý lỗi chung
-                ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi trong quá trình đăng ký.");
+                ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi trong quá trình đăng ký." + ex);
                 return View(model); // Trả về view nếu có lỗi
             }
         }

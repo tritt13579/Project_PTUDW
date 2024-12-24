@@ -46,12 +46,22 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CUSTOMER_ID,FIRST_NAME,LAST_NAME,GENDER,DATE_OF_BIRTH,EMAIL,PHONE_NUMBER,PASSWORD")] CUSTOMER cUSTOMER)
+        public ActionResult Create([Bind(Include = "CUSTOMER_ID,FIRST_NAME,LAST_NAME,GENDER,DATE_OF_BIRTH,EMAIL,PHONE_NUMBER,PASSWORD")] CUSTOMER cUSTOMER, string redirectTo)
         {
             if (ModelState.IsValid)
             {
+                // Mã hóa mật khẩu bằng BCrypt
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(cUSTOMER.PASSWORD);
+                cUSTOMER.PASSWORD = hashedPassword;
+
                 db.CUSTOMER.Add(cUSTOMER);
                 db.SaveChanges();
+
+                if (!string.IsNullOrEmpty(redirectTo) && redirectTo == "CreateBooking")
+                {
+                    return RedirectToAction("Create", "BOOKINGs_64132675", new { customerId = cUSTOMER.CUSTOMER_ID });
+                }
+
                 return RedirectToAction("Index");
             }
 

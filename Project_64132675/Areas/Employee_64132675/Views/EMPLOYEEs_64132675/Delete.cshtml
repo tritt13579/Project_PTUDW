@@ -1,97 +1,118 @@
 ﻿@model Project_64132675.Models.EMPLOYEE
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Delete Employee";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-3">XÁC NHẬN XÓA NHÂN VIÊN</h2>
+            <div class="form-horizontal p-4 border rounded bg-light">
+                <!-- Last Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Họ:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.LAST_NAME</p>
+                    </div>
+                </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>EMPLOYEE</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FIRST_NAME)
-        </dt>
+                <!-- First Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Tên:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.FIRST_NAME</p>
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.FIRST_NAME)
-        </dd>
+                <!-- Gender -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Giới tính:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">
+                            @if (Model.GENDER == "F")
+                            {
+                                @:Nữ
+                            }
+                            else if (Model.GENDER == "M")
+                            {
+                                @:Nam
+                            }
+                            else if (Model.GENDER == "O")
+                            {
+                                @:Khác
+                            }
+                            else
+                            {
+                                @:Không xác định
+                            }
+                        </p>
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LAST_NAME)
-        </dt>
+                <!-- Date of Birth -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Ngày sinh:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.DATE_OF_BIRTH.ToShortDateString()</p>
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.LAST_NAME)
-        </dd>
+                <!-- Email -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Email:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.EMAIL</p>
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.GENDER)
-        </dt>
+                <!-- Phone Number -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Số điện thoại:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.PHONE_NUMBER</p>
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.GENDER)
-        </dd>
+                <!-- Hire Date -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Ngày vào làm:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-plaintext">@Model.HIRE_DATE.ToShortDateString()</p>
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DATE_OF_BIRTH)
-        </dt>
+                <!-- Confirmation -->
+                <div class="alert alert-warning text-center mt-4">
+                    <strong>Bạn có chắc chắn muốn xóa nhân viên này? Thao tác này không thể hoàn tác!</strong>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.DATE_OF_BIRTH)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.EMAIL)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EMAIL)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PHONE_NUMBER)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PHONE_NUMBER)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HIRE_DATE)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HIRE_DATE)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ROLE_NAME)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ROLE_NAME)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PASSWORD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PASSWORD)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group row">
+                        <div class="col-md-6 offset-md-3 text-center">
+                            <input type="submit" value="Xóa" class="btn btn-danger me-2" />
+                            @Html.ActionLink("Hủy bỏ", "Index", null, new { @class = "btn btn-secondary" })
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
-    }
+    </div>
 </div>

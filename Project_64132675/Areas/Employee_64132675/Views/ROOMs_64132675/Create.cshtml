@@ -1,14 +1,14 @@
 ﻿@model Project_64132675.Models.ROOM
 
 @{
-    ViewBag.Title = "Tạo phòng";
+    ViewBag.Title = "Thêm phòng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h2 class="text-center mb-2">TẠO PHÒNG MỚI</h2>
+            <h2 class="text-center mb-2">THÊM PHÒNG MỚI</h2>
 
             @using (Html.BeginForm())
             {
@@ -23,7 +23,7 @@
                             <strong>Tầng:</strong>
                         </label>
                         <div class="col-md-6">
-                            @Html.DropDownList("FLOOR_ID", null, "Chọn tầng", new { @class = "form-control" })
+                            @Html.DropDownList("FLOOR_ID", null, "Chọn tầng", new { @class = "form-select" })
                             @Html.ValidationMessageFor(model => model.FLOOR_ID, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                             <strong>Loại phòng:</strong>
                         </label>
                         <div class="col-md-6">
-                            @Html.DropDownList("ROOM_CLASS_ID", null, "Chọn loại phòng", new { @class = "form-control" })
+                            @Html.DropDownList("ROOM_CLASS_ID", null, "Chọn loại phòng", new { @class = "form-select" })
                             @Html.ValidationMessageFor(model => model.ROOM_CLASS_ID, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                             <strong>Trạng thái phòng:</strong>
                         </label>
                         <div class="col-md-6">
-                            @Html.DropDownList("ROOM_STATUS_ID", null, "Chọn trạng thái", new { @class = "form-control" })
+                            @Html.DropDownList("ROOM_STATUS_ID", null, "Chọn trạng thái", new { @class = "form-select" })
                             @Html.ValidationMessageFor(model => model.ROOM_STATUS_ID, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -63,7 +63,7 @@
 
                     <div class="form-group row">
                         <div class="col-md-6 offset-md-3">
-                            <input type="submit" value="Tạo phòng" class="btn btn-success" />
+                            <input type="submit" value="Thêm phòng" class="btn btn-success me-2" />
                             <a href="@Url.Action("Index")" class="btn btn-secondary">Quay lại</a>
                         </div>
                     </div>

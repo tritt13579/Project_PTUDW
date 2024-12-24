@@ -10,10 +10,6 @@
         <div class="col-md-8">
             <h2 class="text-center mb-3">XÁC NHẬN XÓA KHÁCH HÀNG</h2>
             <div class="form-horizontal p-4 border rounded bg-light">
-                <p class="text-center text-danger fw-bold">
-                    Bạn có chắc chắn muốn xóa khách hàng này? Thao tác này không thể hoàn tác!
-                </p>
-
                 <!-- Last Name -->
                 <div class="form-group row mb-3">
                     <label class="col-md-3 col-form-label">
@@ -89,6 +85,11 @@
                     <div class="col-md-6">
                         <p class="form-control-plaintext">@Model.PHONE_NUMBER</p>
                     </div>
+                </div>
+
+                <!-- Confirmation -->
+                <div class="alert alert-warning text-center mt-4">
+                    <strong>Bạn có chắc chắn muốn xóa khách hàng này? Thao tác này không thể hoàn tác!</strong>
                 </div>
 
                 @using (Html.BeginForm())

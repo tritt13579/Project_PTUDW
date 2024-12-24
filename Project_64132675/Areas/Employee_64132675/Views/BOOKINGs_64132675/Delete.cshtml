@@ -1,0 +1,152 @@
+﻿@model Project_64132675.Models.BOOKING
+
+@{
+    ViewBag.Title = "Xóa Booking";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-2">XÁC NHẬN XÓA BOOKING</h2>
+
+            <div class="form-horizontal p-4 border rounded bg-light">
+                <!-- Booking ID -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-4 col-form-label">
+                        <strong>Mã booking:</strong>
+                    </label>
+                    <div class="col-md-8">
+                        @Html.DisplayFor(model => model.BOOKING_ID, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Customer -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-4 col-form-label">
+                        <strong>Khách hàng:</strong>
+                    </label>
+                    <div class="col-md-8">
+                        @($"{Model.CUSTOMER.LAST_NAME} {Model.CUSTOMER.FIRST_NAME}")
+                    </div>
+                </div>
+
+                <!-- Booking Date -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-4 col-form-label">
+                        <strong>Ngày đặt:</strong>
+                    </label>
+                    <div class="col-md-8">
+                        @(Model.BOOKING_DATE.ToString("dd/MM/yyyy"))
+                    </div>
+                </div>
+
+                <!-- Check-in Date -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-4 col-form-label">
+                        <strong>Ngày check-in:</strong>
+                    </label>
+                    <div class="col-md-8">
+                        @(Model.CHECKIN_DATE.ToString("dd/MM/yyyy"))
+                    </div>
+                </div>
+
+                <!-- Check-out Date -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-4 col-form-label">
+                        <strong>Ngày check-out:</strong>
+                    </label>
+                    <div class="col-md-8">
+                        @(Model.CHECKOUT_DATE.ToString("dd/MM/yyyy"))
+                    </div>
+                </div>
+
+                <!-- Booking Amount -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-4 col-form-label">
+                        <strong>Tổng tiền:</strong>
+                    </label>
+                    <div class="col-md-8">
+                        @String.Format("{0:N0} VNĐ", Model.BOOKING_AMOUNT)
+                    </div>
+                </div>
+
+                <!-- Rooms -->
+                <h4 class="mt-4">Danh sách phòng</h4>
+                <table class="table table-bordered mt-2">
+                    <thead>
+                        <tr>
+                            <th>Phòng</th>
+                            <th>Loại phòng</th>
+                            <th>Tầng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ROOM != null && Model.ROOM.Any())
+                        {
+                            foreach (var room in Model.ROOM)
+                            {
+                                <tr>
+                                    <td>@room.ROOM_NUMBER</td>
+                                    <td>@room.ROOMCLASS.CLASS_NAME</td>
+                                    <td>@room.FLOOR.FLOOR_NUMBER</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center">Không có phòng nào.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Services -->
+                <h4 class="mt-4">Danh sách dịch vụ</h4>
+                <table class="table table-bordered mt-2">
+                    <thead>
+                        <tr>
+                            <th>Tên dịch vụ</th>
+                            <th>Giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.SERVICE != null && Model.SERVICE.Any())
+                        {
+                            foreach (var service in Model.SERVICE)
+                            {
+                                <tr>
+                                    <td>@service.SERVICE_NAME</td>
+                                    <td>@String.Format("{0:N0} VNĐ", service.PRICE)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" class="text-center">Không có dịch vụ nào.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Confirmation -->
+                <div class="alert alert-warning text-center mt-4">
+                    <strong>Bạn có chắc chắn muốn xóa booking này? Thao tác này không thể hoàn tác!</strong>
+                </div>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group row">
+                        <div class="col-md-6 offset-md-3 text-center">
+                            <input type="submit" value="Xóa" class="btn btn-danger me-2" />
+                            @Html.ActionLink("Hủy bỏ", "Index", null, new { @class = "btn btn-secondary" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

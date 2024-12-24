@@ -1,63 +1,45 @@
-﻿@model Project_64132675.Models.ROOM
+﻿@model Project_64132675.Models.SERVICE
 
 @{
-    ViewBag.Title = "Delete Room";
+    ViewBag.Title = "Xóa dịch vụ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h2 class="text-center mb-3">XÁC NHẬN XÓA PHÒNG</h2>
+            <h2 class="text-center mb-3">XÁC NHẬN XÓA DỊCH VỤ</h2>
             <div class="form-horizontal p-4 border rounded bg-light">
                 <div class="form-group row mb-3">
                     <label class="col-md-3 col-form-label">
-                        <strong>Mã phòng:</strong>
+                        <strong>Mã dịch vụ:</strong>
                     </label>
                     <div class="col-md-6">
-                        <p class="form-control-plaintext">@Model.ROOM_ID</p>
+                        <p class="form-control-plaintext">@Model.SERVICE_ID</p>
                     </div>
                 </div>
 
                 <div class="form-group row mb-3">
                     <label class="col-md-3 col-form-label">
-                        <strong>Tầng:</strong>
+                        <strong>Tên dịch vụ:</strong>
                     </label>
                     <div class="col-md-6">
-                        <p class="form-control-plaintext">@Model.FLOOR.FLOOR_ID</p>
+                        <p class="form-control-plaintext">@Model.SERVICE_NAME</p>
                     </div>
                 </div>
 
                 <div class="form-group row mb-3">
                     <label class="col-md-3 col-form-label">
-                        <strong>Loại phòng:</strong>
+                        <strong>Giá dịch vụ:</strong>
                     </label>
                     <div class="col-md-6">
-                        <p class="form-control-plaintext">@Model.ROOMCLASS.CLASS_NAME</p>
-                    </div>
-                </div>
-
-                <div class="form-group row mb-3">
-                    <label class="col-md-3 col-form-label">
-                        <strong>Trạng thái:</strong>
-                    </label>
-                    <div class="col-md-6">
-                        <p class="form-control-plaintext">@Model.ROOMSTATUS.ROOM_STATUS_NAME</p>
-                    </div>
-                </div>
-
-                <div class="form-group row mb-3">
-                    <label class="col-md-3 col-form-label">
-                        <strong>Số phòng:</strong>
-                    </label>
-                    <div class="col-md-6">
-                        <p class="form-control-plaintext">@Model.ROOM_NUMBER</p>
+                        <p class="form-control-plaintext">@(Model.PRICE.ToString("C0"))</p>
                     </div>
                 </div>
 
                 <!-- Confirmation -->
                 <div class="alert alert-warning text-center mt-4">
-                    <strong>Bạn có chắc chắn muốn xóa phòng này? Thao tác này không thể hoàn tác!</strong>
+                    <strong>Bạn có chắc chắn muốn xóa dịch vụ này? Thao tác này không thể hoàn tác!</strong>
                 </div>
 
                 @using (Html.BeginForm())

@@ -140,11 +140,13 @@
     <Compile Include="Areas\Customer_64132675\Controllers\Home_64132675Controller.cs" />
     <Compile Include="Areas\Customer_64132675\Customer_64132675AreaRegistration.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\Adminbase_64132675Controller.cs" />
+    <Compile Include="Areas\Employee_64132675\Controllers\BOOKINGs_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\CUSTOMERs_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\Dashboard_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\Employeebase_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\EMPLOYEEs_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\ROOMs_64132675Controller.cs" />
+    <Compile Include="Areas\Employee_64132675\Controllers\SERVICEs_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Employee_64132675AreaRegistration.cs" />
     <Compile Include="Controllers\Auth_64132675Controller.cs" />
     <Compile Include="Global.asax.cs">
@@ -166,6 +168,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthService_64132675.cs" />
     <Compile Include="Services\CustomAuthorizeAttribute_64132675.cs" />
+    <Compile Include="Services\RoomStatusUpdater_64132675.cs" />
     <Compile Include="ViewModels\LoginViewModel_64132675.cs" />
     <Compile Include="ViewModels\RegisterViewModel_64132675.cs" />
   </ItemGroup>
@@ -236,6 +239,16 @@
     <Content Include="Areas\Employee_64132675\Views\EMPLOYEEs_64132675\Details.cshtml" />
     <Content Include="Areas\Employee_64132675\Views\EMPLOYEEs_64132675\Edit.cshtml" />
     <Content Include="Areas\Employee_64132675\Views\EMPLOYEEs_64132675\Index.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\SERVICEs_64132675\Create.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\SERVICEs_64132675\Delete.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\SERVICEs_64132675\Details.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\SERVICEs_64132675\Edit.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\SERVICEs_64132675\Index.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\BOOKINGs_64132675\Create.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\BOOKINGs_64132675\Delete.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\BOOKINGs_64132675\Details.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\BOOKINGs_64132675\Edit.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\BOOKINGs_64132675\Index.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
