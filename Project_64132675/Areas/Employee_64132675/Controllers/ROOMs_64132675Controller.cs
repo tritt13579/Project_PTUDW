@@ -50,7 +50,7 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ROOM_ID,FLOOR_ID,ROOM_CLASS_ID,ROOM_STATUS_ID,ROOM_NUMBER")] ROOM rOOM)
+        public ActionResult Create([Bind(Include = "ROOM_ID,FLOOR_ID,ROOM_CLASS_ID,ROOM_STATUS_ID,ROOM_NUMBER,BED_TYPE,NUM_BEDS")] ROOM rOOM)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +88,7 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ROOM_ID,FLOOR_ID,ROOM_CLASS_ID,ROOM_STATUS_ID,ROOM_NUMBER")] ROOM rOOM)
+        public ActionResult Edit([Bind(Include = "ROOM_ID,FLOOR_ID,ROOM_CLASS_ID,ROOM_STATUS_ID,ROOM_NUMBER,BED_TYPE,NUM_BEDS")] ROOM rOOM)
         {
             if (ModelState.IsValid)
             {

@@ -12,7 +12,6 @@ namespace Project_64132675.Models
         {
         }
 
-        public virtual DbSet<BEDTYPE> BEDTYPE { get; set; }
         public virtual DbSet<BOOKING> BOOKING { get; set; }
         public virtual DbSet<CUSTOMER> CUSTOMER { get; set; }
         public virtual DbSet<EMPLOYEE> EMPLOYEE { get; set; }
@@ -21,17 +20,11 @@ namespace Project_64132675.Models
         public virtual DbSet<PAYMENTSTATUS> PAYMENTSTATUS { get; set; }
         public virtual DbSet<ROOM> ROOM { get; set; }
         public virtual DbSet<ROOMCLASS> ROOMCLASS { get; set; }
-        public virtual DbSet<ROOMCLASSBEDTYPE> ROOMCLASSBEDTYPE { get; set; }
         public virtual DbSet<ROOMSTATUS> ROOMSTATUS { get; set; }
         public virtual DbSet<SERVICE> SERVICE { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BEDTYPE>()
-                .HasMany(e => e.ROOMCLASSBEDTYPE)
-                .WithRequired(e => e.BEDTYPE)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<BOOKING>()
                 .Property(e => e.BOOKING_AMOUNT)
                 .HasPrecision(10, 2);
@@ -63,11 +56,6 @@ namespace Project_64132675.Models
                 .Property(e => e.PASSWORD)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<CUSTOMER>()
-                .HasMany(e => e.BOOKING)
-                .WithRequired(e => e.CUSTOMER)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<EMPLOYEE>()
                 .Property(e => e.GENDER)
                 .IsFixedLength()
@@ -85,39 +73,14 @@ namespace Project_64132675.Models
                 .Property(e => e.PASSWORD)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<FLOOR>()
-                .HasMany(e => e.ROOM)
-                .WithRequired(e => e.FLOOR)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<PAYMENTSTATUS>()
-                .HasMany(e => e.BOOKING)
-                .WithRequired(e => e.PAYMENTSTATUS)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<ROOMCLASS>()
                 .Property(e => e.BASE_PRICE)
                 .HasPrecision(10, 2);
 
             modelBuilder.Entity<ROOMCLASS>()
-                .HasMany(e => e.ROOM)
-                .WithRequired(e => e.ROOMCLASS)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<ROOMCLASS>()
-                .HasMany(e => e.ROOMCLASSBEDTYPE)
-                .WithRequired(e => e.ROOMCLASS)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<ROOMCLASS>()
                 .HasMany(e => e.FEATURE)
                 .WithMany(e => e.ROOMCLASS)
                 .Map(m => m.ToTable("ROOMCLASSFEATURE").MapLeftKey("ROOM_CLASS_ID").MapRightKey("FEATURE_ID"));
-
-            modelBuilder.Entity<ROOMSTATUS>()
-                .HasMany(e => e.ROOM)
-                .WithRequired(e => e.ROOMSTATUS)
-                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<SERVICE>()
                 .Property(e => e.PRICE)

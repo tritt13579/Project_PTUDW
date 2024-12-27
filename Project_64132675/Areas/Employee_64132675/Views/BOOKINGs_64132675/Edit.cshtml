@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Chỉnh sửa Đặt Phòng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutEmployee.cshtml";
 }
 
 <div class="container py-2">
@@ -169,7 +169,7 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
+<script>
         $(document).ready(function () {
             var roomPrices = @Html.Raw(Json.Encode(ViewBag.RoomPrices));
             var servicePrices = @Html.Raw(Json.Encode(ViewBag.ServicePrices));
@@ -226,6 +226,60 @@
 
             // Calculate initial total
             calculateTotal();
+
+             var bookingId = @(ViewContext.RouteData.Values["id"] ?? "null");
+
+            function updateAvailableRooms() {
+                var checkIn = $('#CHECKIN_DATE').val();
+                var checkOut = $('#CHECKOUT_DATE').val();
+
+                if (checkIn && checkOut) {
+                    $.ajax({
+                        url: '@Url.Action("GetAvailableRooms")',
+                        type: 'GET',
+                        data: {
+                            checkIn: checkIn,
+                            checkOut: checkOut,
+                            bookingId: bookingId
+                        },
+                        success: function(response) {
+                            var roomSelect = $('#selectedRooms');
+                            var selectedValues = Array.from(roomSelect.val() || []);
+
+                            roomSelect.empty();
+
+                            $.each(response.rooms, function(index, item) {
+                                var option = $('<option></option>')
+                                    .attr('value', item.Value)
+                                    .text(item.Text);
+
+                                // If this room was previously selected or is currently booked, select it
+                                if (selectedValues.includes(item.Value) || item.Selected) {
+                                    option.prop('selected', true);
+                                }
+
+                                roomSelect.append(option);
+                            });
+
+                            // Update room prices
+                            window.roomPrices = response.prices;
+                        },
+                        error: function() {
+                            alert('Có lỗi xảy ra khi tải danh sách phòng.');
+                        }
+                    });
+                }
+            }
+
+            // Attach event handlers to date inputs
+            $('#CHECKIN_DATE, #CHECKOUT_DATE').change(function() {
+                updateAvailableRooms();
+            });
+
+            // Initial load of available rooms if dates are already set
+            if ($('#CHECKIN_DATE').val() && $('#CHECKOUT_DATE').val()) {
+                updateAvailableRooms();
+            }
         });
-    </script>
+</script>
 }

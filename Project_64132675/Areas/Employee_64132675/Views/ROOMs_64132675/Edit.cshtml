@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Chỉnh sửa thông tin phòng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutEmployee.cshtml";
 }
 
 <div class="container">
@@ -19,14 +19,6 @@
 
                     <!-- Room ID -->
                     @Html.HiddenFor(model => model.ROOM_ID)
-                    <div class="form-group row mb-3">
-                        <label class="col-md-3 col-form-label">
-                            <strong>Mã phòng:</strong>
-                        </label>
-                        <div class="col-md-6 ms-2">
-                            @Html.DisplayFor(model => model.ROOM_ID, new { @class = "form-control" })
-                        </div>
-                    </div>
 
                     <!-- Floor -->
                     <div class="form-group row mb-3">
@@ -34,7 +26,7 @@
                             <strong>Tầng:</strong>
                         </label>
                         <div class="col-md-6">
-                            @Html.DropDownList("FLOOR_ID", null, "Chọn tầng", new { @class = "form-control" })
+                            @Html.DropDownList("FLOOR_ID", null, "Chọn tầng", new { @class = "form-select" })
                             @Html.ValidationMessageFor(model => model.FLOOR_ID, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -45,19 +37,39 @@
                             <strong>Loại phòng:</strong>
                         </label>
                         <div class="col-md-6">
-                            @Html.DropDownList("ROOM_CLASS_ID", null, "Chọn loại phòng", new { @class = "form-control" })
+                            @Html.DropDownList("ROOM_CLASS_ID", null, "Chọn loại phòng", new { @class = "form-select" })
                             @Html.ValidationMessageFor(model => model.ROOM_CLASS_ID, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
-                    <!-- Room Status -->
+                 
+
+
+                    <!-- Bed Type -->
                     <div class="form-group row mb-3">
                         <label class="col-md-3 col-form-label">
-                            <strong>Trạng thái phòng:</strong>
+                            <strong>Loại giường:</strong>
                         </label>
                         <div class="col-md-6">
-                            @Html.DropDownList("ROOM_STATUS_ID", null, "Chọn trạng thái", new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.ROOM_STATUS_ID, "", new { @class = "text-danger" })
+                            @Html.DropDownList("BED_TYPE", new List<SelectListItem> {
+                                new SelectListItem { Text = "Giường đơn", Value = "Giường đơn" },
+                                new SelectListItem { Text = "Giường đôi", Value = "Giường đôi" },
+                                new SelectListItem { Text = "Giường Queen size", Value = "Giường Queen size" },
+                                new SelectListItem { Text = "Giường King size", Value = "Giường King size" },
+                                new SelectListItem { Text = "Giường Super King size", Value = "Giường Super King size" }
+                            }, "Chọn loại giường", new { @class = "form-select" })
+                            @Html.ValidationMessageFor(model => model.BED_TYPE, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <!-- Number of Beds -->
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">
+                            <strong>Số lượng giường:</strong>
+                        </label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.NUM_BEDS, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NUM_BEDS, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
@@ -72,10 +84,20 @@
                         </div>
                     </div>
 
+                     <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">
+                            <strong>Trạng thái:</strong>
+                        </label>
+                        <div class="col-md-6">
+                            @Html.DropDownList("ROOM_STATUS_ID", null, "Chọn trạng thái", new { @class = "form-select" })
+                            @Html.ValidationMessageFor(model => model.ROOM_STATUS_ID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <!-- Buttons -->
                     <div class="form-group row">
                         <div class="col-md-6 offset-md-3">
                             <input type="submit" value="Lưu thay đổi" class="btn btn-warning" />
-                            <a href="javascript:history.back()" class="btn btn-primary">Quay lại</a>
+                            <a href="@Url.Action("Index")" class="btn btn-primary">Quay lại</a>
                         </div>
                     </div>
                 </div>

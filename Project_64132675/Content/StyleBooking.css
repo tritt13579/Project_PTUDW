@@ -1,0 +1,538 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #f4a730;
+    --background-light: #ecf0f1;
+    --text-color-light: #ecf0f1;
+    --text-color-dark: #2c3e50;
+}
+
+body {
+    background-color: var(--background-light);
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-color-dark);
+    line-height: 1.6;
+}
+
+.hero-section {
+    position: relative;
+    height: 300px;
+}
+
+.hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/Public/Images/ssss.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.search-container {
+    position: absolute;
+    bottom: -68px;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+}
+
+.search-box {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.form-label {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.form-control {
+    border-color: var(--secondary-color);
+    color: var(--text-color-dark);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+}
+
+.input-group-text {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border-color: var(--primary-color);
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+}
+
+.room-guest-selector {
+    min-width: 200px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-container {
+        position: relative;
+        background: white;
+    }
+
+    .hero-section {
+        height: auto;
+    }
+
+    .hero-image {
+        position: relative;
+        height: 300px;
+    }
+}
+
+.flatpickr-calendar {
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    border-radius: 8px;
+    width: auto;
+}
+
+.flatpickr-day.selected {
+    background: #1b4d5f !important;
+    border-color: #1b4d5f !important;
+}
+
+.flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n+1)), .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n+1)) {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.flatpickr-day.inRange {
+    background: #e6f0f3 !important;
+    border-color: #e6f0f3 !important;
+    box-shadow: -5px 0 0 #e6f0f3, 5px 0 0 #e6f0f3;
+}
+
+.flatpickr-day.endRange {
+    background: #1b4d5f !important;
+    border-color: #1b4d5f !important;
+}
+
+.flatpickr-months {
+    padding: 10px 0;
+}
+
+.flatpickr-current-month {
+    padding-top: 0 !important;
+}
+
+.flatpickr-next-month, .flatpickr-prev-month {
+    padding-top: 4px !important;
+}
+
+.btn-outline-secondary {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-menu {
+    border-color: var(--secondary-color);
+    box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+    width: 300px;
+    border-radius: 8px;
+    top: 50px;
+}
+
+.dropdown-menu label {
+    color: var(--primary-color);
+}
+
+.dropdown-menu small {
+    color: var(--secondary-color);
+}
+
+#menuToggle {
+    position: fixed;
+    left: 15px;
+    top: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* Side navigation */
+.side-nav {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100vh;
+    background-color: white;
+    transition: 0.3s;
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.side-nav.active {
+    left: 0;
+}
+
+.side-nav-header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.side-nav-header img {
+    height: 120px;
+}
+
+.side-nav-content {
+    padding: 20px 0;
+}
+
+.side-nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.side-nav-menu li {
+    margin: 10px 0;
+}
+
+.side-nav-menu a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.side-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1900;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.object-fit-cover {
+    object-fit: cover;
+}
+
+.badge {
+    font-weight: 500;
+}
+
+.price-info h4 {
+    font-weight: 600;
+}
+
+.room-listing .card {
+    border: none;
+    transition: transform 0.5s;
+}
+
+.room-listing .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(44, 62, 80, 0.15);
+}
+
+.object-fit-cover {
+    object-fit: cover;
+}
+
+.card-title {
+    color: var(--primary-color) !important;
+    font-weight: 600;
+}
+
+.badge.bg-primary {
+    background-color: var(--primary-color) !important;
+    color: var(--text-color-light);
+    font-weight: 500;
+    padding: 0.5em 1em;
+}
+
+.price-info h4 {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.text-primary {
+    color: var(--accent-color) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-1px);
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+    background-color: var(--primary-color);
+}
+
+.room-features span {
+    color: var(--text-color-dark);
+    font-size: 0.9rem;
+}
+
+.text-muted {
+    color: var(--secondary-color) !important;
+    opacity: 0.8;
+}
+
+.membership-info a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.membership-info a:hover {
+    text-decoration: underline;
+}
+
+/* Style cho nav-tabs */
+.nav-tabs {
+    border-bottom: 2px solid var(--background-light);
+}
+
+/* Style chung cho các nav-link */
+.nav-tabs .nav-link {
+    color: var(--secondary-color);
+    border: none;
+    padding: 10px 20px;
+    margin-right: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hiệu ứng hover cho nav-link */
+.nav-tabs .nav-link:hover {
+    color: var(--accent-color);
+    border: none;
+    background-color: transparent;
+}
+
+/* Style cho tab active */
+.nav-tabs .nav-link.active {
+    color: var(--accent-color);
+    background-color: transparent;
+    border: none;
+    position: relative;
+}
+
+/* Tạo gạch chân cho tab active */
+.nav-tabs .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-color);
+}
+
+/* Hiệu ứng hover cho tất cả các tab */
+.nav-tabs .nav-link:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-color);
+    opacity: 0.5;
+}
+
+/* Thêm animation cho việc chuyển đổi tab */
+.tab-content {
+    transition: all 0.3s ease;
+}
+
+/* Optional: Thêm focus style */
+.nav-tabs .nav-link:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.guest-dropdown {
+    min-width: 360px;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.guest-section {
+    padding: 8px;
+}
+
+.guest-header label {
+    font-size: 0.95rem;
+    color: var(--text-color-dark);
+}
+
+.guest-header small {
+    font-size: 0.8rem;
+}
+
+.guest-counter {
+    padding: 8px 0;
+}
+
+.guest-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.guest-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.guest-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.guest-count {
+    font-size: 1rem;
+    font-weight: 500;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* Guest Buttons Styling */
+#applyGuests {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border: none;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+#applyGuests:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Animation cho buttons */
+.guest-btn i {
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.guest-btn:hover i {
+    transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .guest-dropdown {
+        min-width: 300px;
+    }
+
+    .guest-header label {
+        font-size: 0.9rem;
+    }
+
+    .guest-header small {
+        font-size: 0.75rem;
+    }
+}
+
+.stars-svg {
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0;
+    fill: #1e1852;
+}
+
+.hotel-L {
+    margin-right: 10px;
+    border: 1px solid #dadadd;
+    border-radius: 2px;
+    padding: 3px 8px;
+    
+}
+
+/* Style cho room class dropdown */
+.form-select {
+    border: 1px solid rgba(44, 62, 80, 0.15);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+}
+
+.form-select option {
+    padding: 10px;
+}
+
+.input-group .form-select {
+    border-radius: 8px 0 0 8px;
+}

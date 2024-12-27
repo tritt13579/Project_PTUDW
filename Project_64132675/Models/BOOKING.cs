@@ -49,7 +49,7 @@
         public string BOOKING_SOURCE { get; set; }
 
         [Required(ErrorMessage = "Thành tiền không được để trống")]
-        [Range(0, 99999999, ErrorMessage = "Thành tiền phải từ 0 đến 99,999,999")]
+        [Range(0, 9999999999, ErrorMessage = "Thành tiền phải từ 0 đến 9,999,999,999")]
         public decimal BOOKING_AMOUNT { get; set; }
 
         public virtual PAYMENTSTATUS PAYMENTSTATUS { get; set; }

@@ -10,7 +10,7 @@ using Project_64132675.Models;
 
 namespace Project_64132675.Areas.Employee_64132675.Controllers
 {
-    public class SERVICEs_64132675Controller : Controller
+    public class SERVICEs_64132675Controller : Adminbase_64132675Controller
     {
         private readonly Model_64132675 db = new Model_64132675();
 

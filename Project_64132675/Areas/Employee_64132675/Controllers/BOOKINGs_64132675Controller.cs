@@ -206,6 +206,56 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
             ViewBag.ServicePrices = db.SERVICE.ToDictionary(s => s.SERVICE_ID.ToString(), s => s.PRICE);
         }
 
+        
+        public ActionResult GetAvailableRooms(DateTime checkIn, DateTime checkOut, long? bookingId = null)
+        {
+            // Get all bookings that overlap with the selected date range, excluding the current booking
+            var overlappingBookings = db.BOOKING.Where(b =>
+                (b.CHECKIN_DATE <= checkOut && b.CHECKOUT_DATE >= checkIn) &&
+                (bookingId == null || b.BOOKING_ID != bookingId));
+
+            // Get the rooms that are booked during this period
+            var bookedRoomIds = overlappingBookings.SelectMany(b => b.ROOM)
+                .Select(r => r.ROOM_ID).Distinct().ToList();
+
+            // If we're editing, get the currently booked rooms for this booking
+            var currentlyBookedRooms = new List<long>();
+            if (bookingId.HasValue)
+            {
+                currentlyBookedRooms = db.BOOKING
+                    .Where(b => b.BOOKING_ID == bookingId)
+                    .SelectMany(b => b.ROOM)
+                    .Select(r => r.ROOM_ID)
+                    .ToList();
+            }
+
+            // Get available rooms (rooms not in bookedRoomIds OR currently booked for this booking)
+            var availableRooms = db.ROOM
+                .Where(r => !bookedRoomIds.Contains(r.ROOM_ID) || currentlyBookedRooms.Contains(r.ROOM_ID))
+                .Select(r => new
+                {
+                    r.ROOM_ID,
+                    r.ROOM_NUMBER,
+                    Price = r.ROOMCLASS.BASE_PRICE,
+                    IsCurrentlyBooked = currentlyBookedRooms.Contains(r.ROOM_ID)
+                })
+                .ToList();
+
+            // Create the select list with currently booked rooms marked
+            var roomSelectList = availableRooms.Select(r => new SelectListItem
+            {
+                Value = r.ROOM_ID.ToString(),
+                Text = r.ROOM_NUMBER + (r.IsCurrentlyBooked ? " (Đã đặt)" : ""),
+                Selected = r.IsCurrentlyBooked
+            });
+
+            return Json(new
+            {
+                rooms = roomSelectList,
+                prices = availableRooms.ToDictionary(r => r.ROOM_ID.ToString(), r => r.Price)
+            }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Edit(long? id)
         {
             if (id == null)
@@ -244,14 +294,16 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
             ViewBag.SelectedRooms = booking.ROOM.Select(r => r.ROOM_ID).ToArray();
             ViewBag.SelectedServices = booking.SERVICE.Select(s => s.SERVICE_ID).ToArray();
 
+            PrepareViewDataForEdit(booking);
+
             return View(booking);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "BOOKING_ID,CUSTOMER_ID,PAYMENT_STATUS_ID,BOOKING_DATE,CHECKIN_DATE,CHECKOUT_DATE,NUM_ADULT,NUM_CHILDREN,SPECIAL_REQUESTS,BOOKING_SOURCE,BOOKING_AMOUNT")] BOOKING booking,
-            int[] selectedRooms,
-            int[] selectedServices)
+    int[] selectedRooms,
+    int[] selectedServices)
         {
             try
             {
@@ -277,6 +329,18 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
 
                     if (existingBooking != null)
                     {
+                        // Reset room statuses for previously booked rooms if check-in date is today
+                        if (existingBooking.CHECKIN_DATE.Date == DateTime.Now.Date)
+                        {
+                            foreach (var room in existingBooking.ROOM)
+                            {
+                                if (room.ROOM_STATUS_ID == 2) // Đã đặt
+                                {
+                                    room.ROOM_STATUS_ID = 1; // Chuyển về trạng thái Trống
+                                }
+                            }
+                        }
+
                         // Cập nhật thông tin cơ bản
                         db.Entry(existingBooking).CurrentValues.SetValues(booking);
 
@@ -287,6 +351,14 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
                             var room = db.ROOM.Find(roomId);
                             if (room != null)
                             {
+                                // Update room status if check-in date is today
+                                if (booking.CHECKIN_DATE.Date == DateTime.Now.Date)
+                                {
+                                    if (room.ROOM_STATUS_ID == 1) // Trống
+                                    {
+                                        room.ROOM_STATUS_ID = 2; // Chuyển sang Đã đặt
+                                    }
+                                }
                                 existingBooking.ROOM.Add(room);
                             }
                         }
@@ -336,6 +408,43 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
             // Nếu có lỗi, chuẩn bị lại dữ liệu cho view
             PrepareViewDataForCreate(booking);
             return View(booking);
+        }
+
+        private void PrepareViewDataForEdit(BOOKING bOOKING)
+        {
+            var customers = db.CUSTOMER.Select(c => new
+            {
+                c.CUSTOMER_ID,
+                FULL_NAME = c.LAST_NAME + " " + c.FIRST_NAME
+            }).ToList();
+
+            ViewBag.CUSTOMER_ID = new SelectList(customers, "CUSTOMER_ID", "FULL_NAME", bOOKING.CUSTOMER_ID);
+            ViewBag.PAYMENT_STATUS_ID = new SelectList(db.PAYMENTSTATUS, "PAYMENT_STATUS_ID", "PAYMENT_STATUS_NAME", bOOKING.PAYMENT_STATUS_ID);
+
+            // Get currently booked rooms
+            var currentRoomIds = bOOKING.ROOM.Select(r => r.ROOM_ID).ToList();
+
+            // Get all rooms
+            var rooms = db.ROOM.Select(r => new
+            {
+                r.ROOM_ID,
+                r.ROOM_NUMBER,
+                Price = r.ROOMCLASS.BASE_PRICE,
+                IsCurrentlyBooked = currentRoomIds.Contains(r.ROOM_ID)
+            }).ToList();
+
+            ViewBag.ROOMS = new MultiSelectList(rooms.Select(r => new SelectListItem
+            {
+                Value = r.ROOM_ID.ToString(),
+                Text = r.ROOM_NUMBER + (r.IsCurrentlyBooked ? " (Đã đặt)" : ""),
+                Selected = r.IsCurrentlyBooked
+            }), "Value", "Text");
+
+            ViewBag.SERVICES = new MultiSelectList(db.SERVICE, "SERVICE_ID", "SERVICE_NAME",
+                bOOKING.SERVICE.Select(s => s.SERVICE_ID));
+
+            ViewBag.RoomPrices = rooms.ToDictionary(r => r.ROOM_ID.ToString(), r => r.Price);
+            ViewBag.ServicePrices = db.SERVICE.ToDictionary(s => s.SERVICE_ID.ToString(), s => s.PRICE);
         }
 
 

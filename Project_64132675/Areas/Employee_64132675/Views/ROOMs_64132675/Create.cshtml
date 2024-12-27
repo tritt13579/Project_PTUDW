@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Thêm phòng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutEmployee.cshtml";
 }
 
 <div class="container">
@@ -39,14 +39,36 @@
                         </div>
                     </div>
 
-                    <!-- Room Status -->
                     <div class="form-group row mb-3">
                         <label class="col-md-3 col-form-label">
-                            <strong>Trạng thái phòng:</strong>
+                            <strong>Loại giường:</strong>
                         </label>
                         <div class="col-md-6">
-                            @Html.DropDownList("ROOM_STATUS_ID", null, "Chọn trạng thái", new { @class = "form-select" })
-                            @Html.ValidationMessageFor(model => model.ROOM_STATUS_ID, "", new { @class = "text-danger" })
+                            @Html.DropDownListFor(
+                                model => model.BED_TYPE,
+                                new List<SelectListItem>
+                                {
+                                    new SelectListItem { Text = "Giường đơn", Value = "Giường đơn" },
+                                    new SelectListItem { Text = "Giường đôi", Value = "Giường đôi" },
+                                    new SelectListItem { Text = "Giường Queen size", Value = "Giường Queen size" },
+                                    new SelectListItem { Text = "Giường King size", Value = "Giường King size" },
+                                    new SelectListItem { Text = "Giường Super King size", Value = "Giường Super King size" }
+                                },
+                                "Chọn loại giường",
+                                new { @class = "form-select" }
+                            )
+                            @Html.ValidationMessageFor(model => model.BED_TYPE, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <!-- Number of Beds -->
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">
+                            <strong>Số lượng giường:</strong>
+                        </label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.NUM_BEDS, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NUM_BEDS, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
@@ -61,6 +83,10 @@
                         </div>
                     </div>
 
+                     <!-- Room Status -->
+                     @Html.HiddenFor(model => model.ROOM_STATUS_ID, new { Value = "1" })
+
+                    <!-- Submit and Cancel -->
                     <div class="form-group row">
                         <div class="col-md-6 offset-md-3">
                             <input type="submit" value="Thêm phòng" class="btn btn-success me-2" />

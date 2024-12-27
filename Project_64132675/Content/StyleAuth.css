@@ -1,0 +1,76 @@
+﻿:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #f39c12;
+    --background-light: #ecf0f1;
+    --text-color-light: #ecf0f1;
+    --text-color-dark: #2c3e50;
+}
+.form-control {
+    border-color: rgba(44, 62, 80, 0.2);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+}
+
+/* Select */
+.form-select {
+    border-color: rgba(44, 62, 80, 0.2);
+}
+
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+}
+
+/* Labels */
+.form-label {
+    color: var(--text-color-dark);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-1px);
+}
+
+/* Links */
+a {
+    color: var(--accent-color);
+}
+
+    a:hover {
+        color: var(--primary-color);
+    }
+
+/* Text colors */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-muted {
+    color: #95a5a6 !important;
+}
+
+/* Validation */
+.text-danger {
+    color: #e74c3c !important;
+}
+
+/* Alert */
+.alert-danger {
+    color: #e74c3c;
+    background-color: #ffd5d5;
+    border-color: #ffbdbd;
+}

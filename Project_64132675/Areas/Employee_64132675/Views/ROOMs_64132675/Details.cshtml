@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Chi tiết thông tin phòng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutEmployee.cshtml";
 }
 
 <div class="container">
@@ -11,6 +11,7 @@
             <h2 class="text-center mb-2">CHI TIẾT THÔNG TIN PHÒNG</h2>
 
             <div class="form-horizontal p-4 border rounded bg-light">
+
                 <!-- Room ID -->
                 <div class="form-group row mb-3">
                     <label class="col-md-3 col-form-label">
@@ -41,13 +42,24 @@
                     </div>
                 </div>
 
-                <!-- Room Status -->
+
+                <!-- Bed Type -->
                 <div class="form-group row mb-3">
                     <label class="col-md-3 col-form-label">
-                        <strong>Trạng thái phòng:</strong>
+                        <strong>Loại giường:</strong>
                     </label>
                     <div class="col-md-6">
-                        @Html.DisplayFor(model => model.ROOMSTATUS.ROOM_STATUS_NAME, new { @class = "form-control" })
+                        @Html.DisplayFor(model => model.BED_TYPE, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Number of Beds -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Số lượng giường:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.NUM_BEDS, new { @class = "form-control" })
                     </div>
                 </div>
 
@@ -58,6 +70,16 @@
                     </label>
                     <div class="col-md-6">
                         @Html.DisplayFor(model => model.ROOM_NUMBER, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <!-- Room Status -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-3 col-form-label">
+                        <strong>Trạng thái phòng:</strong>
+                    </label>
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.ROOMSTATUS.ROOM_STATUS_NAME, new { @class = "form-control" })
                     </div>
                 </div>
 

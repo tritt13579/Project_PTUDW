@@ -26,6 +26,12 @@ namespace Project_64132675.Models
 
         public int ROOM_NUMBER { get; set; }
 
+        [Required]
+        [StringLength(50)]
+        public string BED_TYPE { get; set; }
+
+        public byte NUM_BEDS { get; set; }
+
         public virtual FLOOR FLOOR { get; set; }
 
         public virtual ROOMCLASS ROOMCLASS { get; set; }

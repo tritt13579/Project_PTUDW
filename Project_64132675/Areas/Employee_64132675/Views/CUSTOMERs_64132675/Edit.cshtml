@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Chỉnh sửa thông tin khách hàng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutEmployee.cshtml";
 }
 
 <div class="container">
@@ -60,7 +60,7 @@
                         new SelectListItem { Text = "Nam", Value = "M" },
                         new SelectListItem { Text = "Nữ", Value = "F" },
                         new SelectListItem { Text = "Khác", Value = "O" }
-                    }, "Chọn giới tính", new { @class = "form-control" })
+                    }, "Chọn giới tính", new { @class = "form-select" })
                     @Html.ValidationMessageFor(model => model.GENDER, "", new { @class = "text-danger" })
                 </div>
             </div>

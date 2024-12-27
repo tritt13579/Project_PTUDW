@@ -13,7 +13,6 @@ namespace Project_64132675.Models
         public ROOMCLASS()
         {
             ROOM = new HashSet<ROOM>();
-            ROOMCLASSBEDTYPE = new HashSet<ROOMCLASSBEDTYPE>();
             FEATURE = new HashSet<FEATURE>();
         }
 
@@ -28,9 +27,6 @@ namespace Project_64132675.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ROOM> ROOM { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ROOMCLASSBEDTYPE> ROOMCLASSBEDTYPE { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FEATURE> FEATURE { get; set; }

@@ -13,5 +13,10 @@ namespace Project_64132675.Areas.Customer_64132675.Controllers
         {
             return View();
         }
+
+        public ActionResult Index1()
+        {
+            return View();
+        }
     }
 }

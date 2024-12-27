@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Thêm Đặt Phòng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutEmployee.cshtml";
 }
 
 
@@ -165,7 +165,7 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
+<script>
         $(document).ready(function () {
             var roomPrices = @Html.Raw(Json.Encode(ViewBag.RoomPrices));
             var servicePrices = @Html.Raw(Json.Encode(ViewBag.ServicePrices));
@@ -209,6 +209,46 @@
                     $('#BOOKING_AMOUNT').val('0');
                 }
             });
+
+
+            function updateAvailableRooms() {
+                var checkIn = $('#CHECKIN_DATE').val();
+                var checkOut = $('#CHECKOUT_DATE').val();
+
+                if (checkIn && checkOut) {
+                    $.ajax({
+                        url: '@Url.Action("GetAvailableRooms")',
+                        type: 'GET',
+                        data: {
+                            checkIn: checkIn,
+                            checkOut: checkOut
+                        },
+                        success: function(response) {
+                            // Clear existing options
+                            var roomSelect = $('#selectedRooms');
+                            roomSelect.empty();
+
+                            // Add new options
+                            $.each(response.rooms, function(index, item) {
+                                roomSelect.append($('<option></option>')
+                                    .attr('value', item.Value)
+                                    .text(item.Text));
+                            });
+
+                            // Update room prices in ViewBag equivalent
+                            window.roomPrices = response.prices;
+                        },
+                        error: function() {
+                            alert('Có lỗi xảy ra khi tải danh sách phòng.');
+                        }
+                    });
+                }
+            }
+
+            // Attach event handlers to date inputs
+            $('#CHECKIN_DATE, #CHECKOUT_DATE').change(function() {
+                updateAvailableRooms();
+            });
         });
-    </script>
+</script>
 }

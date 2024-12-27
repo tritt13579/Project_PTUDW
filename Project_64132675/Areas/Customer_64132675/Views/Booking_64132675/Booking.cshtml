@@ -1,0 +1,337 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutBooking.cshtml";
+
+}
+
+<div class="hero-section">
+    <div class="hero-image">
+    </div>
+
+    <div class="search-container">
+        <div class="search-box">
+            <form class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Select dates</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="dateRange" name="dateRange" readonly>
+                        <span class="input-group-text"><i class="bi bi-calendar4-week"></i></span>
+                    </div>
+                    <!-- Hidden inputs để lưu giá trị -->
+                    <input type="hidden" id="checkIn" name="CheckIn">
+                    <input type="hidden" id="checkOut" name="CheckOut">
+                    <input type="hidden" id="nights" name="Nights">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Select guests</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="roomGuests" readonly data-bs-toggle="dropdown">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <div class="dropdown-menu guest-dropdown p-4" id="guestDropdown">
+                            <div class="row">
+                                <!-- Adults Section -->
+                                <div class="col-6">
+                                    <div class="guest-section">
+                                        <div class="guest-header mb-2">
+                                            <label class="fw-semibold mb-1">Adults</label>
+                                            <small class="text-muted d-block">Ages 12 or more</small>
+                                        </div>
+                                        <div class="guest-counter d-flex align-items-center justify-content-between">
+                                            <button class="btn btn-outline-secondary guest-btn" data-type="adults" data-action="decrease">
+                                                <i class="bi bi-dash"></i>
+                                            </button>
+                                            <span class="guest-count" id="adultsCount">2</span>
+                                            <button class="btn btn-outline-secondary guest-btn" data-type="adults" data-action="increase">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Children Section -->
+                                <div class="col-6">
+                                    <div class="guest-section">
+                                        <div class="guest-header mb-2">
+                                            <label class="fw-semibold mb-1">Children</label>
+                                            <small class="text-muted d-block">Ages 6-11</small>
+                                        </div>
+                                        <div class="guest-counter d-flex align-items-center justify-content-between">
+                                            <button class="btn btn-outline-secondary guest-btn" data-type="children" data-action="decrease">
+                                                <i class="bi bi-dash"></i>
+                                            </button>
+                                            <span class="guest-count" id="childrenCount">0</span>
+                                            <button class="btn btn-outline-secondary guest-btn" data-type="children" data-action="increase">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Done Button -->
+                            <div class="d-grid mt-3">
+                                <button class="btn btn-primary w-100" id="applyGuests">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="adultsInput" name="Adults" value="2" />
+                <input type="hidden" id="childrenInput" name="Children" value="0" />
+
+                <!-- Room Class -->
+                <div class="col-md-4">
+                    <label class="form-label">Select room class</label>
+                    <div class="input-group">
+                        <select class="form-select" id="roomClass" name="RoomClassId">
+                            <option value="" selected>Choose room class...</option>
+                            @foreach (var roomClass in ViewBag.ROOMCLASS)
+                            {
+                                <option value="@roomClass.ROOM_CLASS_ID"
+                                        data-price="@roomClass.BASE_PRICE.ToString("N2")">
+                                    @roomClass.CLASS_NAME - @roomClass.BASE_PRICE.ToString("N2")₫
+                                </option>
+                            }
+                        </select>
+                        <span class="input-group-text"><i class="bi bi-house-door"></i></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container px-5" style="margin-top: 80px">
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs mb-4" id="bookingTabs" role="tablist">
+        <li class="nav-item " role="presentation">
+            <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking-content" type="button" role="tab">
+                Booking
+            </button>
+        </li>
+        <li class="nav-item " role="presentation">
+            <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services-content" type="button" role="tab">
+                Services
+            </button>
+        </li>
+    </ul>
+
+    <!-- Main Content Area -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="tab-content" id="bookingTabsContent">
+                <!-- Booking Content -->
+                <div class="tab-pane fade show active" id="booking-content" role="tabpanel">
+                    @Html.Action("BookingPartial", "Booking_64132675")
+                </div>
+
+                <!-- Services Content -->
+                <div class="tab-pane fade" id="services-content" role="tabpanel">
+                    @Html.Action("ServicesPartial", "Booking_64132675")
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Booking Summary</h5>
+                </div>
+                <div class="card-body" id="bookingSummary">
+                    @Html.Action("BookingSummaryPartial", "Booking_64132675")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fp = flatpickr("#dateRange", {
+                mode: "range",
+                dateFormat: "D, j M Y",
+                minDate: "today",
+                showMonths: 2,
+                defaultDate: [new Date(), new Date().fp_incr(1)],
+                disableMobile: true,
+
+                onChange: function (selectedDates, dateStr, instance) {
+                    updateDisplay(selectedDates);
+                },
+
+                onClose: function (selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        const formattedDates = selectedDates.map(date =>
+                            date.toLocaleDateString('en-GB', {
+                                weekday: 'short',
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                            })
+                        ).join(' → ');
+
+                        instance.input.value = formattedDates;
+                    }
+                }
+            });
+
+            function updateDisplay(selectedDates) {
+                const checkInInput = document.getElementById('checkIn');
+                const checkOutInput = document.getElementById('checkOut');
+                const nightsInput = document.getElementById('nights');
+
+                if (selectedDates.length === 2) {
+                    const nights = Math.round((selectedDates[1] - selectedDates[0]) / (1000 * 60 * 60 * 24));
+
+                    // Update hidden inputs
+                    checkInInput.value = selectedDates[0].toISOString().split('T')[0];
+                    checkOutInput.value = selectedDates[1].toISOString().split('T')[0];
+                    nightsInput.value = nights;
+                } else {
+                    checkInInput.value = '';
+                    checkOutInput.value = '';
+                    nightsInput.value = '';
+                }
+            }
+            let guestState = {
+                adults: 2,
+                children: 0
+            };
+
+            const limits = {
+                adults: { min: 1, max: 100 },
+                children: { min: 0, max: 100 }
+            };
+
+            // Initialize dropdown toggle
+            const roomGuestsInput = document.getElementById('roomGuests');
+            const guestDropdown = document.getElementById('guestDropdown');
+
+            roomGuestsInput.addEventListener('click', function (e) {
+                e.stopPropagation();
+                guestDropdown.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.input-group')) {
+                    guestDropdown.classList.remove('show');
+                }
+            });
+
+            // Handle guest count updates
+            document.querySelectorAll('.guest-btn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const type = this.dataset.type;
+                    const action = this.dataset.action;
+                    updateGuestCount(type, action === 'increase' ? 1 : -1);
+                });
+            });
+
+            function updateGuestCount(type, change) {
+                const newCount = guestState[type] + change;
+                const limit = limits[type];
+
+                if (newCount >= limit.min && newCount <= limit.max) {
+                    guestState[type] = newCount;
+                    document.getElementById(`${type}Count`).textContent = newCount;
+                    document.getElementById(`${type}Input`).value = newCount;
+                    updateDisplayText();
+                    updateServerState();
+                }
+            }
+
+            function updateDisplayText() {
+                const total = guestState.adults + guestState.children;
+                roomGuestsInput.value = `${total} Guest${total > 1 ? 's' : ''}`;
+            }
+
+            // Initialize display
+            updateDisplayText();
+
+            // Handle Done button
+            document.getElementById('applyGuests').addEventListener('click', function () {
+                guestDropdown.classList.remove('show');
+                updateServerState();
+            });
+
+            function updateServerState() {
+                const checkIn = document.getElementById('checkIn').value;
+                const checkOut = document.getElementById('checkOut').value;
+
+                $.ajax({
+                    url: '/Booking/UpdateGuestSelection',
+                    type: 'POST',
+                    data: {
+                        Adults: guestState.adults,
+                        Children: guestState.children,
+                        CheckIn: checkIn,
+                        CheckOut: checkOut,
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Update any additional UI elements if needed
+                            console.log('Guest selection updated successfully');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error updating guest selection:', error);
+                    }
+                });
+            }
+            const tabs = document.querySelectorAll('#bookingTabs button');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    updateActiveTab(this);
+                });
+            });
+
+            function updateActiveTab(selectedTab) {
+                // Remove active class from all tabs
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                    const pane = document.querySelector(tab.dataset.bsTarget);
+                    pane.classList.remove('show', 'active');
+                });
+
+                // Add active class to selected tab
+                selectedTab.classList.add('active');
+                const targetPane = document.querySelector(selectedTab.dataset.bsTarget);
+                targetPane.classList.add('show', 'active');
+
+                // Update summary if needed
+                updateSummary();
+            }
+
+            function updateSummary() {
+                // Get current booking data
+                const bookingData = {
+                    checkIn: document.getElementById('checkIn').value,
+                    checkOut: document.getElementById('checkOut').value,
+                    adults: document.getElementById('adultsInput').value,
+                    children: document.getElementById('childrenInput').value,
+                    // Add any other relevant data
+                };
+
+                $.ajax({
+                    url: '/Booking/UpdateBookingSummary',
+                    type: 'POST',
+                    data: bookingData,
+                    success: function (response) {
+                        if (response.success) {
+                            // Refresh the summary partial
+                            $('#bookingSummary').load('/Booking/BookingSummaryPartial');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error updating summary:', error);
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -136,9 +136,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Customer_64132675\Controllers\Booking_64132675Controller.cs" />
     <Compile Include="Areas\Customer_64132675\Controllers\Customerbase_64132675Controller.cs" />
     <Compile Include="Areas\Customer_64132675\Controllers\Home_64132675Controller.cs" />
     <Compile Include="Areas\Customer_64132675\Customer_64132675AreaRegistration.cs" />
+    <Compile Include="Areas\Customer_64132675\Data\BookingSummaryViewModel.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\Adminbase_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\BOOKINGs_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\CUSTOMERs_64132675Controller.cs" />
@@ -152,7 +154,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\BEDTYPE.cs" />
     <Compile Include="Models\BOOKING.cs" />
     <Compile Include="Models\CUSTOMER.cs" />
     <Compile Include="Models\EMPLOYEE.cs" />
@@ -162,7 +163,6 @@
     <Compile Include="Models\PAYMENTSTATUS.cs" />
     <Compile Include="Models\ROOM.cs" />
     <Compile Include="Models\ROOMCLASS.cs" />
-    <Compile Include="Models\ROOMCLASSBEDTYPE.cs" />
     <Compile Include="Models\ROOMSTATUS.cs" />
     <Compile Include="Models\SERVICE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -189,7 +189,10 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
-    <Content Include="Content\Style.css" />
+    <Content Include="Content\StyleAuth.css" />
+    <Content Include="Content\StyleBooking.css" />
+    <Content Include="Content\StyleEmployee.css" />
+    <Content Include="Content\StyleHome.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -224,11 +227,6 @@
     <Content Include="Areas\Customer_64132675\Views\Home_64132675\Index.cshtml" />
     <Content Include="Areas\Employee_64132675\Views\web.config" />
     <Content Include="Areas\Employee_64132675\Views\Dashboard_64132675\Index.cshtml" />
-    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Create.cshtml" />
-    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Delete.cshtml" />
-    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Details.cshtml" />
-    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Edit.cshtml" />
-    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Index.cshtml" />
     <Content Include="Areas\Employee_64132675\Views\CUSTOMERs_64132675\Create.cshtml" />
     <Content Include="Areas\Employee_64132675\Views\CUSTOMERs_64132675\Delete.cshtml" />
     <Content Include="Areas\Employee_64132675\Views\CUSTOMERs_64132675\Details.cshtml" />
@@ -249,6 +247,15 @@
     <Content Include="Areas\Employee_64132675\Views\BOOKINGs_64132675\Details.cshtml" />
     <Content Include="Areas\Employee_64132675\Views\BOOKINGs_64132675\Edit.cshtml" />
     <Content Include="Areas\Employee_64132675\Views\BOOKINGs_64132675\Index.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Create.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Delete.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Details.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Edit.cshtml" />
+    <Content Include="Areas\Employee_64132675\Views\ROOMs_64132675\Index.cshtml" />
+    <Content Include="Areas\Customer_64132675\Views\Booking_64132675\Booking.cshtml" />
+    <Content Include="Areas\Customer_64132675\Views\Booking_64132675\BookingPartial.cshtml" />
+    <Content Include="Areas\Customer_64132675\Views\Booking_64132675\ServicesPartial.cshtml" />
+    <Content Include="Areas\Customer_64132675\Views\Booking_64132675\BookingSummaryPartial.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -272,15 +279,16 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_LayoutEmployee.cshtml" />
     <Content Include="Views\Auth_64132675\Login.cshtml" />
     <Content Include="Views\Auth_64132675\Register.cshtml" />
     <Content Include="Views\Shared\_LayoutAuth.cshtml" />
     <Content Include="Views\Shared\_PartialMenu.cshtml" />
+    <Content Include="Views\Shared\_LayoutHome.cshtml" />
+    <Content Include="Views\Shared\_LayoutBooking.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Customer_64132675\Data\" />
     <Folder Include="Areas\Customer_64132675\Views\Shared\" />
     <Folder Include="Areas\Employee_64132675\Data\" />
     <Folder Include="Areas\Employee_64132675\Views\Shared\" />
