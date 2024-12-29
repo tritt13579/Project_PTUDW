@@ -159,33 +159,6 @@
                         );
                     }
                 },
-
-                //onClose: function (selectedDates, dateStr, instance) {
-                //    if (selectedDates.length === 2) {
-                //        const formattedDates = selectedDates.map(date =>
-                //            date.toLocaleDateString('en-GB', {
-                //                weekday: 'short',
-                //                day: 'numeric',
-                //                month: 'short',
-                //                year: 'numeric'
-                //            })
-                //        ).join(' → ');
-
-                //        instance.input.value = formattedDates;
-
-                //        const roomClassSelect = document.getElementById('roomClass');
-                //        const selectedRoomClass = roomClassSelect.value;
-
-                //        updateAvailableRooms(selectedDates[0], selectedDates[1], selectedRoomClass);
-
-                //        updateBookingSummary(
-                //            selectedDates[0].toISOString(),
-                //            selectedDates[1].toISOString(),
-                //            guestState.adults,
-                //            guestState.children
-                //        );
-                //    }
-                //}
                 onClose: function (selectedDates, dateStr, instance) {
                     if (selectedDates.length === 2) {
                         const formattedDates = selectedDates.map(date =>
@@ -199,33 +172,26 @@
 
                         instance.input.value = formattedDates;
 
-                        // Reset selected rooms when dates change
+                        // Reset all selections
                         selectedRooms = [];
-
-                        // Reset room selection UI
-                        document.querySelectorAll('.select-room').forEach(button => {
-                            button.textContent = 'Chọn phòng này';
-                            button.classList.remove('btn-danger');
-                            button.classList.add('btn-primary');
-                        });
-
-                        // Enable all quantity selectors
-                        document.querySelectorAll('.room-quantity').forEach(selector => {
-                            selector.disabled = false;
-                            selector.value = 1;  // Reset to default value
-                        });
+                        selectedServices = [];
 
                         const roomClassSelect = document.getElementById('roomClass');
                         const selectedRoomClass = roomClassSelect.value;
 
+                        // Update available rooms first
                         updateAvailableRooms(selectedDates[0], selectedDates[1], selectedRoomClass);
 
+                        // Update booking summary
                         updateBookingSummary(
                             selectedDates[0].toISOString(),
                             selectedDates[1].toISOString(),
                             currentBookingState.adults,
                             currentBookingState.children
                         );
+
+                        // Log the current state
+                        console.log('Date change completed. Selected services:', selectedServices);
                     }
                 }
             });
@@ -261,18 +227,15 @@
                 }
             }
 
-              function updateAvailableRooms(checkIn, checkOut, roomClassId) {
-                // Show loading indicator
+             function updateAvailableRooms(checkIn, checkOut, roomClassId) {
                 const bookingContent = document.getElementById('booking-content');
                 if (bookingContent) {
                     bookingContent.style.opacity = '0.5';
                 }
 
-                // Format dates for C# DateTime parsing
-                const formattedCheckIn = checkIn.toISOString();
-                const formattedCheckOut = checkOut.toISOString();
+                 const formattedCheckIn = checkIn.toISOString();
+                 const formattedCheckOut = checkOut.toISOString();
 
-                // Make AJAX request to update rooms with room class filter
                 $.ajax({
                     url: '@Url.Action("UpdateAvailableRooms", "Booking_64132675")',
                     type: 'POST',
@@ -287,49 +250,195 @@
                         if (bookingContent) {
                             bookingContent.style.opacity = '1';
                         }
+                        // Gọi hàm khởi tạo lại các components
                         initializeBookingComponents();
+                        restoreServiceSelections();
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error updating room list:', {
-                            status: status,
-                            error: error,
-                            response: xhr.responseText
-                        });
-
-                        let errorMessage = 'Unable to update available rooms. ';
-                        if (xhr.responseText) {
-                            try {
-                                const response = JSON.parse(xhr.responseText);
-                                errorMessage += response.message || '';
-                            } catch (e) {
-                                errorMessage += xhr.responseText;
-                            }
-                        }
-
-                        alert(errorMessage);
-
+                        console.error('Error updating room list:', error);
                         if (bookingContent) {
                             bookingContent.style.opacity = '1';
                         }
                     }
                 });
             }
+            function restoreServiceSelections() {
+                selectedServices.forEach(serviceId => {
+                    const serviceButton = document.querySelector(`[data-service="${serviceId}"]`);
+                    if (serviceButton) {
+                        serviceButton.classList.add('active');
+                        serviceButton.textContent = 'Remove';
+                    }
+                });
+            }
 
-            // Helper function to reinitialize components after update
             function initializeBookingComponents() {
-                // Reinitialize room selection buttons
-                const roomButtons = document.querySelectorAll('.room-select-btn');
-                roomButtons.forEach(button => {
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const roomId = this.dataset.roomId;
-                        const roomPrice = this.dataset.price;
-                        // Add your room selection logic here
-                    });
+                console.log('Initializing booking components'); // Thêm log để debug
+
+                // Khởi tạo lại các nút chọn phòng
+                document.querySelectorAll('.select-room').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', handleRoomSelection);
                 });
 
-                // Reinitialize any other interactive elements
-                // Add any other initialization code needed for the updated content
+                initializeQuantitySelectors();
+
+                // Khởi tạo lại các nút dịch vụ
+                initializeServiceButtons();
+            }
+
+            function handleRoomSelection(e) {
+                e.preventDefault();
+                const roomNumbers = this.getAttribute('data-roomnumbers');
+                const existingRoomIndex = selectedRooms.findIndex(r => r.RoomNumbers === roomNumbers);
+
+                if (existingRoomIndex === -1) {
+                    const roomClassId = this.getAttribute('data-roomclass');
+                    const price = parseFloat(this.getAttribute('data-price'));
+                    const name = this.getAttribute('data-name');
+
+                    const container = this.closest('.room-item') || this.parentElement;
+                    const quantitySelector = container.querySelector('.room-quantity');
+                    const quantity = quantitySelector ? parseInt(quantitySelector.value) : 1;
+
+                    const roomNumberArray = roomNumbers.split(',').map(n => n.trim());
+                    const selectedRoomNumbers = roomNumberArray.slice(0, quantity);
+
+                    selectedRooms.push({
+                        RoomClassId: roomClassId,
+                        RoomNumbers: roomNumbers,
+                        RoomNumber: selectedRoomNumbers.join(', '),
+                        Price: price,
+                        Quantity: quantity,
+                        Name: name
+                    });
+
+                    this.textContent = 'Hủy phòng này';
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-danger');
+
+                    if (quantitySelector) {
+                        quantitySelector.disabled = true;
+                    }
+                } else {
+                    selectedRooms.splice(existingRoomIndex, 1);
+                    this.textContent = 'Chọn phòng này';
+                    this.classList.remove('btn-danger');
+                    this.classList.add('btn-primary');
+
+                    const container = this.closest('.room-item') || this.parentElement;
+                    const quantitySelector = container.querySelector('.room-quantity');
+                    if (quantitySelector) {
+                        quantitySelector.disabled = false;
+                    }
+                }
+
+                UpdateBookingSummaryWithRoomsAndServices();
+            }
+
+            function handleQuantityChange() {
+                // Tìm container là div.booking-actions thay vì room-item
+                const container = this.closest('.booking-actions');
+                if (!container) {
+                    console.log('Booking actions container not found');
+                    return;
+                }
+
+                const button = container.querySelector('.select-room');
+                if (!button) {
+                    console.log('Select room button not found');
+                    return;
+                }
+
+                const roomNumbers = button.getAttribute('data-roomnumbers');
+                if (!roomNumbers) {
+                    console.log('Room numbers not found');
+                    return;
+                }
+
+                const existingRoomIndex = selectedRooms.findIndex(r => r.RoomNumbers === roomNumbers);
+                if (existingRoomIndex !== -1) {
+                    const quantity = parseInt(this.value);
+                    const roomNumberArray = roomNumbers.split(',').map(n => n.trim());
+                    const selectedRoomNumbers = roomNumberArray.slice(0, quantity);
+
+                    selectedRooms[existingRoomIndex].Quantity = quantity;
+                    selectedRooms[existingRoomIndex].RoomNumber = selectedRoomNumbers.join(', ');
+
+                    // Log để debug
+                    console.log('Updated room quantity:', {
+                        roomNumbers: selectedRoomNumbers,
+                        quantity: quantity
+                    });
+
+                    UpdateBookingSummaryWithRoomsAndServices();
+                }
+            }
+
+            function initializeQuantitySelectors() {
+                document.querySelectorAll('.room-quantity').forEach(selector => {
+                    // Xóa event listener cũ bằng cách clone và thay thế
+                    const newSelector = selector.cloneNode(true);
+                    selector.parentNode.replaceChild(newSelector, selector);
+
+                    newSelector.addEventListener('change', handleQuantityChange);
+                });
+            }
+
+            function handleServiceSelection(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                console.log('Service button clicked'); // Thêm log để debug
+
+                const serviceId = parseInt(this.getAttribute('data-service'));
+                console.log('Service ID:', serviceId); // Thêm log để debug
+
+                if (!selectedServices) {
+                    selectedServices = []; // Đảm bảo mảng được khởi tạo
+                }
+
+                const serviceIndex = selectedServices.indexOf(serviceId);
+                if (serviceIndex === -1) {
+                    selectedServices.push(serviceId);
+                    this.classList.add('active');
+                    this.textContent = 'Remove';
+                    console.log('Service added:', serviceId); // Thêm log để debug
+                } else {
+                    selectedServices.splice(serviceIndex, 1);
+                    this.classList.remove('active');
+                    this.textContent = 'Add';
+                    console.log('Service removed:', serviceId); // Thêm log để debug
+                }
+
+                // Log trạng thái hiện tại của selectedServices
+                console.log('Current selectedServices:', selectedServices);
+
+                UpdateBookingSummaryWithRoomsAndServices();
+            }
+
+            function initializeServiceButtons() {
+                console.log('Initializing service buttons'); // Thêm log để debug
+
+                document.querySelectorAll('[data-service]').forEach(button => {
+                    // Remove all existing event listeners
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+
+                    // Add new event listener
+                    newButton.addEventListener('click', handleServiceSelection);
+
+                    // Reset button state
+                    const serviceId = parseInt(newButton.getAttribute('data-service'));
+                    if (selectedServices && selectedServices.includes(serviceId)) {
+                        newButton.classList.add('active');
+                        newButton.textContent = 'Remove';
+                    } else {
+                        newButton.classList.remove('active');
+                        newButton.textContent = 'Add';
+                    }
+                });
             }
 
             // Initialize dropdown toggle
@@ -389,21 +498,6 @@
             updateDisplayText();
 
             // Handle Done button
-            //document.getElementById('applyGuests').addEventListener('click', function (e) {
-            //    e.preventDefault();
-
-            //    guestDropdown.classList.remove('show');
-
-            //    const selectedDates = fp.selectedDates;
-            //    if (selectedDates.length === 2) {
-            //        updateBookingSummary(
-            //            selectedDates[0].toISOString(),
-            //            selectedDates[1].toISOString(),
-            //            guestState.adults,
-            //            guestState.children
-            //        );
-            //    }
-            //});
             document.getElementById('applyGuests').addEventListener('click', function (e) {
                 e.preventDefault();
                 guestDropdown.classList.remove('show');
@@ -540,50 +634,7 @@
             });
         });
 
-        @*function updateBookingSummary(checkIn, checkOut, adults, children) {
-            // Show loading state
-            const summarySection = document.getElementById('bookingSummary');
-            if (summarySection) {
-                summarySection.style.opacity = '0.5';
-            }
-
-            try {
-                $.ajax({
-                    url: '@Url.Action("UpdateBookingSummary", "Booking_64132675")',
-                    type: 'POST',
-                    data: JSON.stringify({
-                        checkin: checkIn,
-                        checkout: checkOut,
-                        adults: adults || 2,
-                        children: children || 0,
-                        selectedRooms: selectedRooms,
-                        selectedServices: selectedServices
-                    }),
-                    contentType: 'application/json',
-                    success: function(result) {
-                        $('#bookingSummary').html(result);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error updating booking summary:', error);
-                        // Show default values if there's an error
-                        showDefaultSummary();
-                    },
-                    complete: function() {
-                        if (summarySection) {
-                            summarySection.style.opacity = '1';
-                        }
-                    }
-                });
-            } catch (e) {
-                console.error('Error in updateBookingSummary:', e);
-                showDefaultSummary();
-                if (summarySection) {
-                    summarySection.style.opacity = '1';
-                }
-            }
-        }*@
         function updateBookingSummary(checkIn, checkOut, adults, children) {
-            // Cập nhật state
             currentBookingState = {
                 checkIn: new Date(checkIn),
                 checkOut: new Date(checkOut),
@@ -624,66 +675,22 @@
                 });
             } catch (e) {
                 console.error('Error in updateBookingSummary:', e);
-                showDefaultSummary();
                 if (summarySection) {
                     summarySection.style.opacity = '1';
                 }
             }
         }
 
-        function showDefaultSummary() {
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            // ... show default summary
-        }
-
-        @*function UpdateBookingSummaryWithRoomsAndServices() {
-            // Lấy giá trị từ form, sử dụng giá trị mặc định nếu không tìm thấy
-            const checkInInput = document.querySelector('#checkInDate') || { value: new Date().toISOString().split('T')[0] };
-            const checkOutInput = document.querySelector('#checkOutDate') || { value: new Date(Date.now() + 86400000).toISOString().split('T')[0] };
-            const adultsInput = document.querySelector('#adults') || { value: '2' };
-            const childrenInput = document.querySelector('#children') || { value: '0' };
-
-            const summarySection = document.getElementById('bookingSummary');
-            if (summarySection) {
-                summarySection.style.opacity = '0.5';
-            }
-
-            // Gửi request cập nhật booking summary
-            $.ajax({
-                url: '@Url.Action("UpdateBookingSummary", "Booking_64132675")',
-                type: 'POST',
-                data: JSON.stringify({
-                    checkin: checkInInput.value,
-                    checkout: checkOutInput.value,
-                    adults: parseInt(adultsInput.value) || 2,
-                    children: parseInt(childrenInput.value) || 0,
-                    selectedRooms: selectedRooms,
-                    selectedServices: selectedServices
-                }),
-                contentType: 'application/json',
-                success: function (result) {
-                    $('#bookingSummary').html(result);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error updating booking summary:', error);
-                    if (summarySection) {
-                        summarySection.style.opacity = '1';
-                    }
-                },
-                complete: function () {
-                    if (summarySection) {
-                        summarySection.style.opacity = '1';
-                    }
-                }
-            });
-        }*@
         function UpdateBookingSummaryWithRoomsAndServices() {
             const summarySection = document.getElementById('bookingSummary');
             if (summarySection) {
                 summarySection.style.opacity = '0.5';
             }
+
+            console.log('Updating booking summary with:', {
+                selectedRooms,
+                selectedServices
+            });
 
             $.ajax({
                 url: '@Url.Action("UpdateBookingSummary", "Booking_64132675")',
@@ -699,6 +706,7 @@
                 contentType: 'application/json',
                 success: function (result) {
                     $('#bookingSummary').html(result);
+                    console.log('Booking summary updated successfully');
                 },
                 error: function (xhr, status, error) {
                     console.error('Error updating booking summary:', error);
@@ -711,7 +719,5 @@
             });
         }
 </script>
-@*<script>
-</script>*@
 </body>
 </html>
