@@ -70,7 +70,7 @@
 
                             <!-- Done Button -->
                             <div class="d-grid mt-3">
-                                <button class="btn btn-primary w-100" id="applyGuests">Done</button>
+                                <button type="button" class="btn btn-primary w-100" id="applyGuests">Done</button>
                             </div>
                         </div>
                     </div>
@@ -148,213 +148,107 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const fp = flatpickr("#dateRange", {
-                mode: "range",
-                dateFormat: "D, j M Y",
-                minDate: "today",
-                showMonths: 2,
-                defaultDate: [new Date(), new Date().fp_incr(1)],
-                disableMobile: true,
+        //document.addEventListener('DOMContentLoaded', function () {
+            
+        //});
 
-                onChange: function (selectedDates, dateStr, instance) {
-                    updateDisplay(selectedDates);
-                },
+        
 
-                onClose: function (selectedDates, dateStr, instance) {
-                    if (selectedDates.length === 2) {
-                        const formattedDates = selectedDates.map(date =>
-                            date.toLocaleDateString('en-GB', {
-                                weekday: 'short',
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric'
-                            })
-                        ).join(' → ');
+        //document.querySelectorAll('.select-room').forEach(button => {
+        //    button.addEventListener('click', function () {
+        //        const roomClassId = this.dataset.roomclass;
+        //        const roomNumbers = this.dataset.roomnumbers.split(',').map(n => n.trim());
+        //        const price = parseFloat(this.dataset.price);
+        //        const name = this.dataset.name;
 
-                        instance.input.value = formattedDates;
+        //        // Get quantity from the associated quantity selector
+        //        const quantitySelector = this.closest('.room-item').querySelector('.room-quantity');
+        //        const quantity = parseInt(quantitySelector.value);
 
-                        const roomClassSelect = document.getElementById('roomClass');
-                        const selectedRoomClass = roomClassSelect.value;
+        //        // Add selected rooms
+        //        const selectedRoomNumbers = roomNumbers.slice(0, quantity);
 
-                        updateAvailableRooms(selectedDates[0], selectedDates[1], selectedRoomClass);
-                    }
-                }
-            });
+        //        // Update or add to selectedRooms array
+        //        const existingRoomIndex = selectedRooms.findIndex(r => r.RoomClassId === roomClassId);
+        //        if (existingRoomIndex !== -1) {
+        //            selectedRooms[existingRoomIndex] = {
+        //                RoomClassId: roomClassId,
+        //                RoomNumber: selectedRoomNumbers.join(', '),
+        //                Price: price,
+        //                Quantity: quantity,
+        //                Name: name
+        //            };
+        //        } else {
+        //            selectedRooms.push({
+        //                RoomClassId: roomClassId,
+        //                RoomNumber: selectedRoomNumbers.join(', '),
+        //                Price: price,
+        //                Quantity: quantity,
+        //                Name: name
+        //            });
+        //        }
 
-            document.getElementById('roomClass').addEventListener('change', function () {
-                const selectedDates = fp.selectedDates;
-                if (selectedDates.length === 2) {
-                    updateAvailableRooms(selectedDates[0], selectedDates[1], this.value);
-                }
-            });
+        //        UpdateBookingSummaryWithRoomsAndServices();
+        //    });
+        //});
 
-            function updateDisplay(selectedDates) {
-                const checkInInput = document.getElementById('checkIn');
-                const checkOutInput = document.getElementById('checkOut');
-                const nightsInput = document.getElementById('nights');
+        //// Handle service selection
+        //document.querySelectorAll('[data-service]').forEach(button => {
+        //    button.addEventListener('click', function () {
+        //        const serviceId = parseInt(this.dataset.service);
 
-                if (selectedDates.length === 2) {
-                    const nights = Math.round((selectedDates[1] - selectedDates[0]) / (1000 * 60 * 60 * 24));
+        //        // Toggle service selection
+        //        const serviceIndex = selectedServices.indexOf(serviceId);
+        //        if (serviceIndex === -1) {
+        //            selectedServices.push(serviceId);
+        //            this.classList.add('active');
+        //        } else {
+        //            selectedServices.splice(serviceIndex, 1);
+        //            this.classList.remove('active');
+        //        }
 
-                    checkInInput.value = selectedDates[0].toISOString().split('T')[0];
-                    checkOutInput.value = selectedDates[1].toISOString().split('T')[0];
-                    nightsInput.value = nights;
-                }
-            }
+        //        UpdateBookingSummaryWithRoomsAndServices();
+        //    });
+        //});
 
-              function updateAvailableRooms(checkIn, checkOut, roomClassId) {
-                // Show loading indicator
-                const bookingContent = document.getElementById('booking-content');
-                if (bookingContent) {
-                    bookingContent.style.opacity = '0.5';
-                }
+        //function UpdateBookingSummaryWithRoomsAndServices() {
+        //    const checkIn = document.querySelector('#checkInDate').value; // Adjust selector as needed
+        //    const checkOut = document.querySelector('#checkOutDate').value; // Adjust selector as needed
+        //    const adults = parseInt(document.querySelector('#adults').value) || 2; // Adjust selector as needed
+        //    const children = parseInt(document.querySelector('#children').value) || 0; // Adjust selector as needed
 
-                // Format dates for C# DateTime parsing
-                const formattedCheckIn = checkIn.toISOString();
-                const formattedCheckOut = checkOut.toISOString();
+        //    const summarySection = document.getElementById('bookingSummary');
+        //    if (summarySection) {
+        //        summarySection.style.opacity = '0.5';
+        //    }
 
-                // Make AJAX request to update rooms with room class filter
-                $.ajax({
-                    url: '@Url.Action("UpdateAvailableRooms", "Booking_64132675")',
-                    type: 'POST',
-                    data: JSON.stringify({
-                        checkin: formattedCheckIn,
-                        checkout: formattedCheckOut,
-                        roomClassId: roomClassId
-                    }),
-                    contentType: 'application/json',
-                    success: function(result) {
-                        $('#booking-content').html(result);
-                        if (bookingContent) {
-                            bookingContent.style.opacity = '1';
-                        }
-                        initializeBookingComponents();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error updating room list:', {
-                            status: status,
-                            error: error,
-                            response: xhr.responseText
-                        });
+        //    $.ajax({
+        //        url: '/Booking_64132675/UpdateBookingSummaryWithRoomsAndServices',
+        //        type: 'POST',
+        //        data: JSON.stringify({
+        //            checkin: checkIn,
+        //            checkout: checkOut,
+        //            adults: adults,
+        //            children: children,
+        //            selectedRooms: selectedRooms,
+        //            selectedServices: selectedServices
+        //        }),
+        //        contentType: 'application/json',
+        //        success: function (result) {
+        //            $('#bookingSummary').html(result);
+        //        },
+        //        error: function (xhr, status, error) {
+        //            console.error('Error updating booking summary:', error);
+        //            showDefaultSummary();
+        //        },
+        //        complete: function () {
+        //            if (summarySection) {
+        //                summarySection.style.opacity = '1';
+        //            }
+        //        }
+        //    });
+        //}
 
-                        let errorMessage = 'Unable to update available rooms. ';
-                        if (xhr.responseText) {
-                            try {
-                                const response = JSON.parse(xhr.responseText);
-                                errorMessage += response.message || '';
-                            } catch (e) {
-                                errorMessage += xhr.responseText;
-                            }
-                        }
 
-                        alert(errorMessage);
-
-                        if (bookingContent) {
-                            bookingContent.style.opacity = '1';
-                        }
-                    }
-                });
-            }
-
-            // Helper function to reinitialize components after update
-            function initializeBookingComponents() {
-                // Reinitialize room selection buttons
-                const roomButtons = document.querySelectorAll('.room-select-btn');
-                roomButtons.forEach(button => {
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const roomId = this.dataset.roomId;
-                        const roomPrice = this.dataset.price;
-                        // Add your room selection logic here
-                    });
-                });
-
-                // Reinitialize any other interactive elements
-                // Add any other initialization code needed for the updated content
-            }
-            let guestState = {
-                adults: 2,
-                children: 0
-            };
-
-            const limits = {
-                adults: { min: 1, max: 100 },
-                children: { min: 0, max: 100 }
-            };
-
-            // Initialize dropdown toggle
-            const roomGuestsInput = document.getElementById('roomGuests');
-            const guestDropdown = document.getElementById('guestDropdown');
-
-            roomGuestsInput.addEventListener('click', function (e) {
-                e.stopPropagation();
-                guestDropdown.classList.toggle('show');
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function (e) {
-                if (!e.target.closest('.input-group')) {
-                    guestDropdown.classList.remove('show');
-                }
-            });
-
-            // Handle guest count updates
-            document.querySelectorAll('.guest-btn').forEach(button => {
-                button.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const type = this.dataset.type;
-                    const action = this.dataset.action;
-                    updateGuestCount(type, action === 'increase' ? 1 : -1);
-                });
-            });
-
-            function updateGuestCount(type, change) {
-                const newCount = guestState[type] + change;
-                const limit = limits[type];
-
-                if (newCount >= limit.min && newCount <= limit.max) {
-                    guestState[type] = newCount;
-                    document.getElementById(`${type}Count`).textContent = newCount;
-                    document.getElementById(`${type}Input`).value = newCount;
-                    updateDisplayText();
-                }
-            }
-
-            function updateDisplayText() {
-                const total = guestState.adults + guestState.children;
-                roomGuestsInput.value = `${total} Guest${total > 1 ? 's' : ''}`;
-            }
-
-            // Initialize display
-            updateDisplayText();
-
-            // Handle Done button
-            document.getElementById('applyGuests').addEventListener('click', function () {
-                guestDropdown.classList.remove('show');
-            });
-
-            const tabs = document.querySelectorAll('#bookingTabs button');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    updateActiveTab(this);
-                });
-            });
-
-            function updateActiveTab(selectedTab) {
-                // Remove active class from all tabs
-                tabs.forEach(tab => {
-                    tab.classList.remove('active');
-                    const pane = document.querySelector(tab.dataset.bsTarget);
-                    pane.classList.remove('show', 'active');
-                });
-
-                // Add active class to selected tab
-                selectedTab.classList.add('active');
-                const targetPane = document.querySelector(selectedTab.dataset.bsTarget);
-                targetPane.classList.add('show', 'active');
-            }
-        });
 </script>
 }

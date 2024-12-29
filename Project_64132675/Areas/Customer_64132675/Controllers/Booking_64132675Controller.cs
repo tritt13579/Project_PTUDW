@@ -1,4 +1,5 @@
-﻿using Project_64132675.Areas.Customer_64132675.ViewModels;
+﻿using Project_64132675.Areas.Customer_64132675.Data;
+using Project_64132675.Areas.Customer_64132675.ViewModels;
 using Project_64132675.Models;
 using System;
 using System.Collections.Generic;
@@ -97,9 +98,70 @@ namespace Project_64132675.Areas.Customer_64132675.Controllers
         [ChildActionOnly]
         public PartialViewResult BookingSummaryPartial()
         {
-            // Get booking summary data
-            //var summary = 
-        return PartialView();
+            var model = new BookingSummaryViewModel_64132675
+            {
+                // Đặt giá trị mặc định
+                CheckIn = DateTime.Now.Date,
+                CheckOut = DateTime.Now.Date.AddDays(1),
+                Adults = 2,
+                Children = 0,
+                // Thêm các giá trị mặc định khác nếu cần
+            };
+
+            return PartialView(model);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateBookingSummary(DateTime checkin, DateTime checkout, int adults, int children, List<RoomSelection> selectedRooms = null,
+        List<long> selectedServices = null)
+        {
+            var model = new BookingSummaryViewModel_64132675
+            {
+                CheckIn = checkin,
+                CheckOut = checkout,
+                Adults = adults,
+                Children = children,
+                SelectedRooms = selectedRooms ?? new List<RoomSelection>(),
+                SelectedServices = selectedServices ?? new List<long>()
+            };
+            CalculateTotalAmount(model);
+            // Return the partial view with updated data
+            return PartialView("BookingSummaryPartial", model);
+        }
+
+        private void CalculateTotalAmount(BookingSummaryViewModel_64132675 model)
+        {
+            // Implement logic to calculate total amount based on rooms and services
+            decimal roomTotal = 0;
+            decimal serviceTotal = 0;
+
+            foreach (var room in model.SelectedRooms)
+            {
+                roomTotal += room.Price * room.Quantity * model.Nights;
+            }
+            model.TotalRoomAmount = roomTotal;
+            if (model.SelectedServices.Any())
+            {
+                var servicesPrices = db.SERVICE
+                    .Where(s => model.SelectedServices.Contains(s.SERVICE_ID))
+                    .Select(s => s.PRICE)
+                    .ToList();
+
+                serviceTotal += servicesPrices.Sum();
+            }
+            model.TotalServiceAmount = serviceTotal;
+
+            model.TotalAmount = roomTotal + serviceTotal;
+
+            model.SelectedServiceDetails = db.SERVICE
+            .Where(s => model.SelectedServices.Contains((int)s.SERVICE_ID))
+            .Select(s => new ServiceDetail
+            {
+                ServiceId = s.SERVICE_ID,
+                ServiceName = s.SERVICE_NAME,
+                Price = s.PRICE
+            })
+            .ToList();
         }
     }
 }

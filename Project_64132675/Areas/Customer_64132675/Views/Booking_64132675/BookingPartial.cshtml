@@ -108,24 +108,6 @@ else
                                     </div>
                                     <small class="text-muted">Đã bao gồm thuế và phí</small>
                                 </div>
-
-                                @*<div class="booking-actions">
-            @if (room.AvailableCount > 0)
-            {
-                <button class="btn btn-primary select-room px-3"
-                        data-roomclass="@room.RoomClassId"
-                        data-price="@room.BasePrice"
-                        data-name="@room.ClassName">
-                    Chọn phòng này
-                </button>
-            }
-            else
-            {
-                <button class="btn btn-secondary btn-lg px-3" disabled>
-                    Hết phòng
-                </button>
-            }
-        </div>*@
                                 <div class="booking-actions d-flex align-items-center gap-2">
                                     @if (room.AvailableCount > 0)
                                     {
@@ -141,6 +123,7 @@ else
                                         </div>
                                         <button class="btn btn-primary select-room px-3"
                                                 data-roomclass="@room.RoomClassId"
+                                                data-roomnumbers="@room.RoomNumbers"
                                                 data-price="@room.BasePrice"
                                                 data-name="@room.ClassName">
                                             Chọn phòng này

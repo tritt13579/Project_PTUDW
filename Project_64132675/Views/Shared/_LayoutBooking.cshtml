@@ -114,5 +114,604 @@
         });
     </script>
     @RenderSection("scripts", required: false)
+
+<script>
+        // Khởi tạo mảng để lưu phòng và dịch vụ được chọn
+        let selectedRooms = [];
+        let selectedServices = [];
+        let currentBookingState = {
+            checkIn: new Date(),
+            checkOut: new Date().fp_incr(1),
+            adults: 2,
+            children: 0
+        };
+        // Xử lý chọn phòng
+        document.addEventListener('DOMContentLoaded', function () {
+            let guestState = {
+                adults: 2,
+                children: 0
+            };
+
+            const limits = {
+                adults: { min: 1, max: 100 },
+                children: { min: 0, max: 100 }
+            };
+
+            const fp = flatpickr("#dateRange", {
+                mode: "range",
+                dateFormat: "D, j M Y",
+                minDate: "today",
+                showMonths: 2,
+                defaultDate: [new Date(), new Date().fp_incr(1)],
+                disableMobile: true,
+
+                onChange: function (selectedDates, dateStr, instance) {
+                    updateDisplay(selectedDates);
+                },
+
+                onReady: function (selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        updateBookingSummary(
+                            selectedDates[0].toISOString(),
+                            selectedDates[1].toISOString(),
+                            guestState.adults,
+                            guestState.children
+                        );
+                    }
+                },
+
+                //onClose: function (selectedDates, dateStr, instance) {
+                //    if (selectedDates.length === 2) {
+                //        const formattedDates = selectedDates.map(date =>
+                //            date.toLocaleDateString('en-GB', {
+                //                weekday: 'short',
+                //                day: 'numeric',
+                //                month: 'short',
+                //                year: 'numeric'
+                //            })
+                //        ).join(' → ');
+
+                //        instance.input.value = formattedDates;
+
+                //        const roomClassSelect = document.getElementById('roomClass');
+                //        const selectedRoomClass = roomClassSelect.value;
+
+                //        updateAvailableRooms(selectedDates[0], selectedDates[1], selectedRoomClass);
+
+                //        updateBookingSummary(
+                //            selectedDates[0].toISOString(),
+                //            selectedDates[1].toISOString(),
+                //            guestState.adults,
+                //            guestState.children
+                //        );
+                //    }
+                //}
+                onClose: function (selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        const formattedDates = selectedDates.map(date =>
+                            date.toLocaleDateString('en-GB', {
+                                weekday: 'short',
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                            })
+                        ).join(' → ');
+
+                        instance.input.value = formattedDates;
+
+                        // Reset selected rooms when dates change
+                        selectedRooms = [];
+
+                        // Reset room selection UI
+                        document.querySelectorAll('.select-room').forEach(button => {
+                            button.textContent = 'Chọn phòng này';
+                            button.classList.remove('btn-danger');
+                            button.classList.add('btn-primary');
+                        });
+
+                        // Enable all quantity selectors
+                        document.querySelectorAll('.room-quantity').forEach(selector => {
+                            selector.disabled = false;
+                            selector.value = 1;  // Reset to default value
+                        });
+
+                        const roomClassSelect = document.getElementById('roomClass');
+                        const selectedRoomClass = roomClassSelect.value;
+
+                        updateAvailableRooms(selectedDates[0], selectedDates[1], selectedRoomClass);
+
+                        updateBookingSummary(
+                            selectedDates[0].toISOString(),
+                            selectedDates[1].toISOString(),
+                            currentBookingState.adults,
+                            currentBookingState.children
+                        );
+                    }
+                }
+            });
+
+            const initialDates = fp.selectedDates;
+            if (initialDates.length === 2) {
+                updateBookingSummary(
+                    initialDates[0].toISOString(),
+                    initialDates[1].toISOString(),
+                    guestState.adults,
+                    guestState.children
+                );
+            }
+
+            document.getElementById('roomClass').addEventListener('change', function () {
+                const selectedDates = fp.selectedDates;
+                if (selectedDates.length === 2) {
+                    updateAvailableRooms(selectedDates[0], selectedDates[1], this.value);
+                }
+            });
+
+            function updateDisplay(selectedDates) {
+                const checkInInput = document.getElementById('checkIn');
+                const checkOutInput = document.getElementById('checkOut');
+                const nightsInput = document.getElementById('nights');
+
+                if (selectedDates.length === 2) {
+                    const nights = Math.round((selectedDates[1] - selectedDates[0]) / (1000 * 60 * 60 * 24));
+
+                    checkInInput.value = selectedDates[0].toISOString().split('T')[0];
+                    checkOutInput.value = selectedDates[1].toISOString().split('T')[0];
+                    nightsInput.value = nights;
+                }
+            }
+
+              function updateAvailableRooms(checkIn, checkOut, roomClassId) {
+                // Show loading indicator
+                const bookingContent = document.getElementById('booking-content');
+                if (bookingContent) {
+                    bookingContent.style.opacity = '0.5';
+                }
+
+                // Format dates for C# DateTime parsing
+                const formattedCheckIn = checkIn.toISOString();
+                const formattedCheckOut = checkOut.toISOString();
+
+                // Make AJAX request to update rooms with room class filter
+                $.ajax({
+                    url: '@Url.Action("UpdateAvailableRooms", "Booking_64132675")',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        checkin: formattedCheckIn,
+                        checkout: formattedCheckOut,
+                        roomClassId: roomClassId
+                    }),
+                    contentType: 'application/json',
+                    success: function(result) {
+                        $('#booking-content').html(result);
+                        if (bookingContent) {
+                            bookingContent.style.opacity = '1';
+                        }
+                        initializeBookingComponents();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating room list:', {
+                            status: status,
+                            error: error,
+                            response: xhr.responseText
+                        });
+
+                        let errorMessage = 'Unable to update available rooms. ';
+                        if (xhr.responseText) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                errorMessage += response.message || '';
+                            } catch (e) {
+                                errorMessage += xhr.responseText;
+                            }
+                        }
+
+                        alert(errorMessage);
+
+                        if (bookingContent) {
+                            bookingContent.style.opacity = '1';
+                        }
+                    }
+                });
+            }
+
+            // Helper function to reinitialize components after update
+            function initializeBookingComponents() {
+                // Reinitialize room selection buttons
+                const roomButtons = document.querySelectorAll('.room-select-btn');
+                roomButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const roomId = this.dataset.roomId;
+                        const roomPrice = this.dataset.price;
+                        // Add your room selection logic here
+                    });
+                });
+
+                // Reinitialize any other interactive elements
+                // Add any other initialization code needed for the updated content
+            }
+
+            // Initialize dropdown toggle
+            const roomGuestsInput = document.getElementById('roomGuests');
+            const guestDropdown = document.getElementById('guestDropdown');
+
+            roomGuestsInput.addEventListener('click', function (e) {
+                e.stopPropagation();
+                guestDropdown.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.input-group')) {
+                    guestDropdown.classList.remove('show');
+                }
+            });
+
+            // Handle guest count updates
+            document.querySelectorAll('.guest-btn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const type = this.dataset.type;
+                    const action = this.dataset.action;
+                    updateGuestCount(type, action === 'increase' ? 1 : -1);
+                });
+            });
+
+            function updateGuestCount(type, change) {
+                const newCount = guestState[type] + change;
+                const limit = limits[type];
+
+                if (newCount >= limit.min && newCount <= limit.max) {
+                    guestState[type] = newCount;
+                    document.getElementById(`${type}Count`).textContent = newCount;
+                    document.getElementById(`${type}Input`).value = newCount;
+                    updateDisplayText();
+
+                    const selectedDates = fp.selectedDates;
+                    if (selectedDates.length === 2) {
+                        updateBookingSummary(
+                            selectedDates[0].toISOString(),
+                            selectedDates[1].toISOString(),
+                            guestState.adults,
+                            guestState.children
+                        );
+                    }
+                }
+            }
+
+            function updateDisplayText() {
+                const total = guestState.adults + guestState.children;
+                roomGuestsInput.value = `${total} Guest${total > 1 ? 's' : ''}`;
+            }
+
+            // Initialize display
+            updateDisplayText();
+
+            // Handle Done button
+            //document.getElementById('applyGuests').addEventListener('click', function (e) {
+            //    e.preventDefault();
+
+            //    guestDropdown.classList.remove('show');
+
+            //    const selectedDates = fp.selectedDates;
+            //    if (selectedDates.length === 2) {
+            //        updateBookingSummary(
+            //            selectedDates[0].toISOString(),
+            //            selectedDates[1].toISOString(),
+            //            guestState.adults,
+            //            guestState.children
+            //        );
+            //    }
+            //});
+            document.getElementById('applyGuests').addEventListener('click', function (e) {
+                e.preventDefault();
+                guestDropdown.classList.remove('show');
+
+                updateBookingSummary(
+                    currentBookingState.checkIn.toISOString(),
+                    currentBookingState.checkOut.toISOString(),
+                    guestState.adults,
+                    guestState.children
+                );
+            });
+
+            const tabs = document.querySelectorAll('#bookingTabs button');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    updateActiveTab(this);
+                });
+            });
+
+            function updateActiveTab(selectedTab) {
+                // Remove active class from all tabs
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                    const pane = document.querySelector(tab.dataset.bsTarget);
+                    pane.classList.remove('show', 'active');
+                });
+
+                // Add active class to selected tab
+                selectedTab.classList.add('active');
+                const targetPane = document.querySelector(selectedTab.dataset.bsTarget);
+                targetPane.classList.add('show', 'active');
+            }
+
+            document.querySelectorAll('.select-room').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const roomNumbers = this.getAttribute('data-roomnumbers');
+
+                    // Kiểm tra xem phòng đã được chọn chưa bằng roomNumbers
+                    const existingRoomIndex = selectedRooms.findIndex(r => r.RoomNumbers === roomNumbers);
+
+                    if (existingRoomIndex === -1) {
+                        // Chưa chọn phòng - thêm phòng mới
+                        const roomClassId = this.getAttribute('data-roomclass');
+                        const price = parseFloat(this.getAttribute('data-price'));
+                        const name = this.getAttribute('data-name');
+
+                        // Tìm quantity selector
+                        const container = this.closest('.room-item') || this.parentElement;
+                        const quantitySelector = container.querySelector('.room-quantity');
+                        const quantity = quantitySelector ? parseInt(quantitySelector.value) : 1;
+
+                        // Split roomNumbers thành mảng và lấy số lượng phòng theo quantity
+                        const roomNumberArray = roomNumbers.split(',').map(n => n.trim());
+                        const selectedRoomNumbers = roomNumberArray.slice(0, quantity);
+
+                        // Thêm phòng mới vào mảng
+                        selectedRooms.push({
+                            RoomClassId: roomClassId,
+                            RoomNumbers: roomNumbers,
+                            RoomNumber: selectedRoomNumbers.join(', '),
+                            Price: price,
+                            Quantity: quantity,
+                            Name: name
+                        });
+
+                        // Đổi text và style của nút
+                        this.textContent = 'Hủy phòng này';
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-danger');
+
+                        // Disable quantity selector sau khi chọn
+                        if (quantitySelector) {
+                            quantitySelector.disabled = true;
+                        }
+                    } else {
+                        // Đã chọn phòng - hủy phòng
+                        selectedRooms.splice(existingRoomIndex, 1);
+
+                        // Đổi text và style của nút về trạng thái ban đầu
+                        this.textContent = 'Chọn phòng này';
+                        this.classList.remove('btn-danger');
+                        this.classList.add('btn-primary');
+
+                        // Enable lại quantity selector
+                        const container = this.closest('.room-item') || this.parentElement;
+                        const quantitySelector = container.querySelector('.room-quantity');
+                        if (quantitySelector) {
+                            quantitySelector.disabled = false;
+                        }
+                    }
+
+                    UpdateBookingSummaryWithRoomsAndServices();
+                });
+            });
+
+            // Xử lý quantity selector
+            document.querySelectorAll('.room-quantity').forEach(selector => {
+                selector.addEventListener('change', function () {
+                    // Nếu phòng đã được chọn, cập nhật số lượng
+                    const container = this.closest('.room-item') || this.parentElement;
+                    const button = container.querySelector('.select-room');
+                    const roomNumbers = button.getAttribute('data-roomnumbers');
+
+                    const existingRoomIndex = selectedRooms.findIndex(r => r.RoomNumbers === roomNumbers);
+                    if (existingRoomIndex !== -1) {
+                        const quantity = parseInt(this.value);
+                        const roomNumberArray = roomNumbers.split(',').map(n => n.trim());
+                        selectedRooms[existingRoomIndex].Quantity = quantity;
+                        selectedRooms[existingRoomIndex].RoomNumber = roomNumberArray.slice(0, quantity).join(', ');
+                        UpdateBookingSummaryWithRoomsAndServices();
+                    }
+                });
+            });
+            document.querySelectorAll('[data-service]').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const serviceId = parseInt(this.getAttribute('data-service'));
+
+                    const serviceIndex = selectedServices.indexOf(serviceId);
+                    if (serviceIndex === -1) {
+                        selectedServices.push(serviceId);
+                        this.classList.add('active');
+                        this.textContent = 'Remove'; // Đổi text nút khi đã chọn
+                    } else {
+                        selectedServices.splice(serviceIndex, 1);
+                        this.classList.remove('active');
+                        this.textContent = 'Add'; // Đổi text nút khi hủy
+                    }
+
+                    UpdateBookingSummaryWithRoomsAndServices();
+                });
+            });
+        });
+
+        @*function updateBookingSummary(checkIn, checkOut, adults, children) {
+            // Show loading state
+            const summarySection = document.getElementById('bookingSummary');
+            if (summarySection) {
+                summarySection.style.opacity = '0.5';
+            }
+
+            try {
+                $.ajax({
+                    url: '@Url.Action("UpdateBookingSummary", "Booking_64132675")',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        checkin: checkIn,
+                        checkout: checkOut,
+                        adults: adults || 2,
+                        children: children || 0,
+                        selectedRooms: selectedRooms,
+                        selectedServices: selectedServices
+                    }),
+                    contentType: 'application/json',
+                    success: function(result) {
+                        $('#bookingSummary').html(result);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating booking summary:', error);
+                        // Show default values if there's an error
+                        showDefaultSummary();
+                    },
+                    complete: function() {
+                        if (summarySection) {
+                            summarySection.style.opacity = '1';
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error('Error in updateBookingSummary:', e);
+                showDefaultSummary();
+                if (summarySection) {
+                    summarySection.style.opacity = '1';
+                }
+            }
+        }*@
+        function updateBookingSummary(checkIn, checkOut, adults, children) {
+            // Cập nhật state
+            currentBookingState = {
+                checkIn: new Date(checkIn),
+                checkOut: new Date(checkOut),
+                adults: adults || 2,
+                children: children || 0
+            };
+
+            const summarySection = document.getElementById('bookingSummary');
+            if (summarySection) {
+                summarySection.style.opacity = '0.5';
+            }
+
+            try {
+                $.ajax({
+                    url: '@Url.Action("UpdateBookingSummary", "Booking_64132675")',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        checkin: checkIn,
+                        checkout: checkOut,
+                        adults: adults || 2,
+                        children: children || 0,
+                        selectedRooms: selectedRooms,
+                        selectedServices: selectedServices
+                    }),
+                    contentType: 'application/json',
+                    success: function(result) {
+                        $('#bookingSummary').html(result);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating booking summary:', error);
+                        showDefaultSummary();
+                    },
+                    complete: function() {
+                        if (summarySection) {
+                            summarySection.style.opacity = '1';
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error('Error in updateBookingSummary:', e);
+                showDefaultSummary();
+                if (summarySection) {
+                    summarySection.style.opacity = '1';
+                }
+            }
+        }
+
+        function showDefaultSummary() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            // ... show default summary
+        }
+
+        @*function UpdateBookingSummaryWithRoomsAndServices() {
+            // Lấy giá trị từ form, sử dụng giá trị mặc định nếu không tìm thấy
+            const checkInInput = document.querySelector('#checkInDate') || { value: new Date().toISOString().split('T')[0] };
+            const checkOutInput = document.querySelector('#checkOutDate') || { value: new Date(Date.now() + 86400000).toISOString().split('T')[0] };
+            const adultsInput = document.querySelector('#adults') || { value: '2' };
+            const childrenInput = document.querySelector('#children') || { value: '0' };
+
+            const summarySection = document.getElementById('bookingSummary');
+            if (summarySection) {
+                summarySection.style.opacity = '0.5';
+            }
+
+            // Gửi request cập nhật booking summary
+            $.ajax({
+                url: '@Url.Action("UpdateBookingSummary", "Booking_64132675")',
+                type: 'POST',
+                data: JSON.stringify({
+                    checkin: checkInInput.value,
+                    checkout: checkOutInput.value,
+                    adults: parseInt(adultsInput.value) || 2,
+                    children: parseInt(childrenInput.value) || 0,
+                    selectedRooms: selectedRooms,
+                    selectedServices: selectedServices
+                }),
+                contentType: 'application/json',
+                success: function (result) {
+                    $('#bookingSummary').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error updating booking summary:', error);
+                    if (summarySection) {
+                        summarySection.style.opacity = '1';
+                    }
+                },
+                complete: function () {
+                    if (summarySection) {
+                        summarySection.style.opacity = '1';
+                    }
+                }
+            });
+        }*@
+        function UpdateBookingSummaryWithRoomsAndServices() {
+            const summarySection = document.getElementById('bookingSummary');
+            if (summarySection) {
+                summarySection.style.opacity = '0.5';
+            }
+
+            $.ajax({
+                url: '@Url.Action("UpdateBookingSummary", "Booking_64132675")',
+                type: 'POST',
+                data: JSON.stringify({
+                    checkin: currentBookingState.checkIn.toISOString(),
+                    checkout: currentBookingState.checkOut.toISOString(),
+                    adults: currentBookingState.adults,
+                    children: currentBookingState.children,
+                    selectedRooms: selectedRooms,
+                    selectedServices: selectedServices
+                }),
+                contentType: 'application/json',
+                success: function (result) {
+                    $('#bookingSummary').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error updating booking summary:', error);
+                },
+                complete: function () {
+                    if (summarySection) {
+                        summarySection.style.opacity = '1';
+                    }
+                }
+            });
+        }
+</script>
+@*<script>
+</script>*@
 </body>
 </html>

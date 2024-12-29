@@ -1,4 +1,6 @@
-﻿<div class="card border-0">
+﻿@model Project_64132675.Areas.Customer_64132675.ViewModels.BookingSummaryViewModel_64132675
+
+<div class="card border-0">
     <div class="card-body p-2">
         <div class="d-flex align-items-center mb-1">
             <div class="h1 mb-0 me-2 hotel-L">L</div>
@@ -10,7 +12,7 @@
                 <path d="M6.07 10.58a.13.13 0 0 1 .08.22l-1.18.95.44 1.42a.12.12 0 0 1-.2.14L4 12.44l-1.2.87a.13.13 0 0 1-.08.02.13.13 0 0 1-.12-.16l.44-1.43-1.22-.9a.13.13 0 0 1-.05-.14.13.13 0 0 1 .12-.09h1.54l.43-1.4a.13.13 0 0 1 .12-.08.11.11 0 0 1 .12.08l.48 1.37zm3.53 0-.48-1.37A.13.13 0 0 0 9 9.13a.13.13 0 0 0-.12.09l-.43 1.4H6.9a.13.13 0 0 0-.12.08.13.13 0 0 0 .05.14l1.22.9-.44 1.43a.13.13 0 0 0 .2.14l1.2-.87 1.22.87a.13.13 0 0 0 .14 0 .13.13 0 0 0 .05-.14l-.44-1.41 1.18-.96a.13.13 0 0 0-.08-.22zM7.73 8.87a.13.13 0 0 0 .08-.02.13.13 0 0 0 .04-.14l-.43-1.42 1.17-.95a.13.13 0 0 0-.07-.22h-1.5l-.48-1.37a.13.13 0 0 0-.11-.08.13.13 0 0 0-.12.08l-.44 1.4H4.33a.13.13 0 0 0-.12.08.13.13 0 0 0 .05.14l1.22.9-.43 1.44a.12.12 0 0 0 .04.14.12.12 0 0 0 .15 0l1.2-.87 1.22.87a.13.13 0 0 0 .07.02zm5.1-.02a.13.13 0 0 0 .04-.14l-.43-1.42 1.17-.95a.13.13 0 0 0-.08-.23h-1.49l-.48-1.36a.13.13 0 0 0-.12-.09.13.13 0 0 0-.12.1l-.43 1.39H9.35a.13.13 0 0 0-.12.08.13.13 0 0 0 .05.14l1.22.9-.43 1.44a.13.13 0 0 0 .11.16.12.12 0 0 0 .08-.02l1.2-.87 1.22.87a.13.13 0 0 0 .15 0zm3.4 1.81a.13.13 0 0 0-.12-.08h-1.49l-.48-1.37a.13.13 0 0 0-.12-.08.13.13 0 0 0-.12.08l-.43 1.4h-1.54a.13.13 0 0 0-.12.09.13.13 0 0 0 .05.14l1.22.9-.44 1.43a.13.13 0 0 0 .05.14.12.12 0 0 0 .07.02.13.13 0 0 0 .07-.02l1.2-.87 1.22.87a.13.13 0 0 0 .2-.14L15 11.75l1.18-.95a.12.12 0 0 0 .04-.14z"></path>
             </svg>
         </div>
-      
+
         <div class="mb-3">
             <i class="bi bi-clock"></i>
             <span>Check-in 14:00</span> |
@@ -19,24 +21,40 @@
 
         <div class="mb-3 d-flex align-items-center">
             <i class="bi bi-calendar-check me-2"></i>
-            Thu, 26 Dec 24 → Fri, 27 Dec 24
-            <span class="ms-2 text-muted">3 nights</span>
+            @if (Model != null)
+            {
+                @Model.CheckIn.ToString("ddd, dd MMM yy") <text>→</text> @Model.CheckOut.ToString("ddd, dd MMM yy")
+                <span class="ms-2 text-muted">@Model.Nights nights</span>
+            }
+            else
+            {
+                <text>Select dates</text>
+            }
         </div>
 
         <div class="mb-4 d-flex align-items-center">
             <i class="bi bi-person me-2"></i>
-            2 adults
+            @if (Model != null)
+            {
+                @(Model.Adults + " adults" + (Model.Children > 0 ? $", {Model.Children} children" : ""))
+            }
+            else
+            {
+                <text>2 adults</text>
+            }
         </div>
 
         <div class="border-top pt-3">
             <div class="d-flex justify-content-between mb-2">
                 <span>ROOM</span>
-                <span>2,500,000₫</span>
+                @*<span>2,500,000₫</span>*@
+                <span>@Model.TotalRoomAmount.ToString("N0")₫</span>
             </div>
 
             <div class="d-flex justify-content-between mb-2">
                 <span>SERVICE</span>
-                <span>500,000₫</span>
+                @*<span>500,000₫</span>*@
+                <span>@Model.TotalServiceAmount.ToString("N0")₫</span>
             </div>
 
             <div class="mb-3">
@@ -46,13 +64,48 @@
                 </a>
             </div>
 
+            @*<div class="collapse" id="cartDetails">*@
+                <div class="card card-body mb-3">
+                    <!-- Chi tiết phòng -->
+                    @if (Model.SelectedRooms.Any())
+                    {
+                        <div class="mb-3">
+                            <h6 class="mb-2">Room Details:</h6>
+                            @foreach (var room in Model.SelectedRooms)
+                            {
+                                <div class="d-flex justify-content-between small mb-2">
+                                    <span>@room.Name x @room.Quantity</span>
+                                    <span>@((room.Price * room.Quantity).ToString("N0"))₫</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Chi tiết dịch vụ -->
+                    @if (Model.SelectedServiceDetails.Any())
+                    {
+                        <div class="mb-3">
+                            <h6 class="mb-2">Service Details:</h6>
+                            @foreach (var service in Model.SelectedServiceDetails)
+                            {
+                                <div class="d-flex justify-content-between small mb-2">
+                                    <span>@service.ServiceName</span>
+                                    <span>@service.Price.ToString("N0")₫</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            @*</div>*@
+
+
             <div class="d-flex justify-content-between align-items-baseline">
                 <div>
                     <span class="h5 mb-0">TOTAL</span>
                 </div>
                 <div class="text-end">
-                    <div class="text-primary h5 mb-0">2,750,000₫</div>
-                    <small class="text-muted">i.e. 113.45$US</small>
+                    <div class="text-primary h5 mb-0">@Model.TotalAmount.ToString("N0")₫</div>
+                    <small class="text-muted">i.e. @Model.TotalAmountUSD$US</small>
                 </div>
             </div>
         </div>
