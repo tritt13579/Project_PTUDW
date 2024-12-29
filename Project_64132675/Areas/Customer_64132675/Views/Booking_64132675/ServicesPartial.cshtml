@@ -1,61 +1,36 @@
-﻿
+﻿@model IEnumerable<Project_64132675.Models.SERVICE>
 
 <div class="row room-listing">
-    <div class="col-md-4 pb-3 ">
-        <div class="card">
-            <img src="~/Public/Images/breakfast.jpg" class="card-img-top custom-card-img" alt="Service Image" />
-            @*<img src="@Url.Content("~/images/services/" + service.Name.ToLower() + ".jpg")" alt="@service.Name" />*@
-            <div class="card-body">
-                <h5 class="card-title">Breakfast Buffet</h5>
-                <p class="card-text text-muted">Per adult/stay</p>
-                <a href="#" class="text-primary text-decoration-none">See details</a>
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="h5 mb-0">915,300₫</span>
-                    <button class="btn btn-primary">Add</button>
+    @if (Model != null && Model.Any())
+    {
+        foreach (var service in Model)
+        {
+            <div class="col-md-4 pb-3">
+                <div class="card h-100">
+                    <img src="@Url.Content($"~/Public/Images/dv{service.SERVICE_ID}.jpg")" 
+                         class="card-img-top custom-card-img"
+                         alt="@service.SERVICE_NAME"
+                         onerror="this.src='@Url.Content("~/Public/Images/default.jpg")'" />
+                    <div class="card-body">
+                        <h5 class="card-title">@service.SERVICE_NAME</h5>
+                        <p class="card-text text-muted">Per adult/stay</p>
+                        <a href="#" class="text-primary text-decoration-none">See details</a>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="h5 mb-0">@service.PRICE.ToString("#,##0") ₫</span>
+                            <button class="btn btn-primary"
+                                    onclick="addService(@service.SERVICE_ID)">
+                                Add
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <p class="text-center">No services available.</p>
         </div>
-    </div>
-    <div class="col-md-4 pb-3">
-        <div class="card ">
-            <img src="~/Public/Images/breakfast.jpg" class="card-img-top" alt="Service Image" />
-            <div class="card-body">
-                <h5 class="card-title">Breakfast Buffet</h5>
-                <p class="card-text text-muted">Per adult/stay</p>
-                <a href="#" class="text-primary text-decoration-none">See details</a>
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="h5 mb-0">915,300₫</span>
-                    <button class="btn btn-primary">Add</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 pb-3">
-        <div class="card ">
-            <img src="~/Public/Images/breakfast.jpg" class="card-img-top" alt="Service Image" />
-            <div class="card-body">
-                <h5 class="card-title">Breakfast Buffet</h5>
-                <p class="card-text text-muted">Per adult/stay</p>
-                <a href="#" class="text-primary text-decoration-none">See details</a>
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="h5 mb-0">915,300₫</span>
-                    <button class="btn btn-primary">Add</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 pb-3">
-        <div class="card ">
-            <img src="~/Public/Images/breakfast.jpg" class="card-img-top" alt="Service Image" />
-            <div class="card-body">
-                <h5 class="card-title">Breakfast Buffet</h5>
-                <p class="card-text text-muted">Per adult/stay</p>
-                <a href="#" class="text-primary text-decoration-none">See details</a>
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="h5 mb-0">915,300₫</span>
-                    <button class="btn btn-primary">Add</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    }
 </div>

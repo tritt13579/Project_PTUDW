@@ -141,6 +141,8 @@
     <Compile Include="Areas\Customer_64132675\Controllers\Home_64132675Controller.cs" />
     <Compile Include="Areas\Customer_64132675\Customer_64132675AreaRegistration.cs" />
     <Compile Include="Areas\Customer_64132675\Data\BookingSummaryViewModel.cs" />
+    <Compile Include="Areas\Customer_64132675\Data\RoomViewModel.cs" />
+    <Compile Include="Areas\Customer_64132675\ViewModels\AvailableRoomViewModel_64132675.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\Adminbase_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\BOOKINGs_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\CUSTOMERs_64132675Controller.cs" />

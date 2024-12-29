@@ -522,6 +522,8 @@ body {
     border: 1px solid rgba(44, 62, 80, 0.15);
     border-radius: 8px;
     transition: all 0.2s ease;
+    background-color: #e9ecef;
+    border-color: var(--secondary-color);
 }
 
 .form-select:focus {
@@ -535,4 +537,31 @@ body {
 
 .input-group .form-select {
     border-radius: 8px 0 0 8px;
+}
+
+.feature-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.feature-item {
+    margin-bottom: 0.5rem;
+}
+
+.show-more-container {
+    margin-bottom: 0.5rem;
+}
+
+.show-more-btn {
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.custom-card-img {
+    height: 100%; 
+    object-fit: cover; 
 }

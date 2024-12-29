@@ -27,7 +27,7 @@ namespace Project_64132675.Models
         {
             modelBuilder.Entity<BOOKING>()
                 .Property(e => e.BOOKING_AMOUNT)
-                .HasPrecision(10, 2);
+                .HasPrecision(12, 2);
 
             modelBuilder.Entity<BOOKING>()
                 .HasMany(e => e.ROOM)
@@ -75,7 +75,7 @@ namespace Project_64132675.Models
 
             modelBuilder.Entity<ROOMCLASS>()
                 .Property(e => e.BASE_PRICE)
-                .HasPrecision(10, 2);
+                .HasPrecision(12, 2);
 
             modelBuilder.Entity<ROOMCLASS>()
                 .HasMany(e => e.FEATURE)
@@ -84,7 +84,7 @@ namespace Project_64132675.Models
 
             modelBuilder.Entity<SERVICE>()
                 .Property(e => e.PRICE)
-                .HasPrecision(10, 2);
+                .HasPrecision(12, 2);
         }
     }
 }

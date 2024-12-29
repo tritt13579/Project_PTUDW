@@ -147,7 +147,7 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', function () {
             const fp = flatpickr("#dateRange", {
                 mode: "range",
@@ -173,7 +173,19 @@
                         ).join(' → ');
 
                         instance.input.value = formattedDates;
+
+                        const roomClassSelect = document.getElementById('roomClass');
+                        const selectedRoomClass = roomClassSelect.value;
+
+                        updateAvailableRooms(selectedDates[0], selectedDates[1], selectedRoomClass);
                     }
+                }
+            });
+
+            document.getElementById('roomClass').addEventListener('change', function () {
+                const selectedDates = fp.selectedDates;
+                if (selectedDates.length === 2) {
+                    updateAvailableRooms(selectedDates[0], selectedDates[1], this.value);
                 }
             });
 
@@ -185,15 +197,81 @@
                 if (selectedDates.length === 2) {
                     const nights = Math.round((selectedDates[1] - selectedDates[0]) / (1000 * 60 * 60 * 24));
 
-                    // Update hidden inputs
                     checkInInput.value = selectedDates[0].toISOString().split('T')[0];
                     checkOutInput.value = selectedDates[1].toISOString().split('T')[0];
                     nightsInput.value = nights;
-                } else {
-                    checkInInput.value = '';
-                    checkOutInput.value = '';
-                    nightsInput.value = '';
                 }
+            }
+
+              function updateAvailableRooms(checkIn, checkOut, roomClassId) {
+                // Show loading indicator
+                const bookingContent = document.getElementById('booking-content');
+                if (bookingContent) {
+                    bookingContent.style.opacity = '0.5';
+                }
+
+                // Format dates for C# DateTime parsing
+                const formattedCheckIn = checkIn.toISOString();
+                const formattedCheckOut = checkOut.toISOString();
+
+                // Make AJAX request to update rooms with room class filter
+                $.ajax({
+                    url: '@Url.Action("UpdateAvailableRooms", "Booking_64132675")',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        checkin: formattedCheckIn,
+                        checkout: formattedCheckOut,
+                        roomClassId: roomClassId
+                    }),
+                    contentType: 'application/json',
+                    success: function(result) {
+                        $('#booking-content').html(result);
+                        if (bookingContent) {
+                            bookingContent.style.opacity = '1';
+                        }
+                        initializeBookingComponents();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating room list:', {
+                            status: status,
+                            error: error,
+                            response: xhr.responseText
+                        });
+
+                        let errorMessage = 'Unable to update available rooms. ';
+                        if (xhr.responseText) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                errorMessage += response.message || '';
+                            } catch (e) {
+                                errorMessage += xhr.responseText;
+                            }
+                        }
+
+                        alert(errorMessage);
+
+                        if (bookingContent) {
+                            bookingContent.style.opacity = '1';
+                        }
+                    }
+                });
+            }
+
+            // Helper function to reinitialize components after update
+            function initializeBookingComponents() {
+                // Reinitialize room selection buttons
+                const roomButtons = document.querySelectorAll('.room-select-btn');
+                roomButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const roomId = this.dataset.roomId;
+                        const roomPrice = this.dataset.price;
+                        // Add your room selection logic here
+                    });
+                });
+
+                // Reinitialize any other interactive elements
+                // Add any other initialization code needed for the updated content
             }
             let guestState = {
                 adults: 2,
@@ -240,7 +318,6 @@
                     document.getElementById(`${type}Count`).textContent = newCount;
                     document.getElementById(`${type}Input`).value = newCount;
                     updateDisplayText();
-                    updateServerState();
                 }
             }
 
@@ -255,33 +332,8 @@
             // Handle Done button
             document.getElementById('applyGuests').addEventListener('click', function () {
                 guestDropdown.classList.remove('show');
-                updateServerState();
             });
 
-            function updateServerState() {
-                const checkIn = document.getElementById('checkIn').value;
-                const checkOut = document.getElementById('checkOut').value;
-
-                $.ajax({
-                    url: '/Booking/UpdateGuestSelection',
-                    type: 'POST',
-                    data: {
-                        Adults: guestState.adults,
-                        Children: guestState.children,
-                        CheckIn: checkIn,
-                        CheckOut: checkOut,
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            // Update any additional UI elements if needed
-                            console.log('Guest selection updated successfully');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error updating guest selection:', error);
-                    }
-                });
-            }
             const tabs = document.querySelectorAll('#bookingTabs button');
             tabs.forEach(tab => {
                 tab.addEventListener('click', function (e) {
@@ -302,36 +354,7 @@
                 selectedTab.classList.add('active');
                 const targetPane = document.querySelector(selectedTab.dataset.bsTarget);
                 targetPane.classList.add('show', 'active');
-
-                // Update summary if needed
-                updateSummary();
-            }
-
-            function updateSummary() {
-                // Get current booking data
-                const bookingData = {
-                    checkIn: document.getElementById('checkIn').value,
-                    checkOut: document.getElementById('checkOut').value,
-                    adults: document.getElementById('adultsInput').value,
-                    children: document.getElementById('childrenInput').value,
-                    // Add any other relevant data
-                };
-
-                $.ajax({
-                    url: '/Booking/UpdateBookingSummary',
-                    type: 'POST',
-                    data: bookingData,
-                    success: function (response) {
-                        if (response.success) {
-                            // Refresh the summary partial
-                            $('#bookingSummary').load('/Booking/BookingSummaryPartial');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error updating summary:', error);
-                    }
-                });
             }
         });
-    </script>
+</script>
 }
