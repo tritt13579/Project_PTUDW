@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Project_64132675.Models.BOOKING>
+@{
+    ViewData["Title"] = "Đơn đặt phòng của tôi";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="bookings-container">
+    <div class="container">
+        <div class="booking-list">
+            <div class="container">
+                <h2 class="booking-title">Đơn đặt phòng của tôi</h2>
+
+                @foreach (var booking in Model)
+                {
+                    <div class="booking-item">
+                        <div class="booking-header">
+                            <h5 class="mb-0">Đơn đặt phòng #@booking.BOOKING_ID</h5>
+                            <span>@booking.PAYMENTSTATUS.PAYMENT_STATUS_NAME</span>
+                        </div>
+
+                        <div class="booking-content">
+                            <div class="booking-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Check-in:</span>
+                                    <span class="detail-value">@booking.CHECKIN_DATE.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Check-out:</span>
+                                    <span class="detail-value">@booking.CHECKOUT_DATE.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Số đêm:</span>
+                                    @*<span class="detail-value">@booking.Nights đêm</span>*@
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Số người:</span>
+                                    <span class="detail-value">@booking.NUM_ADULT người lớn, @booking.NUM_CHILDREN trẻ em</span>
+                                </div>
+                            </div>
+
+                            @*<div class="room-details">
+                            <h6>Phòng đã chọn:</h6>
+                            @foreach (var room in booking.SelectedRooms)
+                            {
+                                <div class="room-item">
+                                    <div class="detail-row">
+                                        <span>@room.Name (@room.RoomNumber)</span>
+                                        <span>@room.Price.ToString("N0") VNĐ</span>
+                                    </div>
+                                </div>
+                            }
+                            <div class="detail-row amount-row">
+                                <span>Tổng tiền phòng:</span>
+                                <span>@booking.TotalRoomAmount.ToString("N0") VNĐ</span>
+                            </div>
+                        </div>
+
+                        @if (booking.SelectedServiceDetails.Any())
+                        {
+                            <div class="service-details">
+                                <h6>Dịch vụ đã chọn:</h6>
+                                @foreach (var service in booking.SelectedServiceDetails)
+                                {
+                                    <div class="service-item">
+                                        <div class="detail-row">
+                                            <span>@service.ServiceName</span>
+                                            <span>@service.Price.ToString("N0") VNĐ</span>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="detail-row amount-row">
+                                    <span>Tổng tiền dịch vụ:</span>
+                                    <span>@booking.TotalServiceAmount.ToString("N0") VNĐ</span>
+                                </div>
+                            </div>*@
+                            @*}*@
+
+                            <div class="detail-row amount-row">
+                                <span>Tổng cộng:</span>
+                                <span>@booking.BOOKING_AMOUNT.ToString("N0") VNĐ</span>
+                            </div>
+
+                            <div class="text-end mt-3">
+                                <a href="@Url.Action("Details", "Booking_64132675", new { id = booking.BOOKING_ID })"
+                                   class="btn btn-details">Xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

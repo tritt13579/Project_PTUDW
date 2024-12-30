@@ -9,8 +9,8 @@ namespace Project_64132675.Areas.Customer_64132675.ViewModels
     {
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
-        public int Adults { get; set; } = 2;
-        public int Children { get; set; } = 0;
+        public byte Adults { get; set; } = 2;
+        public byte Children { get; set; } = 0;
         public int Nights
         {
             get
@@ -18,6 +18,7 @@ namespace Project_64132675.Areas.Customer_64132675.ViewModels
                 return (CheckOut.Date - CheckIn.Date).Days;
             }
         }
+        public string SpecialRequests { get; set; }
         public List<RoomSelection> SelectedRooms { get; set; }
         public List<long> SelectedServices { get; set; }
         public List<ServiceDetail> SelectedServiceDetails { get; set; }

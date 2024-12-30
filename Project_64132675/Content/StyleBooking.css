@@ -565,3 +565,52 @@ body {
     height: 100%; 
     object-fit: cover; 
 }
+
+.quantity-selector {
+    padding: 8px;
+}
+
+.room-counter {
+    padding: 8px 0;
+}
+
+.room-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+    .room-btn:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .room-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+.room-count {
+    font-size: 1rem;
+    font-weight: 500;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* Animation for room buttons */
+.room-btn i {
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.room-btn:hover i {
+    transform: scale(1.1);
+}

@@ -1,10 +1,8 @@
-﻿using Project_64132675.Areas.Customer_64132675.Data;
-using Project_64132675.Areas.Customer_64132675.ViewModels;
+﻿using Project_64132675.Areas.Customer_64132675.ViewModels;
 using Project_64132675.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -112,7 +110,7 @@ namespace Project_64132675.Areas.Customer_64132675.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateBookingSummary(DateTime checkin, DateTime checkout, int adults, int children, List<RoomSelection> selectedRooms = null,
+        public ActionResult UpdateBookingSummary(DateTime checkin, DateTime checkout, byte adults, byte children, List<RoomSelection> selectedRooms = null,
         List<long> selectedServices = null)
         {
             var model = new BookingSummaryViewModel_64132675
@@ -162,6 +160,139 @@ namespace Project_64132675.Areas.Customer_64132675.Controllers
                 Price = s.PRICE
             })
             .ToList();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ConfirmBooking(BookingSummaryViewModel_64132675 model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var customerId = GetSessionUserId();
+
+                    if (model.CheckIn >= model.CheckOut)
+                    {
+                        ModelState.AddModelError("", "Ngày trả phòng phải sau ngày nhận phòng");
+                        return View("Booking", model);
+                    }
+
+                    var booking = new BOOKING
+                    {
+                        CUSTOMER_ID = customerId,
+                        PAYMENT_STATUS_ID = 1,
+                        BOOKING_DATE = DateTime.Now,
+                        CHECKIN_DATE = model.CheckIn,
+                        CHECKOUT_DATE = model.CheckOut,
+                        NUM_ADULT = model.Adults,
+                        NUM_CHILDREN = model.Children,
+                        SPECIAL_REQUESTS = model.SpecialRequests,
+                        BOOKING_SOURCE = "Trực tuyến",
+                        BOOKING_AMOUNT = model.TotalAmount
+                    };
+
+                    if (model.SelectedRooms == null || !model.SelectedRooms.Any())
+                    {
+                        ModelState.AddModelError("", "Vui lòng chọn ít nhất một phòng");
+                        return View("Booking", model);
+                    }
+
+                    foreach (var roomSelection in model.SelectedRooms)
+                    {
+                        // Tách chuỗi số phòng thành mảng
+                        var roomNumbers = roomSelection.RoomNumber.Split(',')
+                                                     .Select(x => x.Trim())
+                                                     .ToList();
+
+                        // Kiểm tra số lượng phòng được chọn có khớp với số phòng
+                        if (roomSelection.Quantity != roomNumbers.Count)
+                        {
+                            ModelState.AddModelError("", $"Số lượng phòng không khớp với danh sách phòng đã chọn");
+                            return View("Booking", model);
+                        }
+
+                        foreach (var roomNumber in roomNumbers)
+                        {
+                            var room = db.ROOM.FirstOrDefault(r => r.ROOM_NUMBER.ToString() == roomNumber);
+
+                            if (room != null)
+                            {
+                                if (model.CheckIn.Date == DateTime.Now.Date && room.ROOM_STATUS_ID == 1)
+                                {
+                                    room.ROOM_STATUS_ID = 2;
+                                }
+                                booking.ROOM.Add(room);
+                            }
+                        }
+                    }
+
+                    if (model.SelectedServices != null && model.SelectedServices.Any())
+                    {
+                        foreach (var serviceId in model.SelectedServices)
+                        {
+                            var service = db.SERVICE.Find(serviceId);
+                            if (service != null)
+                            {
+                                booking.SERVICE.Add(service);
+                            }
+                        }
+                    }
+
+                    db.BOOKING.Add(booking);
+                    db.SaveChanges();
+
+                    return RedirectToAction("Index", "Home_64132675", new { area = "Customer_64132675" });
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Có lỗi xảy ra trong quá trình đặt phòng: " + ex.Message);
+            }
+
+            return View("Booking", model);
+        }
+
+        //public ActionResult MyBookings()
+        //{
+        //    var customerId = GetSessionUserId();
+        //    //var bookings = db.BOOKING
+        //    //    .Include(b => b.ROOM)
+        //    //    .Include(b => b.SERVICE)
+        //    //    .Where(b => b.CUSTOMER_ID == customerId)
+        //    //    .OrderByDescending(b => b.BOOKING_DATE)
+        //    //    .ToList();
+        //    var bOOKING = db.BOOKING.Include(b => b.CUSTOMER).Include(b => b.PAYMENTSTATUS);
+        //    return View(bOOKING.ToList());
+        //}
+        public ActionResult MyBookings()
+        {
+            try
+            {
+                // Lấy ID của khách hàng đang đăng nhập
+                var customerId = GetSessionUserId();
+
+                // Lấy danh sách booking của khách hàng
+                var bookings = db.BOOKING
+                    .Include(b => b.CUSTOMER)
+                    .Include(b => b.PAYMENTSTATUS)
+                    .Where(b => b.CUSTOMER_ID == customerId) // Lọc theo customer ID
+                    .OrderByDescending(b => b.BOOKING_DATE)  // Sắp xếp theo ngày đặt, mới nhất lên đầu
+                    .ToList();
+
+                // Nếu không có booking nào
+                if (!bookings.Any())
+                {
+                    ViewBag.Message = "Bạn chưa có đơn đặt phòng nào.";
+                }
+
+                return View(bookings);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nếu có
+                return View(new List<BOOKING>());
+            }
         }
     }
 }

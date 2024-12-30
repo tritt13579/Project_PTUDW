@@ -57,12 +57,11 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
                 FULL_NAME = c.LAST_NAME + " " + c.FIRST_NAME
             }).ToList();
 
-            // Lấy thông tin phòng kèm theo giá
             var rooms = db.ROOM.Select(r => new
             {
                 r.ROOM_ID,
                 r.ROOM_NUMBER,
-                Price = r.ROOMCLASS.BASE_PRICE
+                Price = r.ROOMCLASS.BASE_PRICE * r.NUM_BEDS
             }).ToList();
 
             ViewBag.CUSTOMER_ID = new SelectList(customers, "CUSTOMER_ID", "FULL_NAME");
@@ -70,7 +69,6 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
             ViewBag.ROOMS = new SelectList(rooms, "ROOM_ID", "ROOM_NUMBER");
             ViewBag.SERVICES = new SelectList(db.SERVICE, "SERVICE_ID", "SERVICE_NAME");
 
-            // Chuyển ID thành string khi lưu vào dictionary
             ViewBag.RoomPrices = rooms.ToDictionary(r => r.ROOM_ID.ToString(), r => r.Price);
             ViewBag.ServicePrices = db.SERVICE.ToDictionary(s => s.SERVICE_ID.ToString(), s => s.PRICE);
 
@@ -81,19 +79,18 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
 
             var newBooking = new BOOKING
             {
-                BOOKING_DATE = DateTime.Now // Đặt giá trị mặc định
+                BOOKING_DATE = DateTime.Now
             };
 
             return View(newBooking);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(
-    [Bind(Include = "BOOKING_ID,CUSTOMER_ID,PAYMENT_STATUS_ID,BOOKING_DATE,CHECKIN_DATE,CHECKOUT_DATE,NUM_ADULT,NUM_CHILDREN,SPECIAL_REQUESTS,BOOKING_SOURCE,BOOKING_AMOUNT")] BOOKING bOOKING,
-    int[] selectedRooms,
-    int[] selectedServices)
+            [Bind(Include = "BOOKING_ID,CUSTOMER_ID,PAYMENT_STATUS_ID,BOOKING_DATE,CHECKIN_DATE,CHECKOUT_DATE,NUM_ADULT,NUM_CHILDREN,SPECIAL_REQUESTS,BOOKING_SOURCE,BOOKING_AMOUNT")] BOOKING bOOKING,
+            int[] selectedRooms,
+            int[] selectedServices)
         {
             try
             {
@@ -105,50 +102,38 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
                         throw new Exception("Chưa chọn phòng");
                     }
 
-                    // Đặt giá trị mặc định nếu chưa được cung cấp
                     if (bOOKING.BOOKING_DATE == default)
                     {
                         bOOKING.BOOKING_DATE = DateTime.Now;
                     }
 
-                    // Đặt giá trị mặc định
                     bOOKING.PAYMENT_STATUS_ID = 1;
                     bOOKING.BOOKING_SOURCE = "Trực tiếp";
 
-                    // Validate ngày
                     if (bOOKING.CHECKIN_DATE >= bOOKING.CHECKOUT_DATE)
                     {
                         ModelState.AddModelError("", "Ngày trả phòng phải sau ngày nhận phòng");
                         throw new Exception("Lỗi ngày");
                     }
 
-                    // Tính tổng tiền
                     decimal totalAmount = 0;
 
-                    // Tính tiền phòng và cập nhật trạng thái nếu cần
                     foreach (var roomId in selectedRooms)
                     {
                         var room = db.ROOM.FirstOrDefault(r => r.ROOM_ID == roomId);
                         if (room != null)
                         {
-                            // Kiểm tra nếu CHECKIN_DATE là ngày hiện tại
-                            if (bOOKING.CHECKIN_DATE.Date == DateTime.Now.Date)
+                            if (bOOKING.CHECKIN_DATE.Date == DateTime.Now.Date && room.ROOM_STATUS_ID == 1)
                             {
-                                // Cập nhật trạng thái phòng từ Trống (id = 1) sang Đã đặt (id = 2)
-                                if (room.ROOM_STATUS_ID == 1) // 1 là trạng thái Trống
-                                {
-                                    room.ROOM_STATUS_ID = 2; // 2 là trạng thái Đã đặt
-                                }
+                                room.ROOM_STATUS_ID = 2;
                             }
 
-                            // Tính tổng số tiền dựa trên số ngày lưu trú
                             var days = (bOOKING.CHECKOUT_DATE - bOOKING.CHECKIN_DATE).Days;
-                            totalAmount += room.ROOMCLASS.BASE_PRICE * days;
+                            totalAmount += room.ROOMCLASS.BASE_PRICE * room.NUM_BEDS * days;
                             bOOKING.ROOM.Add(room);
                         }
                     }
 
-                    // Tính tiền dịch vụ
                     if (selectedServices != null)
                     {
                         foreach (var serviceId in selectedServices)
@@ -164,23 +149,18 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
 
                     bOOKING.BOOKING_AMOUNT = Math.Round(totalAmount);
                     db.BOOKING.Add(bOOKING);
-
-                    // Lưu thay đổi vào cơ sở dữ liệu
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
             {
-                // Ghi lại lỗi
                 ModelState.AddModelError("", "Có lỗi xảy ra: " + ex.Message);
             }
 
-            // Xử lý lại view nếu có lỗi
             PrepareViewDataForCreate(bOOKING);
             return View(bOOKING);
         }
-
 
         private void PrepareViewDataForCreate(BOOKING bOOKING)
         {
@@ -199,26 +179,22 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
             {
                 r.ROOM_ID,
                 r.ROOM_NUMBER,
-                Price = r.ROOMCLASS.BASE_PRICE
+                Price = r.ROOMCLASS.BASE_PRICE * r.NUM_BEDS
             }).ToList();
 
             ViewBag.RoomPrices = rooms.ToDictionary(r => r.ROOM_ID.ToString(), r => r.Price);
             ViewBag.ServicePrices = db.SERVICE.ToDictionary(s => s.SERVICE_ID.ToString(), s => s.PRICE);
         }
 
-        
         public ActionResult GetAvailableRooms(DateTime checkIn, DateTime checkOut, long? bookingId = null)
         {
-            // Get all bookings that overlap with the selected date range, excluding the current booking
             var overlappingBookings = db.BOOKING.Where(b =>
                 (b.CHECKIN_DATE <= checkOut && b.CHECKOUT_DATE >= checkIn) &&
                 (bookingId == null || b.BOOKING_ID != bookingId));
 
-            // Get the rooms that are booked during this period
             var bookedRoomIds = overlappingBookings.SelectMany(b => b.ROOM)
                 .Select(r => r.ROOM_ID).Distinct().ToList();
 
-            // If we're editing, get the currently booked rooms for this booking
             var currentlyBookedRooms = new List<long>();
             if (bookingId.HasValue)
             {
@@ -229,19 +205,17 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
                     .ToList();
             }
 
-            // Get available rooms (rooms not in bookedRoomIds OR currently booked for this booking)
             var availableRooms = db.ROOM
                 .Where(r => !bookedRoomIds.Contains(r.ROOM_ID) || currentlyBookedRooms.Contains(r.ROOM_ID))
                 .Select(r => new
                 {
                     r.ROOM_ID,
                     r.ROOM_NUMBER,
-                    Price = r.ROOMCLASS.BASE_PRICE,
+                    Price = r.ROOMCLASS.BASE_PRICE * r.NUM_BEDS,
                     IsCurrentlyBooked = currentlyBookedRooms.Contains(r.ROOM_ID)
                 })
                 .ToList();
 
-            // Create the select list with currently booked rooms marked
             var roomSelectList = availableRooms.Select(r => new SelectListItem
             {
                 Value = r.ROOM_ID.ToString(),
@@ -259,9 +233,7 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
         public ActionResult Edit(long? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
 
             BOOKING booking = db.BOOKING
                 .Include(b => b.ROOM)
@@ -270,21 +242,16 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
                 .FirstOrDefault(b => b.BOOKING_ID == id);
 
             if (booking == null)
-            {
                 return HttpNotFound();
-            }
 
-            // Tạo tên đầy đủ của khách hàng
             ViewBag.CustomerFullName = booking.CUSTOMER.LAST_NAME + " " + booking.CUSTOMER.FIRST_NAME;
-
-            // Lấy danh sách thanh toán
             ViewBag.PAYMENT_STATUS_ID = new SelectList(db.PAYMENTSTATUS, "PAYMENT_STATUS_ID", "PAYMENT_STATUS_NAME", booking.PAYMENT_STATUS_ID);
 
             var rooms = db.ROOM.Select(r => new
             {
                 r.ROOM_ID,
                 r.ROOM_NUMBER,
-                Price = r.ROOMCLASS.BASE_PRICE
+                Price = r.ROOMCLASS.BASE_PRICE * r.NUM_BEDS
             }).ToList();
 
             ViewBag.ROOMS = new SelectList(rooms, "ROOM_ID", "ROOM_NUMBER");
@@ -295,33 +262,19 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
             ViewBag.SelectedServices = booking.SERVICE.Select(s => s.SERVICE_ID).ToArray();
 
             PrepareViewDataForEdit(booking);
-
             return View(booking);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "BOOKING_ID,CUSTOMER_ID,PAYMENT_STATUS_ID,BOOKING_DATE,CHECKIN_DATE,CHECKOUT_DATE,NUM_ADULT,NUM_CHILDREN,SPECIAL_REQUESTS,BOOKING_SOURCE,BOOKING_AMOUNT")] BOOKING booking,
-    int[] selectedRooms,
-    int[] selectedServices)
+            int[] selectedRooms,
+            int[] selectedServices)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (ModelState.IsValid && ValidateBooking(booking, selectedRooms))
                 {
-                    if (selectedRooms == null || !selectedRooms.Any())
-                    {
-                        ModelState.AddModelError("", "Vui lòng chọn ít nhất một phòng");
-                        throw new Exception("Chưa chọn phòng");
-                    }
-
-                    // Validate ngày
-                    if (booking.CHECKIN_DATE >= booking.CHECKOUT_DATE)
-                    {
-                        ModelState.AddModelError("", "Ngày trả phòng phải sau ngày nhận phòng");
-                        throw new Exception("Lỗi ngày");
-                    }
-
                     var existingBooking = db.BOOKING
                         .Include(b => b.ROOM)
                         .Include(b => b.SERVICE)
@@ -329,71 +282,11 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
 
                     if (existingBooking != null)
                     {
-                        // Reset room statuses for previously booked rooms if check-in date is today
-                        if (existingBooking.CHECKIN_DATE.Date == DateTime.Now.Date)
-                        {
-                            foreach (var room in existingBooking.ROOM)
-                            {
-                                if (room.ROOM_STATUS_ID == 2) // Đã đặt
-                                {
-                                    room.ROOM_STATUS_ID = 1; // Chuyển về trạng thái Trống
-                                }
-                            }
-                        }
-
-                        // Cập nhật thông tin cơ bản
+                        UpdateRoomStatuses(existingBooking, booking.CHECKIN_DATE);
                         db.Entry(existingBooking).CurrentValues.SetValues(booking);
-
-                        // Cập nhật danh sách phòng
-                        existingBooking.ROOM.Clear();
-                        foreach (var roomId in selectedRooms)
-                        {
-                            var room = db.ROOM.Find(roomId);
-                            if (room != null)
-                            {
-                                // Update room status if check-in date is today
-                                if (booking.CHECKIN_DATE.Date == DateTime.Now.Date)
-                                {
-                                    if (room.ROOM_STATUS_ID == 1) // Trống
-                                    {
-                                        room.ROOM_STATUS_ID = 2; // Chuyển sang Đã đặt
-                                    }
-                                }
-                                existingBooking.ROOM.Add(room);
-                            }
-                        }
-
-                        // Cập nhật danh sách dịch vụ
-                        existingBooking.SERVICE.Clear();
-                        if (selectedServices != null)
-                        {
-                            foreach (var serviceId in selectedServices)
-                            {
-                                var service = db.SERVICE.Find(serviceId);
-                                if (service != null)
-                                {
-                                    existingBooking.SERVICE.Add(service);
-                                }
-                            }
-                        }
-
-                        // Tính lại tổng tiền
-                        decimal totalAmount = 0;
-
-                        // Tính tiền phòng
-                        foreach (var room in existingBooking.ROOM)
-                        {
-                            var days = (booking.CHECKOUT_DATE - booking.CHECKIN_DATE).Days;
-                            totalAmount += room.ROOMCLASS.BASE_PRICE * days;
-                        }
-
-                        // Tính tiền dịch vụ
-                        foreach (var service in existingBooking.SERVICE)
-                        {
-                            totalAmount += service.PRICE;
-                        }
-
-                        existingBooking.BOOKING_AMOUNT = Math.Round(totalAmount);
+                        UpdateBookingRooms(existingBooking, selectedRooms, booking.CHECKIN_DATE);
+                        UpdateBookingServices(existingBooking, selectedServices);
+                        UpdateBookingAmount(existingBooking, booking.CHECKIN_DATE, booking.CHECKOUT_DATE);
 
                         db.SaveChanges();
                         return RedirectToAction("Index");
@@ -405,9 +298,85 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
                 ModelState.AddModelError("", "Có lỗi xảy ra: " + ex.Message);
             }
 
-            // Nếu có lỗi, chuẩn bị lại dữ liệu cho view
             PrepareViewDataForCreate(booking);
             return View(booking);
+        }
+
+        private bool ValidateBooking(BOOKING booking, int[] selectedRooms)
+        {
+            if (selectedRooms == null || !selectedRooms.Any())
+            {
+                ModelState.AddModelError("", "Vui lòng chọn ít nhất một phòng");
+                return false;
+            }
+            if (booking.CHECKIN_DATE >= booking.CHECKOUT_DATE)
+            {
+                ModelState.AddModelError("", "Ngày trả phòng phải sau ngày nhận phòng");
+                return false;
+            }
+            return true;
+        }
+
+        private void UpdateRoomStatuses(BOOKING existingBooking, DateTime newCheckInDate)
+        {
+            if (existingBooking.CHECKIN_DATE.Date == DateTime.Now.Date)
+            {
+                foreach (var room in existingBooking.ROOM.Where(r => r.ROOM_STATUS_ID == 2))
+                {
+                    room.ROOM_STATUS_ID = 1;
+                }
+            }
+        }
+
+        private void UpdateBookingRooms(BOOKING booking, int[] selectedRooms, DateTime checkInDate)
+        {
+            booking.ROOM.Clear();
+            foreach (var roomId in selectedRooms)
+            {
+                var room = db.ROOM.Find(roomId);
+                if (room != null)
+                {
+                    if (checkInDate.Date == DateTime.Now.Date && room.ROOM_STATUS_ID == 1)
+                    {
+                        room.ROOM_STATUS_ID = 2;
+                    }
+                    booking.ROOM.Add(room);
+                }
+            }
+        }
+
+        private void UpdateBookingServices(BOOKING booking, int[] selectedServices)
+        {
+            booking.SERVICE.Clear();
+            if (selectedServices != null)
+            {
+                foreach (var serviceId in selectedServices)
+                {
+                    var service = db.SERVICE.Find(serviceId);
+                    if (service != null)
+                    {
+                        booking.SERVICE.Add(service);
+                    }
+                }
+            }
+        }
+
+        private void UpdateBookingAmount(BOOKING booking, DateTime checkInDate, DateTime checkOutDate)
+        {
+            decimal totalAmount = 0;
+            var days = (checkOutDate - checkInDate).Days;
+
+            foreach (var room in booking.ROOM)
+            {
+                totalAmount += room.ROOMCLASS.BASE_PRICE * room.NUM_BEDS * days;
+            }
+
+            foreach (var service in booking.SERVICE)
+            {
+                totalAmount += service.PRICE;
+            }
+
+            booking.BOOKING_AMOUNT = Math.Round(totalAmount);
         }
 
         private void PrepareViewDataForEdit(BOOKING bOOKING)
@@ -421,15 +390,12 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
             ViewBag.CUSTOMER_ID = new SelectList(customers, "CUSTOMER_ID", "FULL_NAME", bOOKING.CUSTOMER_ID);
             ViewBag.PAYMENT_STATUS_ID = new SelectList(db.PAYMENTSTATUS, "PAYMENT_STATUS_ID", "PAYMENT_STATUS_NAME", bOOKING.PAYMENT_STATUS_ID);
 
-            // Get currently booked rooms
             var currentRoomIds = bOOKING.ROOM.Select(r => r.ROOM_ID).ToList();
-
-            // Get all rooms
             var rooms = db.ROOM.Select(r => new
             {
                 r.ROOM_ID,
                 r.ROOM_NUMBER,
-                Price = r.ROOMCLASS.BASE_PRICE,
+                Price = r.ROOMCLASS.BASE_PRICE * r.NUM_BEDS,
                 IsCurrentlyBooked = currentRoomIds.Contains(r.ROOM_ID)
             }).ToList();
 

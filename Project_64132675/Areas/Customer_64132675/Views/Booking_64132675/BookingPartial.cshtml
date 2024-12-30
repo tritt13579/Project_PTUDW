@@ -121,6 +121,18 @@ else
                                                 }
                                             </select>
                                         </div>
+                                        <div class="quantity-selector d-flex align-items-center">
+                                            <div class="room-counter d-flex align-items-center justify-content-between">
+                                                <button class="btn btn-outline-secondary room-btn" data-action="decrease">
+                                                    <i class="bi bi-dash"></i>
+                                                </button>
+                                                <span class="room-count" id="roomCount">1</span>
+                                                <input type="hidden" class="room-quantity" value="1" data-max="@room.AvailableCount">
+                                                <button class="btn btn-outline-secondary room-btn" data-action="increase">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                         <button class="btn btn-primary select-room px-3"
                                                 data-roomclass="@room.RoomClassId"
                                                 data-roomnumbers="@room.RoomNumbers"
@@ -159,4 +171,34 @@ else
         showMoreText.classList.toggle('d-none');
         showLessText.classList.toggle('d-none');
     }
+
+    //document.addEventListener('DOMContentLoaded', function () {
+    //    const roomCounters = document.querySelectorAll('.room-counter');
+
+    //    roomCounters.forEach(counter => {
+    //        const decreaseBtn = counter.querySelector('[data-action="decrease"]');
+    //        const increaseBtn = counter.querySelector('[data-action="increase"]');
+    //        const countDisplay = counter.querySelector('.room-count');
+    //        const roomQuantityInput = counter.querySelector('.room-quantity');
+    //        const maxRooms = parseInt(roomQuantityInput.getAttribute('data-max'));
+
+    //        decreaseBtn.addEventListener('click', function () {
+    //            let currentValue = parseInt(countDisplay.textContent);
+    //            if (currentValue > 1) {
+    //                currentValue--;
+    //                countDisplay.textContent = currentValue;
+    //                roomQuantityInput.value = currentValue;
+    //            }
+    //        });
+
+    //        increaseBtn.addEventListener('click', function () {
+    //            let currentValue = parseInt(countDisplay.textContent);
+    //            if (currentValue < maxRooms) {
+    //                currentValue++;
+    //                countDisplay.textContent = currentValue;
+    //                roomQuantityInput.value = currentValue;
+    //            }
+    //        });
+    //    });
+    //});
 </script>

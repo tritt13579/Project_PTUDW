@@ -259,6 +259,7 @@
     <Content Include="Areas\Customer_64132675\Views\Booking_64132675\BookingPartial.cshtml" />
     <Content Include="Areas\Customer_64132675\Views\Booking_64132675\ServicesPartial.cshtml" />
     <Content Include="Areas\Customer_64132675\Views\Booking_64132675\BookingSummaryPartial.cshtml" />
+    <Content Include="Areas\Customer_64132675\Views\Booking_64132675\MyBookings.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />

@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="list-group-item m-1">
-                    <a href="#" class="text-decoration-none d-flex align-items-center">
+                    <a class="text-decoration-none d-flex align-items-center" href="@Url.Action("MyBookings", "Booking_64132675" )">
                         <i class="fas fa-bed me-2"></i> ĐẶT PHÒNG CỦA TÔI
                     </a>
                 </li>
@@ -95,7 +95,8 @@
     </footer>
 
     @Scripts.Render("~/bundles/jquery")
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3-alpha1/dist/js/bootstrap.bundle.min.js"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
@@ -115,7 +116,7 @@
     </script>
     @RenderSection("scripts", required: false)
 
-<script>
+    <script>
         // Khởi tạo mảng để lưu phòng và dịch vụ được chọn
         let selectedRooms = [];
         let selectedServices = [];
@@ -189,9 +190,6 @@
                             currentBookingState.adults,
                             currentBookingState.children
                         );
-
-                        // Log the current state
-                        console.log('Date change completed. Selected services:', selectedServices);
                     }
                 }
             });
@@ -255,7 +253,6 @@
                         restoreServiceSelections();
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error updating room list:', error);
                         if (bookingContent) {
                             bookingContent.style.opacity = '1';
                         }
@@ -266,15 +263,14 @@
                 selectedServices.forEach(serviceId => {
                     const serviceButton = document.querySelector(`[data-service="${serviceId}"]`);
                     if (serviceButton) {
-                        serviceButton.classList.add('active');
-                        serviceButton.textContent = 'Remove';
+                        serviceButton.classList.add('btn-danger');
+                        serviceButton.classList.remove('btn-primary');
+                        serviceButton.textContent = 'Xóa';
                     }
                 });
             }
 
             function initializeBookingComponents() {
-                console.log('Initializing booking components'); // Thêm log để debug
-
                 // Khởi tạo lại các nút chọn phòng
                 document.querySelectorAll('.select-room').forEach(button => {
                     const newButton = button.cloneNode(true);
@@ -340,23 +336,9 @@
             function handleQuantityChange() {
                 // Tìm container là div.booking-actions thay vì room-item
                 const container = this.closest('.booking-actions');
-                if (!container) {
-                    console.log('Booking actions container not found');
-                    return;
-                }
-
                 const button = container.querySelector('.select-room');
-                if (!button) {
-                    console.log('Select room button not found');
-                    return;
-                }
-
                 const roomNumbers = button.getAttribute('data-roomnumbers');
-                if (!roomNumbers) {
-                    console.log('Room numbers not found');
-                    return;
-                }
-
+            
                 const existingRoomIndex = selectedRooms.findIndex(r => r.RoomNumbers === roomNumbers);
                 if (existingRoomIndex !== -1) {
                     const quantity = parseInt(this.value);
@@ -365,12 +347,6 @@
 
                     selectedRooms[existingRoomIndex].Quantity = quantity;
                     selectedRooms[existingRoomIndex].RoomNumber = selectedRoomNumbers.join(', ');
-
-                    // Log để debug
-                    console.log('Updated room quantity:', {
-                        roomNumbers: selectedRoomNumbers,
-                        quantity: quantity
-                    });
 
                     UpdateBookingSummaryWithRoomsAndServices();
                 }
@@ -390,10 +366,7 @@
                 e.preventDefault();
                 e.stopPropagation();
 
-                console.log('Service button clicked'); // Thêm log để debug
-
                 const serviceId = parseInt(this.getAttribute('data-service'));
-                console.log('Service ID:', serviceId); // Thêm log để debug
 
                 if (!selectedServices) {
                     selectedServices = []; // Đảm bảo mảng được khởi tạo
@@ -402,24 +375,20 @@
                 const serviceIndex = selectedServices.indexOf(serviceId);
                 if (serviceIndex === -1) {
                     selectedServices.push(serviceId);
-                    this.classList.add('active');
-                    this.textContent = 'Remove';
-                    console.log('Service added:', serviceId); // Thêm log để debug
+                    this.classList.add('btn-danger');
+                    this.classList.remove('btn-primary');
+                    this.textContent = 'Xóa';
                 } else {
                     selectedServices.splice(serviceIndex, 1);
-                    this.classList.remove('active');
-                    this.textContent = 'Add';
-                    console.log('Service removed:', serviceId); // Thêm log để debug
+                    this.classList.remove('btn-danger');
+                    this.classList.add('btn-primary');
+                    this.textContent = 'Thêm';
                 }
-
-                // Log trạng thái hiện tại của selectedServices
-                console.log('Current selectedServices:', selectedServices);
 
                 UpdateBookingSummaryWithRoomsAndServices();
             }
 
             function initializeServiceButtons() {
-                console.log('Initializing service buttons'); // Thêm log để debug
 
                 document.querySelectorAll('[data-service]').forEach(button => {
                     // Remove all existing event listeners
@@ -432,11 +401,13 @@
                     // Reset button state
                     const serviceId = parseInt(newButton.getAttribute('data-service'));
                     if (selectedServices && selectedServices.includes(serviceId)) {
-                        newButton.classList.add('active');
-                        newButton.textContent = 'Remove';
+                        newButton.classList.add('btn-danger');
+                        newButton.classList.remove('btn-primary');
+                        newButton.textContent = 'Xóa';
                     } else {
-                        newButton.classList.remove('active');
-                        newButton.textContent = 'Add';
+                        newButton.classList.remove('btn-danger');
+                        newButton.classList.add('btn-primary');
+                        newButton.textContent = 'Thêm';
                     }
                 });
             }
@@ -446,13 +417,16 @@
             const guestDropdown = document.getElementById('guestDropdown');
 
             roomGuestsInput.addEventListener('click', function (e) {
+                e.preventDefault();
                 e.stopPropagation();
-                guestDropdown.classList.toggle('show');
+                if (!guestDropdown.classList.contains('show')) {
+                    guestDropdown.classList.add('show');
+                }
             });
 
             // Close dropdown when clicking outside
             document.addEventListener('click', function (e) {
-                if (!e.target.closest('.input-group')) {
+                if (!e.target.closest('.guest-dropdown') && !e.target.closest('.input-group') && guestDropdown.classList.contains('show')) {
                     guestDropdown.classList.remove('show');
                 }
             });
@@ -461,6 +435,7 @@
             document.querySelectorAll('.guest-btn').forEach(button => {
                 button.addEventListener('click', function (e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const type = this.dataset.type;
                     const action = this.dataset.action;
                     updateGuestCount(type, action === 'increase' ? 1 : -1);
@@ -621,12 +596,14 @@
                     const serviceIndex = selectedServices.indexOf(serviceId);
                     if (serviceIndex === -1) {
                         selectedServices.push(serviceId);
-                        this.classList.add('active');
-                        this.textContent = 'Remove'; // Đổi text nút khi đã chọn
+                        this.classList.add('btn-danger');
+                        this.classList.remove('btn-primary');
+                        this.textContent = 'Xóa'; 
                     } else {
                         selectedServices.splice(serviceIndex, 1);
-                        this.classList.remove('active');
-                        this.textContent = 'Add'; // Đổi text nút khi hủy
+                        this.classList.remove('btn-danger');
+                        this.classList.add('btn-primary');
+                        this.textContent = 'Thêm'; 
                     }
 
                     UpdateBookingSummaryWithRoomsAndServices();
@@ -665,7 +642,6 @@
                     },
                     error: function(xhr, status, error) {
                         console.error('Error updating booking summary:', error);
-                        showDefaultSummary();
                     },
                     complete: function() {
                         if (summarySection) {
@@ -686,11 +662,6 @@
             if (summarySection) {
                 summarySection.style.opacity = '0.5';
             }
-
-            console.log('Updating booking summary with:', {
-                selectedRooms,
-                selectedServices
-            });
 
             $.ajax({
                 url: '@Url.Action("UpdateBookingSummary", "Booking_64132675")',
@@ -718,6 +689,6 @@
                 }
             });
         }
-</script>
+    </script>
 </body>
 </html>

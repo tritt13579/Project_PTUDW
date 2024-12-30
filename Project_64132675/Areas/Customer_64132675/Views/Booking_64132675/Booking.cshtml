@@ -85,14 +85,17 @@
                     <div class="input-group">
                         <select class="form-select" id="roomClass" name="RoomClassId">
                             <option value="" selected>Choose room class...</option>
-                            @foreach (var roomClass in ViewBag.ROOMCLASS)
+                            @if (ViewBag.ROOMCLASS != null)
                             {
-                                <option value="@roomClass.ROOM_CLASS_ID"
-                                        data-price="@roomClass.BASE_PRICE.ToString("N2")">
-                                    @roomClass.CLASS_NAME - @roomClass.BASE_PRICE.ToString("N2")₫
-                                </option>
+                                foreach (var roomClass in ViewBag.ROOMCLASS)
+                                {
+                                    <option value="@roomClass.ROOM_CLASS_ID"
+                                            data-price="@roomClass.BASE_PRICE.ToString("N2")">
+                                        @roomClass.CLASS_NAME - @roomClass.BASE_PRICE.ToString("N2")₫
+                                    </option>
+                                }
                             }
-                        </select>
+                            </select>
                         <span class="input-group-text"><i class="bi bi-house-door"></i></span>
                     </div>
                 </div>
@@ -144,111 +147,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-<script>
-        //document.addEventListener('DOMContentLoaded', function () {
-            
-        //});
-
-        
-
-        //document.querySelectorAll('.select-room').forEach(button => {
-        //    button.addEventListener('click', function () {
-        //        const roomClassId = this.dataset.roomclass;
-        //        const roomNumbers = this.dataset.roomnumbers.split(',').map(n => n.trim());
-        //        const price = parseFloat(this.dataset.price);
-        //        const name = this.dataset.name;
-
-        //        // Get quantity from the associated quantity selector
-        //        const quantitySelector = this.closest('.room-item').querySelector('.room-quantity');
-        //        const quantity = parseInt(quantitySelector.value);
-
-        //        // Add selected rooms
-        //        const selectedRoomNumbers = roomNumbers.slice(0, quantity);
-
-        //        // Update or add to selectedRooms array
-        //        const existingRoomIndex = selectedRooms.findIndex(r => r.RoomClassId === roomClassId);
-        //        if (existingRoomIndex !== -1) {
-        //            selectedRooms[existingRoomIndex] = {
-        //                RoomClassId: roomClassId,
-        //                RoomNumber: selectedRoomNumbers.join(', '),
-        //                Price: price,
-        //                Quantity: quantity,
-        //                Name: name
-        //            };
-        //        } else {
-        //            selectedRooms.push({
-        //                RoomClassId: roomClassId,
-        //                RoomNumber: selectedRoomNumbers.join(', '),
-        //                Price: price,
-        //                Quantity: quantity,
-        //                Name: name
-        //            });
-        //        }
-
-        //        UpdateBookingSummaryWithRoomsAndServices();
-        //    });
-        //});
-
-        //// Handle service selection
-        //document.querySelectorAll('[data-service]').forEach(button => {
-        //    button.addEventListener('click', function () {
-        //        const serviceId = parseInt(this.dataset.service);
-
-        //        // Toggle service selection
-        //        const serviceIndex = selectedServices.indexOf(serviceId);
-        //        if (serviceIndex === -1) {
-        //            selectedServices.push(serviceId);
-        //            this.classList.add('active');
-        //        } else {
-        //            selectedServices.splice(serviceIndex, 1);
-        //            this.classList.remove('active');
-        //        }
-
-        //        UpdateBookingSummaryWithRoomsAndServices();
-        //    });
-        //});
-
-        //function UpdateBookingSummaryWithRoomsAndServices() {
-        //    const checkIn = document.querySelector('#checkInDate').value; // Adjust selector as needed
-        //    const checkOut = document.querySelector('#checkOutDate').value; // Adjust selector as needed
-        //    const adults = parseInt(document.querySelector('#adults').value) || 2; // Adjust selector as needed
-        //    const children = parseInt(document.querySelector('#children').value) || 0; // Adjust selector as needed
-
-        //    const summarySection = document.getElementById('bookingSummary');
-        //    if (summarySection) {
-        //        summarySection.style.opacity = '0.5';
-        //    }
-
-        //    $.ajax({
-        //        url: '/Booking_64132675/UpdateBookingSummaryWithRoomsAndServices',
-        //        type: 'POST',
-        //        data: JSON.stringify({
-        //            checkin: checkIn,
-        //            checkout: checkOut,
-        //            adults: adults,
-        //            children: children,
-        //            selectedRooms: selectedRooms,
-        //            selectedServices: selectedServices
-        //        }),
-        //        contentType: 'application/json',
-        //        success: function (result) {
-        //            $('#bookingSummary').html(result);
-        //        },
-        //        error: function (xhr, status, error) {
-        //            console.error('Error updating booking summary:', error);
-        //            showDefaultSummary();
-        //        },
-        //        complete: function () {
-        //            if (summarySection) {
-        //                summarySection.style.opacity = '1';
-        //            }
-        //        }
-        //    });
-        //}
-
-
-</script>
-}
