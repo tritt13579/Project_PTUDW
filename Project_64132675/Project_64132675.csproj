@@ -153,6 +153,7 @@
     <Compile Include="Areas\Employee_64132675\Controllers\ROOMs_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Controllers\SERVICEs_64132675Controller.cs" />
     <Compile Include="Areas\Employee_64132675\Employee_64132675AreaRegistration.cs" />
+    <Compile Include="Areas\Employee_64132675\ViewModels\DashboardViewModel_64132675.cs" />
     <Compile Include="Controllers\Auth_64132675Controller.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -260,6 +261,7 @@
     <Content Include="Areas\Customer_64132675\Views\Booking_64132675\ServicesPartial.cshtml" />
     <Content Include="Areas\Customer_64132675\Views\Booking_64132675\BookingSummaryPartial.cshtml" />
     <Content Include="Areas\Customer_64132675\Views\Booking_64132675\MyBookings.cshtml" />
+    <Content Include="Areas\Customer_64132675\Views\Booking_64132675\BookingDetail.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -294,7 +296,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Customer_64132675\Views\Shared\" />
-    <Folder Include="Areas\Employee_64132675\Data\" />
     <Folder Include="Areas\Employee_64132675\Views\Shared\" />
     <Folder Include="Public\Images\" />
   </ItemGroup>

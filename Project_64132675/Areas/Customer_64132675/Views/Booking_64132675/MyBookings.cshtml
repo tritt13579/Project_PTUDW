@@ -1,93 +1,200 @@
 ﻿@model IEnumerable<Project_64132675.Models.BOOKING>
 @{
     ViewData["Title"] = "Đơn đặt phòng của tôi";
-    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    Layout = "~/Views/Shared/_LayoutBooking.cshtml";
 }
 
-<div class="bookings-container">
-    <div class="container">
-        <div class="booking-list">
-            <div class="container">
-                <h2 class="booking-title">Đơn đặt phòng của tôi</h2>
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+    }
 
+    .hero-section {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .hero-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/Public/Images/ssss.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(52, 73, 94, 0.8));
+    }
+
+    .hero-content {
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #ffffff;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        opacity: 0.9;
+        max-width: 600px;
+        line-height: 1.6;
+    }
+
+    .booking-grid {
+        padding: 2rem 0;
+        background-color: #f8f9fa;
+        min-height: 300px;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: 0.75rem;
+        transition: transform 0.2s;
+        height: 100%;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .card-status {
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .booking-id {
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .status-badge {
+        border-radius: 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .status-paid {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .amount-value {
+        color: var(--accent-color);
+        font-weight: 600;
+    }
+
+    .no-bookings {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6c757d;
+    }
+
+    @@media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+<div class="hero-section">
+    <div class="hero-image"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">Đơn đặt phòng của tôi</h1>
+        <p class="hero-subtitle">Quản lý tất cả các đặt phòng của bạn tại một nơi</p>
+    </div>
+</div>
+
+<div class="booking-grid">
+    <div class="container">
+        @if (Model != null && Model.Any())
+        {
+            <div class="row g-4">
                 @foreach (var booking in Model)
                 {
-                    <div class="booking-item">
-                        <div class="booking-header">
-                            <h5 class="mb-0">Đơn đặt phòng #@booking.BOOKING_ID</h5>
-                            <span>@booking.PAYMENTSTATUS.PAYMENT_STATUS_NAME</span>
-                        </div>
-
-                        <div class="booking-content">
-                            <div class="booking-details">
-                                <div class="detail-row">
-                                    <span class="detail-label">Check-in:</span>
-                                    <span class="detail-value">@booking.CHECKIN_DATE.ToString("dd/MM/yyyy")</span>
+                    if (booking != null)
+                    {
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="booking-card shadow-sm">
+                                <div class="card-status p-3 d-flex justify-content-between align-items-center">
+                                    <span class="booking-id">#@booking.BOOKING_ID</span>
+                                    <span class="status-badge px-3 py-1 @(booking.PAYMENTSTATUS?.PAYMENT_STATUS_NAME?.Contains("Đã") == true ? "status-paid" : "status-pending")">
+                                        @(booking.PAYMENTSTATUS?.PAYMENT_STATUS_NAME ?? "Chưa xác định")
+                                    </span>
                                 </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Check-out:</span>
-                                    <span class="detail-value">@booking.CHECKOUT_DATE.ToString("dd/MM/yyyy")</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Số đêm:</span>
-                                    @*<span class="detail-value">@booking.Nights đêm</span>*@
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Số người:</span>
-                                    <span class="detail-value">@booking.NUM_ADULT người lớn, @booking.NUM_CHILDREN trẻ em</span>
-                                </div>
-                            </div>
-
-                            @*<div class="room-details">
-                            <h6>Phòng đã chọn:</h6>
-                            @foreach (var room in booking.SelectedRooms)
-                            {
-                                <div class="room-item">
-                                    <div class="detail-row">
-                                        <span>@room.Name (@room.RoomNumber)</span>
-                                        <span>@room.Price.ToString("N0") VNĐ</span>
-                                    </div>
-                                </div>
-                            }
-                            <div class="detail-row amount-row">
-                                <span>Tổng tiền phòng:</span>
-                                <span>@booking.TotalRoomAmount.ToString("N0") VNĐ</span>
-                            </div>
-                        </div>
-
-                        @if (booking.SelectedServiceDetails.Any())
-                        {
-                            <div class="service-details">
-                                <h6>Dịch vụ đã chọn:</h6>
-                                @foreach (var service in booking.SelectedServiceDetails)
-                                {
-                                    <div class="service-item">
-                                        <div class="detail-row">
-                                            <span>@service.ServiceName</span>
-                                            <span>@service.Price.ToString("N0") VNĐ</span>
+                                <div class="p-3">
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-6">
+                                            <div class="text-muted small">Check-in</div>
+                                            <div class="fw-500">@(booking.CHECKIN_DATE.ToString("dd/MM/yyyy"))</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted small">Check-out</div>
+                                            <div class="fw-500">@(booking.CHECKOUT_DATE.ToString("dd/MM/yyyy"))</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted small">Số người</div>
+                                            <div class="fw-500">@((booking.NUM_ADULT + booking.NUM_CHILDREN).ToString()) người</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted small">Phòng & Dịch vụ</div>
+                                            <div class="fw-500">@(booking.ROOM?.Count ?? 0) phòng, @(booking.SERVICE?.Count ?? 0) dịch vụ</div>
                                         </div>
                                     </div>
-                                }
-                                <div class="detail-row amount-row">
-                                    <span>Tổng tiền dịch vụ:</span>
-                                    <span>@booking.TotalServiceAmount.ToString("N0") VNĐ</span>
+                                    <div class="border-top pt-3 text-end">
+                                        <div class="text-muted small">Tổng cộng</div>
+                                        <div class="amount-value fs-5">@booking.BOOKING_AMOUNT.ToString("N0") VNĐ</div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <a href="@Url.Action("BookingDetail", "Booking_64132675", new { id = booking.BOOKING_ID })"
+                                           class="btn btn-primary w-100">
+                                            Xem chi tiết
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>*@
-                            @*}*@
-
-                            <div class="detail-row amount-row">
-                                <span>Tổng cộng:</span>
-                                <span>@booking.BOOKING_AMOUNT.ToString("N0") VNĐ</span>
-                            </div>
-
-                            <div class="text-end mt-3">
-                                <a href="@Url.Action("Details", "Booking_64132675", new { id = booking.BOOKING_ID })"
-                                   class="btn btn-details">Xem chi tiết</a>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="no-bookings">
+                <h3>Không có đơn đặt phòng nào</h3>
+                <p>Bạn chưa có đơn đặt phòng nào. Hãy đặt phòng ngay!</p>
+            </div>
+        }
     </div>
 </div>

@@ -1,8 +1,410 @@
-﻿
-@{
-    ViewBag.Title = "Index";
+﻿@{
+    ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_LayoutEmployee.cshtml";
 }
+<style>
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #34495e;
+        --accent-color: #f4a730;
+        --background-light: #ecf0f1;
+        --text-color-light: #ecf0f1;
+        --text-color-dark: #2c3e50;
+    }
+    .dashboard-container {
+        padding: 20px;
+        background-color: var(--background-light);
+    }
+    .dashboard-header {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .kpi-card {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        height: 100%;
+    }
+    .kpi-title {
+        color: var(--secondary-color);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .kpi-value {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    .kpi-icon {
+        color: var(--accent-color);
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    .chart-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        height: 300px; /* Add explicit height */
+        position: relative; /* Required for Chart.js */
+    }
+    .chart-title {
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    .table-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .date-filter {
+        background-color: white;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+</style>
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="mb-0" style="color: var(--primary-color)">Hotel Dashboard</h2>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex justify-content-end">
+                    <input type="date" id="startDate" class="date-filter me-2">
+                    <input type="date" id="endDate" class="date-filter">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <i class="fas fa-dollar-sign kpi-icon"></i>
+                <div class="kpi-title">Total Revenue</div>
+                <div class="kpi-value" id="totalRevenue">$0</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <i class="fas fa-bed kpi-icon"></i>
+                <div class="kpi-title">Room Occupancy</div>
+                <div class="kpi-value" id="occupancy">0%</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <i class="fas fa-concierge-bell kpi-icon"></i>
+                <div class="kpi-title">Top Service</div>
+                <div class="kpi-value" id="topService">-</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <i class="fas fa-users kpi-icon"></i>
+                <div class="kpi-title">Current Guests</div>
+                <div class="kpi-value" id="currentGuests">0</div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="chart-container">
+                <h3 class="chart-title">Revenue by Room Class</h3>
+                <canvas id="revenueByRoomChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <h3 class="chart-title">Booking Sources</h3>
+                <canvas id="bookingSourcesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="chart-container">
+                <h3 class="chart-title">Occupancy Trend</h3>
+                <canvas id="occupancyTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="chart-container">
+                <h3 class="chart-title">Service Revenue</h3>
+                <canvas id="serviceRevenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="table-container">
+        <h3 class="chart-title">Recent Bookings</h3>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Room Types</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="recentBookingsTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script>
+        const chartColors = {
+            primary: '#2c3e50',
+            secondary: '#34495e',
+            accent: '#f4a730',
+            background: '#ecf0f1',
+            chartColors: [
+                '#2c3e50', '#34495e', '#f4a730', '#7f8c8d', '#95a5a6',
+                '#3498db', '#e74c3c', '#2ecc71', '#f1c40f', '#9b59b6'
+            ]
+        };
+        function loadKPIData() {
+            fetch('/Dashboard_64132675/GetKPIData')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalRevenue').textContent = `$${data.TotalRevenue.toLocaleString()}`;
+                    document.getElementById('occupancy').textContent =
+                        `${Math.round((data.Occupancy.Booked / data.Occupancy.Total) * 100)}%`;
+                    document.getElementById('topService').textContent = data.TopService?.Name || '-';
+                    document.getElementById('currentGuests').textContent = data.CurrentGuests.toLocaleString();
+                })
+                .catch(error => console.error('Error loading KPI data:', error));
+        }
+        function loadRecentBookings() {
+            fetch('/Dashboard_64132675/GetRecentBookings')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        console.error('Server error:', data.error);
+                        return;
+                    }
+                    const tbody = document.getElementById('recentBookingsTable');
+                    tbody.innerHTML = '';
+                    data.forEach(booking => {
+                        const checkInDate = new Date(parseInt(booking.CheckIn.substring(6, booking.CheckIn.length - 2)));
+                        const checkOutDate = new Date(parseInt(booking.CheckOut.substring(6, booking.CheckOut.length - 2)));
 
-<h2>Inde 2222221x @ViewBag.FullName</h2>
-
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                    <td>${booking.CustomerName}</td>
+                    <td>${booking.RoomTypes}</td>
+                    <td>${checkInDate.toLocaleDateString()}</td>
+                    <td>${checkOutDate.toLocaleDateString()}</td>
+                    <td>$${booking.Amount.toLocaleString()}</td>
+                `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading recent bookings:', error);
+                    document.getElementById('recentBookingsTable').innerHTML =
+                        '<tr><td colspan="5" class="text-center">Error loading data</td></tr>';
+                });
+        }
+        function initializeCharts() {
+            document.querySelectorAll('.chart-container').forEach(container => {
+                container.style.height = '300px';
+            });
+            const revenueCtx = document.getElementById('revenueByRoomChart').getContext('2d');
+            window.revenueChart = new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Revenue',
+                        backgroundColor: chartColors.primary,
+                        data: []
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            const sourcesCtx = document.getElementById('bookingSourcesChart').getContext('2d');
+            window.sourcesChart = new Chart(sourcesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: chartColors.chartColors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+            const occupancyCtx = document.getElementById('occupancyTrendChart').getContext('2d');
+            window.occupancyChart = new Chart(occupancyCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Occupancy Rate',
+                        borderColor: chartColors.accent,
+                        backgroundColor: chartColors.accent + '20',
+                        fill: true,
+                        tension: 0.4,
+                        data: []
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            const serviceCtx = document.getElementById('serviceRevenueChart').getContext('2d');
+            window.serviceChart = new Chart(serviceCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Revenue',
+                        backgroundColor: chartColors.secondary,
+                        data: []
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function updateCharts() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            fetch(`/Dashboard_64132675/GetRevenueByRoomClass?startDate=${startDate}&endDate=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    window.revenueChart.data.labels = data.labels;
+                    window.revenueChart.data.datasets[0].data = data.data;
+                    window.revenueChart.update();
+                })
+                .catch(error => console.error('Error loading revenue data:', error));
+            fetch('/Dashboard_64132675/GetBookingSources')
+                .then(response => response.json())
+                .then(data => {
+                    window.sourcesChart.data.labels = data.labels;
+                    window.sourcesChart.data.datasets[0].data = data.data;
+                    window.sourcesChart.update();
+                })
+                .catch(error => console.error('Error loading booking sources data:', error));
+            fetch(`/Dashboard_64132675/GetOccupancyTrend?startDate=${startDate}&endDate=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    window.occupancyChart.data.labels = data.labels;
+                    window.occupancyChart.data.datasets[0].data = data.data;
+                    window.occupancyChart.update();
+                })
+                .catch(error => console.error('Error loading occupancy data:', error));
+            fetch('/Dashboard_64132675/GetServiceRevenue')
+                .then(response => response.json())
+                .then(data => {
+                    window.serviceChart.data.labels = data.labels;
+                    window.serviceChart.data.datasets[0].data = data.data;
+                    window.serviceChart.update();
+                })
+                .catch(error => console.error('Error loading service revenue data:', error));
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            const monthAgo = new Date();
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            document.getElementById('startDate').value = monthAgo.toISOString().split('T')[0];
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+            loadKPIData();
+            initializeCharts();
+            loadRecentBookings();
+            ['startDate', 'endDate'].forEach(id => {
+                document.getElementById(id).addEventListener('change', () => {
+                    loadKPIData();
+                    updateCharts();
+                });
+            });
+            updateCharts();
+        });
+    </script>
+}

@@ -111,7 +111,7 @@ else
                                 <div class="booking-actions d-flex align-items-center gap-2">
                                     @if (room.AvailableCount > 0)
                                     {
-                                        <div class="quantity-selector d-flex align-items-center">
+                                        @*<div class="quantity-selector d-flex align-items-center">
                                             <select class="form-select form-select-sm room-quantity"
                                                     style="width: 80px;"
                                                     data-max="@room.AvailableCount">
@@ -120,7 +120,7 @@ else
                                                     <option value="@i">@i phòng</option>
                                                 }
                                             </select>
-                                        </div>
+                                        </div>*@
                                         <div class="quantity-selector d-flex align-items-center">
                                             <div class="room-counter d-flex align-items-center justify-content-between">
                                                 <button class="btn btn-outline-secondary room-btn" data-action="decrease">
@@ -172,33 +172,33 @@ else
         showLessText.classList.toggle('d-none');
     }
 
-    //document.addEventListener('DOMContentLoaded', function () {
-    //    const roomCounters = document.querySelectorAll('.room-counter');
+    document.addEventListener('DOMContentLoaded', function () {
+        const roomCounters = document.querySelectorAll('.room-counter');
 
-    //    roomCounters.forEach(counter => {
-    //        const decreaseBtn = counter.querySelector('[data-action="decrease"]');
-    //        const increaseBtn = counter.querySelector('[data-action="increase"]');
-    //        const countDisplay = counter.querySelector('.room-count');
-    //        const roomQuantityInput = counter.querySelector('.room-quantity');
-    //        const maxRooms = parseInt(roomQuantityInput.getAttribute('data-max'));
+        roomCounters.forEach(counter => {
+            const decreaseBtn = counter.querySelector('[data-action="decrease"]');
+            const increaseBtn = counter.querySelector('[data-action="increase"]');
+            const countDisplay = counter.querySelector('.room-count');
+            const roomQuantityInput = counter.querySelector('.room-quantity');
+            const maxRooms = parseInt(roomQuantityInput.getAttribute('data-max'));
 
-    //        decreaseBtn.addEventListener('click', function () {
-    //            let currentValue = parseInt(countDisplay.textContent);
-    //            if (currentValue > 1) {
-    //                currentValue--;
-    //                countDisplay.textContent = currentValue;
-    //                roomQuantityInput.value = currentValue;
-    //            }
-    //        });
+            decreaseBtn.addEventListener('click', function () {
+                let currentValue = parseInt(countDisplay.textContent);
+                if (currentValue > 1) {
+                    currentValue--;
+                    countDisplay.textContent = currentValue;
+                    roomQuantityInput.value = currentValue;
+                }
+            });
 
-    //        increaseBtn.addEventListener('click', function () {
-    //            let currentValue = parseInt(countDisplay.textContent);
-    //            if (currentValue < maxRooms) {
-    //                currentValue++;
-    //                countDisplay.textContent = currentValue;
-    //                roomQuantityInput.value = currentValue;
-    //            }
-    //        });
-    //    });
-    //});
+            increaseBtn.addEventListener('click', function () {
+                let currentValue = parseInt(countDisplay.textContent);
+                if (currentValue < maxRooms) {
+                    currentValue++;
+                    countDisplay.textContent = currentValue;
+                    roomQuantityInput.value = currentValue;
+                }
+            });
+        });
+    });
 </script>

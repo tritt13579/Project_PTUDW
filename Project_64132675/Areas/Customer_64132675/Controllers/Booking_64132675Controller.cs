@@ -253,18 +253,6 @@ namespace Project_64132675.Areas.Customer_64132675.Controllers
             return View("Booking", model);
         }
 
-        //public ActionResult MyBookings()
-        //{
-        //    var customerId = GetSessionUserId();
-        //    //var bookings = db.BOOKING
-        //    //    .Include(b => b.ROOM)
-        //    //    .Include(b => b.SERVICE)
-        //    //    .Where(b => b.CUSTOMER_ID == customerId)
-        //    //    .OrderByDescending(b => b.BOOKING_DATE)
-        //    //    .ToList();
-        //    var bOOKING = db.BOOKING.Include(b => b.CUSTOMER).Include(b => b.PAYMENTSTATUS);
-        //    return View(bOOKING.ToList());
-        //}
         public ActionResult MyBookings()
         {
             try
@@ -272,12 +260,16 @@ namespace Project_64132675.Areas.Customer_64132675.Controllers
                 // Lấy ID của khách hàng đang đăng nhập
                 var customerId = GetSessionUserId();
 
-                // Lấy danh sách booking của khách hàng
+                // Lấy danh sách booking của khách hàng bao gồm cả thông tin phòng và dịch vụ
                 var bookings = db.BOOKING
                     .Include(b => b.CUSTOMER)
                     .Include(b => b.PAYMENTSTATUS)
-                    .Where(b => b.CUSTOMER_ID == customerId) // Lọc theo customer ID
-                    .OrderByDescending(b => b.BOOKING_DATE)  // Sắp xếp theo ngày đặt, mới nhất lên đầu
+                    // Include thông tin về phòng
+                    .Include(b => b.ROOM)
+                    // Include thông tin về dịch vụ
+                    .Include(b => b.SERVICE)
+                    .Where(b => b.CUSTOMER_ID == customerId)
+                    .OrderByDescending(b => b.BOOKING_DATE)
                     .ToList();
 
                 // Nếu không có booking nào
@@ -290,9 +282,28 @@ namespace Project_64132675.Areas.Customer_64132675.Controllers
             }
             catch (Exception ex)
             {
-                // Log lỗi nếu có
+                ModelState.AddModelError("", "Có lỗi xảy ra: " + ex.Message);
                 return View(new List<BOOKING>());
             }
+        }
+
+        public ActionResult BookingDetail(long? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+            }
+            var booking = db.BOOKING
+                .Include(b => b.CUSTOMER)
+                .Include(b => b.PAYMENTSTATUS)
+                .Include(b => b.ROOM)
+                .Include(b => b.SERVICE)
+                .FirstOrDefault(b => b.BOOKING_ID == id);
+            if (booking == null)
+            {
+                return HttpNotFound();
+            }
+            return View(booking);
         }
     }
 }

@@ -1,0 +1,349 @@
+﻿@model Project_64132675.Models.BOOKING
+@{
+    ViewData["Title"] = "Chi tiết đặt phòng";
+    Layout = "~/Views/Shared/_LayoutBooking.cshtml";
+}
+
+<style>
+    /* Giữ nguyên root và hero section styles */
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #34495e;
+        --accent-color: #f4a730;
+        --background-light: #ecf0f1;
+        --text-color-light: #ecf0f1;
+        --text-color-dark: #2c3e50;
+    }
+
+    /* Giữ nguyên hero section styles */
+    .hero-section { /* ... giữ nguyên ... */ }
+    .hero-image { /* ... giữ nguyên ... */ }
+    .hero-overlay { /* ... giữ nguyên ... */ }
+    .hero-content { /* ... giữ nguyên ... */ }
+    .hero-title { /* ... giữ nguyên ... */ }
+    .booking-id { /* ... giữ nguyên ... */ }
+
+    /* Updated Main Content Styles */
+    .main-content {
+        background-color: #f8f9fa;
+        padding: 3rem 0;
+        min-height: calc(100vh - 200px);
+    }
+
+    .details-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    /* New Layout Structure */
+    .booking-overview {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    @@media (max-width: 768px) {
+        .booking-overview {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Card Styles */
+    .card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: fit-content;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header {
+        background: var(--primary-color);
+        color: var(--text-color-light);
+        padding: 1.25rem 1.75rem;
+        font-weight: 600;
+        font-size: 1.2rem;
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-body {
+        padding: 1.75rem;
+    }
+
+    /* Status and Info Styles */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        gap: 0.5rem;
+    }
+
+    .status-paid {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    .status-pending {
+        background-color: var(--accent-color);
+        color: var(--primary-color);
+    }
+
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-item {
+        padding: 1.25rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        font-size: 1rem;
+        color: #666;
+    }
+
+    .info-value {
+        color: var(--text-color-dark);
+        font-weight: 600;
+    }
+
+    /* Room and Service Cards */
+    .item-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+    }
+
+    .room-card, .service-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.25rem;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .room-card:hover, .service-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border-color: var(--accent-color);
+    }
+
+    .room-details, .service-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .price-tag {
+        color: var(--accent-color);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    /* Price Summary */
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+        font-size: 1.1rem;
+    }
+
+    .price-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-top: 1rem;
+    }
+
+    .total-price {
+        color: var(--accent-color);
+        font-size: 1.75rem;
+        font-weight: 700;
+    }
+
+    /* Back Button */
+    .btn-back {
+        background-color: var(--accent-color);
+        color: var(--primary-color);
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    .btn-back:hover {
+        background-color: var(--primary-color);
+        color: var(--text-color-light);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+<div class="hero-section">
+    <div class="hero-image"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">Chi tiết đặt phòng</h1>
+        <div class="booking-id">Mã đơn: #@Model.BOOKING_ID</div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="details-container">
+        <!-- Overview Section - 2 columns -->
+        <div class="booking-overview">
+            <!-- Booking Info -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i>
+                    Tổng quan đặt phòng
+                </div>
+                <div class="card-body">
+                    <span class="status-badge @(Model.PAYMENTSTATUS.PAYMENT_STATUS_NAME.Contains("Đã") ? "status-paid" : "status-pending")">
+                        <i class="fas @(Model.PAYMENTSTATUS.PAYMENT_STATUS_NAME.Contains("Đã") ? "fa-check-circle" : "fa-clock")"></i>
+                        @Model.PAYMENTSTATUS.PAYMENT_STATUS_NAME
+                    </span>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <span class="info-label">Ngày đặt</span>
+                            <span class="info-value">@Model.BOOKING_DATE.ToString("dd/MM/yyyy")</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Check-in</span>
+                            <span class="info-value">@Model.CHECKIN_DATE.ToString("dd/MM/yyyy")</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Check-out</span>
+                            <span class="info-value">@Model.CHECKOUT_DATE.ToString("dd/MM/yyyy")</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Số đêm</span>
+                            <span class="info-value">@((Model.CHECKOUT_DATE - Model.CHECKIN_DATE).Days) đêm</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="info-label">Số người</span>
+                            <span class="info-value">@Model.NUM_ADULT người lớn, @Model.NUM_CHILDREN trẻ em</span>
+                        </li>
+                        @if (!string.IsNullOrEmpty(Model.SPECIAL_REQUESTS))
+                        {
+                            <li class="info-item">
+                                <span class="info-label">Yêu cầu đặc biệt</span>
+                                <span class="info-value">@Model.SPECIAL_REQUESTS</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-credit-card"></i>
+                    Chi tiết thanh toán
+                </div>
+                <div class="card-body">
+                    <div class="price-row">
+                        <span>Tổng tiền phòng</span>
+                        <span>@Model.ROOM.Sum(r => r.ROOMCLASS.BASE_PRICE * r.NUM_BEDS).ToString("N0") VNĐ</span>
+                    </div>
+                    @if (Model.SERVICE.Any())
+                    {
+                        <div class="price-row">
+                            <span>Tổng tiền dịch vụ</span>
+                            <span>@Model.SERVICE.Sum(s => s.PRICE).ToString("N0") VNĐ</span>
+                        </div>
+                    }
+                    <div class="price-row">
+                        <span>Tổng cộng</span>
+                        <span class="total-price">@Model.BOOKING_AMOUNT.ToString("N0") VNĐ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rooms Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-bed"></i>
+                Danh sách phòng (@Model.ROOM.Count phòng)
+            </div>
+            <div class="card-body">
+                <div class="item-grid">
+                    @foreach (var room in Model.ROOM)
+                    {
+                        <div class="room-card">
+                            <div class="room-details">
+                                <div class="info-value">@room.ROOMCLASS.CLASS_NAME</div>
+                                <div class="text-muted">@room.NUM_BEDS @room.BED_TYPE</div>
+                                <div class="price-tag">@((@room.ROOMCLASS.BASE_PRICE * @room.NUM_BEDS).ToString("N0")) VNĐ</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Section -->
+        @if (Model.SERVICE.Any())
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-concierge-bell"></i>
+                    Dịch vụ đi kèm (@Model.SERVICE.Count dịch vụ)
+                </div>
+                <div class="card-body">
+                    <div class="item-grid">
+                        @foreach (var service in Model.SERVICE)
+                        {
+                            <div class="service-card">
+                                <div class="service-details">
+                                    <div class="info-value">@service.SERVICE_NAME</div>
+                                    <div class="price-tag">@service.PRICE.ToString("N0") VNĐ</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="text-center">
+            <a href="@Url.Action("MyBookings", "Booking_64132675")" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Quay lại danh sách
+            </a>
+        </div>
+    </div>
+</div>
