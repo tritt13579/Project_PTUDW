@@ -35,7 +35,7 @@
             </div>
 
             <!-- Center Logo -->
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home_64132675" )">
                 <img src="~/Public/Images/logo.png" alt="Metropole Logo">
             </a>
 
@@ -65,23 +65,26 @@
             <i class="fas fa-times"></i>
         </button>
         <div class="side-nav-header text-center my-3">
+            <a href="@Url.Action("Index", "Home_64132675" )">
+
             <img src="~/Public/Images/logo_black.png" alt="Metropole Logo" class="img-fluid" style="max-width: 150px;">
+            </a>
         </div>
         <div class="side-nav-content">
             <ul class="list-group side-nav-menu">
                 <li class="list-group-item m-1">
-                    <a href="#" class="text-decoration-none d-flex align-items-center">
-                        <i class="fas fa-user-circle me-2"></i> TÀI KHOẢN CỦA TÔI
+                    <a class="text-decoration-none d-flex align-items-center" href="@Url.Action("Index", "Home_64132675" )">
+                        <i class="fas fa-home me-2"></i> TRANG CHỦ
                     </a>
                 </li>
                 <li class="list-group-item m-1">
-                    <a class="text-decoration-none d-flex align-items-center"  href="@Url.Action("MyBookings", "Booking_64132675" )">
+                    <a class="text-decoration-none d-flex align-items-center" href="@Url.Action("Booking", "Booking_64132675" )">
+                        <i class="fas fa-calendar-check me-2"></i> ĐẶT PHÒNG NGAY
+                    </a>
+                </li>
+                <li class="list-group-item m-1">
+                    <a class="text-decoration-none d-flex align-items-center" href="@Url.Action("MyBookings", "Booking_64132675" )">
                         <i class="fas fa-bed me-2"></i> ĐẶT PHÒNG CỦA TÔI
-                    </a>
-                </li>
-                <li class="list-group-item m-1">
-                    <a href="#" class="text-decoration-none d-flex align-items-center">
-                        <i class="fas fa-info-circle me-2"></i> THÔNG TIN CÁ NHÂN
                     </a>
                 </li>
                 <li class="list-group-item m-1">

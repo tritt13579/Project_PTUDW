@@ -276,7 +276,13 @@
                 <div class="card-body">
                     <div class="price-row">
                         <span>Tổng tiền phòng</span>
-                        <span>@Model.ROOM.Sum(r => r.ROOMCLASS.BASE_PRICE * r.NUM_BEDS).ToString("N0") VNĐ</span>
+                        <span>
+                            @Model.ROOM.Sum(r =>
+                                r.ROOMCLASS.BASE_PRICE * r.NUM_BEDS *
+                                (Model.CHECKOUT_DATE.Date - Model.CHECKIN_DATE.Date).Days
+                            ).ToString("N0") VNĐ
+                        </span>
+
                     </div>
                     @if (Model.SERVICE.Any())
                     {
@@ -307,7 +313,7 @@
                             <div class="room-details">
                                 <div class="info-value">@room.ROOMCLASS.CLASS_NAME</div>
                                 <div class="text-muted">@room.NUM_BEDS @room.BED_TYPE</div>
-                                <div class="price-tag">@((@room.ROOMCLASS.BASE_PRICE * @room.NUM_BEDS).ToString("N0")) VNĐ</div>
+                                <div class="price-tag">@((@room.ROOMCLASS.BASE_PRICE * @room.NUM_BEDS).ToString("N0")) VNĐ/Nights</div>
                             </div>
                         </div>
                     }

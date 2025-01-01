@@ -7,77 +7,97 @@
         --primary-color: #2c3e50;
         --secondary-color: #34495e;
         --accent-color: #f4a730;
-        --background-light: #ecf0f1;
+        --accent-secondary: #e67e22;
         --text-color-light: #ecf0f1;
         --text-color-dark: #2c3e50;
+        --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+        --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
     }
+
     .dashboard-container {
-        padding: 20px;
+        padding: 24px;
         background-color: var(--background-light);
     }
+
     .dashboard-header {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-md);
+        color: var(--text-color-light);
     }
+
     .kpi-card {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
         height: 100%;
+        transition: transform 0.2s;
     }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
     .kpi-title {
         color: var(--secondary-color);
-        font-size: 0.9rem;
+        font-size: 1rem;
         font-weight: 600;
-        margin-bottom: 10px;
     }
+
     .kpi-value {
         color: var(--primary-color);
         font-size: 1.5rem;
         font-weight: 700;
     }
+
     .kpi-icon {
         color: var(--accent-color);
-        font-size: 2rem;
-        margin-bottom: 10px;
+        font-size: 2.25rem;
+        margin-bottom: 12px;
     }
+
     .chart-container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        height: 300px; /* Add explicit height */
-        position: relative; /* Required for Chart.js */
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-sm);
+        height: 350px;
+        position: relative;
     }
+
     .chart-title {
         color: var(--primary-color);
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         font-weight: 600;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--background-light);
     }
-    .table-container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+
     .date-filter {
-        background-color: white;
-        padding: 10px;
-        border-radius: 4px;
-        border: 1px solid #ddd;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-color-light);
     }
+
+        .date-filter:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
 </style>
+
 <div class="dashboard-container">
     <div class="dashboard-header">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h2 class="mb-0" style="color: var(--primary-color)">Hotel Dashboard</h2>
+                <h2 class="mb-0">Bảng Điều Khiển Khách Sạn</h2>
             </div>
             <div class="col-md-6">
                 <div class="d-flex justify-content-end">
@@ -87,158 +107,129 @@
             </div>
         </div>
     </div>
-    <div class="row g-3 mb-4">
+
+    <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="kpi-card">
                 <i class="fas fa-dollar-sign kpi-icon"></i>
-                <div class="kpi-title">Total Revenue</div>
-                <div class="kpi-value" id="totalRevenue">$0</div>
+                <div class="kpi-title">Tổng Doanh Thu</div>
+                <div class="kpi-value" id="totalRevenue">0 ₫</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="kpi-card">
                 <i class="fas fa-bed kpi-icon"></i>
-                <div class="kpi-title">Room Occupancy</div>
+                <div class="kpi-title">Tỷ Lệ Lấp Đầy</div>
                 <div class="kpi-value" id="occupancy">0%</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="kpi-card">
                 <i class="fas fa-concierge-bell kpi-icon"></i>
-                <div class="kpi-title">Top Service</div>
+                <div class="kpi-title">Dịch Vụ Hàng Đầu</div>
                 <div class="kpi-value" id="topService">-</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="kpi-card">
                 <i class="fas fa-users kpi-icon"></i>
-                <div class="kpi-title">Current Guests</div>
+                <div class="kpi-title">Số Khách Hiện Tại</div>
                 <div class="kpi-value" id="currentGuests">0</div>
             </div>
         </div>
     </div>
-    <div class="row mb-4">
+
+    <div class="row g-4">
         <div class="col-md-8">
             <div class="chart-container">
-                <h3 class="chart-title">Revenue by Room Class</h3>
+                <h3 class="chart-title">Doanh Thu Theo Loại Phòng</h3>
                 <canvas id="revenueByRoomChart"></canvas>
             </div>
         </div>
         <div class="col-md-4">
             <div class="chart-container">
-                <h3 class="chart-title">Booking Sources</h3>
+                <h3 class="chart-title">Nguồn Đặt Phòng</h3>
                 <canvas id="bookingSourcesChart"></canvas>
             </div>
         </div>
-    </div>
-    <div class="row mb-4">
-        <div class="col-12">
+        <div class="col-md-12">
             <div class="chart-container">
-                <h3 class="chart-title">Occupancy Trend</h3>
+                <h3 class="chart-title">Công suất phòng</h3>
                 <canvas id="occupancyTrendChart"></canvas>
             </div>
         </div>
-    </div>
-    <div class="row mb-4">
-        <div class="col-12">
+        <div class="col-md-12">
             <div class="chart-container">
-                <h3 class="chart-title">Service Revenue</h3>
+                <h3 class="chart-title">Doanh Thu Dịch Vụ</h3>
                 <canvas id="serviceRevenueChart"></canvas>
             </div>
         </div>
     </div>
-    <div class="table-container">
-        <h3 class="chart-title">Recent Bookings</h3>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Customer Name</th>
-                        <th>Room Types</th>
-                        <th>Check In</th>
-                        <th>Check Out</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody id="recentBookingsTable">
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
+
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        //const chartColors = {
+        //    primary: '#2c3e50',
+        //    secondary: '#34495e',
+        //    accent: '#f4a730',
+        //    background: '#f8fafc',
+        //    chartColors: [
+        //        '#3498db', '#2ecc71', '#e74c3c', '#f1c40f', '#9b59b6',
+        //        '#1abc9c', '#e67e22', '#34495e', '#95a5a6', '#16a085'
+        //    ]
+        //};
         const chartColors = {
-            primary: '#2c3e50',
-            secondary: '#34495e',
-            accent: '#f4a730',
-            background: '#ecf0f1',
+            primary: '#2c3e50',      // Your primary dark blue
+            secondary: '#34495e',    // Your secondary dark blue
+            accent: '#f4a730',       // Your accent orange
+            background: '#f8fafc',   // Light background
             chartColors: [
-                '#2c3e50', '#34495e', '#f4a730', '#7f8c8d', '#95a5a6',
-                '#3498db', '#e74c3c', '#2ecc71', '#f1c40f', '#9b59b6'
+                '#597ea2',          // Lighter shade of primary
+                '#f39c12',          // Complementary orange
+                '#16a085',          // Teal for variety
+                '#2c3e50',          // Primary
+                '#8e44ad',          // Deep purple for contrast
+                '#d35400',           // Deep orange
+                '#f4a730',          // Accent
+                '#34495e',          // Secondary
+                '#7f8c8d',          // Neutral gray
+                '#e67e22',          // Accent Secondary
             ]
         };
+     
+
+        function formatVND(value) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(value);
+        }
+
         function loadKPIData() {
             fetch('/Dashboard_64132675/GetKPIData')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('totalRevenue').textContent = `$${data.TotalRevenue.toLocaleString()}`;
+                    document.getElementById('totalRevenue').textContent = formatVND(data.TotalRevenue);
                     document.getElementById('occupancy').textContent =
                         `${Math.round((data.Occupancy.Booked / data.Occupancy.Total) * 100)}%`;
                     document.getElementById('topService').textContent = data.TopService?.Name || '-';
-                    document.getElementById('currentGuests').textContent = data.CurrentGuests.toLocaleString();
+                    document.getElementById('currentGuests').textContent = data.CurrentGuests.toLocaleString('vi-VN');
                 })
-                .catch(error => console.error('Error loading KPI data:', error));
+                .catch(error => console.error('Lỗi tải dữ liệu KPI:', error));
         }
-        function loadRecentBookings() {
-            fetch('/Dashboard_64132675/GetRecentBookings')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        console.error('Server error:', data.error);
-                        return;
-                    }
-                    const tbody = document.getElementById('recentBookingsTable');
-                    tbody.innerHTML = '';
-                    data.forEach(booking => {
-                        const checkInDate = new Date(parseInt(booking.CheckIn.substring(6, booking.CheckIn.length - 2)));
-                        const checkOutDate = new Date(parseInt(booking.CheckOut.substring(6, booking.CheckOut.length - 2)));
 
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                    <td>${booking.CustomerName}</td>
-                    <td>${booking.RoomTypes}</td>
-                    <td>${checkInDate.toLocaleDateString()}</td>
-                    <td>${checkOutDate.toLocaleDateString()}</td>
-                    <td>$${booking.Amount.toLocaleString()}</td>
-                `;
-                        tbody.appendChild(row);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading recent bookings:', error);
-                    document.getElementById('recentBookingsTable').innerHTML =
-                        '<tr><td colspan="5" class="text-center">Error loading data</td></tr>';
-                });
-        }
         function initializeCharts() {
-            document.querySelectorAll('.chart-container').forEach(container => {
-                container.style.height = '300px';
-            });
             const revenueCtx = document.getElementById('revenueByRoomChart').getContext('2d');
             window.revenueChart = new Chart(revenueCtx, {
                 type: 'bar',
                 data: {
                     labels: [],
                     datasets: [{
-                        label: 'Revenue',
-                        backgroundColor: chartColors.primary,
+                        label: 'Doanh Thu',
+                        backgroundColor: chartColors.chartColors,
+                        borderRadius: 6,
                         data: []
                     }]
                 },
@@ -247,7 +238,14 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'top'
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return formatVND(context.raw);
+                                }
+                            }
                         }
                     },
                     scales: {
@@ -255,13 +253,14 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function (value) {
-                                    return '$' + value.toLocaleString();
+                                    return formatVND(value);
                                 }
                             }
                         }
                     }
                 }
             });
+
             const sourcesCtx = document.getElementById('bookingSourcesChart').getContext('2d');
             window.sourcesChart = new Chart(sourcesCtx, {
                 type: 'doughnut',
@@ -269,7 +268,8 @@
                     labels: [],
                     datasets: [{
                         data: [],
-                        backgroundColor: chartColors.chartColors
+                        backgroundColor: chartColors.chartColors,
+                        borderWidth: 0
                     }]
                 },
                 options: {
@@ -279,23 +279,35 @@
                         legend: {
                             position: 'right',
                             labels: {
-                                padding: 20
+                                padding: 20,
+                                usePointStyle: true
                             }
                         }
-                    }
+                    },
+                    cutout: '70%'
                 }
             });
+
             const occupancyCtx = document.getElementById('occupancyTrendChart').getContext('2d');
+            const occupancyGradient = occupancyCtx.createLinearGradient(0, 0, 0, 400);
+            occupancyGradient.addColorStop(0, 'rgba(52, 152, 219, 0.3)');
+            occupancyGradient.addColorStop(1, 'rgba(52, 152, 219, 0.0)');
+
             window.occupancyChart = new Chart(occupancyCtx, {
                 type: 'line',
                 data: {
                     labels: [],
                     datasets: [{
-                        label: 'Occupancy Rate',
-                        borderColor: chartColors.accent,
-                        backgroundColor: chartColors.accent + '20',
+                        label: 'Tỷ Lệ Lấp Đầy',
+                        borderColor: '#3498db',
+                        backgroundColor: occupancyGradient,
                         fill: true,
                         tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#3498db',
+                        pointBorderWidth: 2,
                         data: []
                     }]
                 },
@@ -304,7 +316,7 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'top'
+                            display: false
                         }
                     },
                     scales: {
@@ -320,14 +332,16 @@
                     }
                 }
             });
+
             const serviceCtx = document.getElementById('serviceRevenueChart').getContext('2d');
             window.serviceChart = new Chart(serviceCtx, {
                 type: 'bar',
                 data: {
                     labels: [],
                     datasets: [{
-                        label: 'Revenue',
-                        backgroundColor: chartColors.secondary,
+                        label: 'Doanh Thu',
+                        backgroundColor: chartColors.chartColors,
+                        borderRadius: 6,
                         data: []
                     }]
                 },
@@ -337,7 +351,14 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'top'
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return formatVND(context.raw);
+                                }
+                            }
                         }
                     },
                     scales: {
@@ -345,7 +366,7 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function (value) {
-                                    return '$' + value.toLocaleString();
+                                    return formatVND(value);
                                 }
                             }
                         }
@@ -353,9 +374,11 @@
                 }
             });
         }
+
         function updateCharts() {
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
+
             fetch(`/Dashboard_64132675/GetRevenueByRoomClass?startDate=${startDate}&endDate=${endDate}`)
                 .then(response => response.json())
                 .then(data => {
@@ -363,7 +386,8 @@
                     window.revenueChart.data.datasets[0].data = data.data;
                     window.revenueChart.update();
                 })
-                .catch(error => console.error('Error loading revenue data:', error));
+                .catch(error => console.error('Lỗi tải dữ liệu doanh thu:', error));
+
             fetch('/Dashboard_64132675/GetBookingSources')
                 .then(response => response.json())
                 .then(data => {
@@ -371,7 +395,8 @@
                     window.sourcesChart.data.datasets[0].data = data.data;
                     window.sourcesChart.update();
                 })
-                .catch(error => console.error('Error loading booking sources data:', error));
+                .catch(error => console.error('Lỗi tải dữ liệu nguồn đặt phòng:', error));
+
             fetch(`/Dashboard_64132675/GetOccupancyTrend?startDate=${startDate}&endDate=${endDate}`)
                 .then(response => response.json())
                 .then(data => {
@@ -379,7 +404,8 @@
                     window.occupancyChart.data.datasets[0].data = data.data;
                     window.occupancyChart.update();
                 })
-                .catch(error => console.error('Error loading occupancy data:', error));
+                .catch(error => console.error('Lỗi tải dữ liệu tỷ lệ lấp đầy:', error));
+
             fetch('/Dashboard_64132675/GetServiceRevenue')
                 .then(response => response.json())
                 .then(data => {
@@ -387,23 +413,27 @@
                     window.serviceChart.data.datasets[0].data = data.data;
                     window.serviceChart.update();
                 })
-                .catch(error => console.error('Error loading service revenue data:', error));
+                .catch(error => console.error('Lỗi tải dữ liệu doanh thu dịch vụ:', error));
         }
+
         document.addEventListener('DOMContentLoaded', function () {
             const today = new Date();
             const monthAgo = new Date();
             monthAgo.setMonth(monthAgo.getMonth() - 1);
+
             document.getElementById('startDate').value = monthAgo.toISOString().split('T')[0];
             document.getElementById('endDate').value = today.toISOString().split('T')[0];
+
             loadKPIData();
             initializeCharts();
-            loadRecentBookings();
+
             ['startDate', 'endDate'].forEach(id => {
                 document.getElementById(id).addEventListener('change', () => {
                     loadKPIData();
                     updateCharts();
                 });
             });
+
             updateCharts();
         });
     </script>

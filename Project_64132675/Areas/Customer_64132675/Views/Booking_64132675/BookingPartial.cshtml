@@ -172,9 +172,38 @@ else
         showLessText.classList.toggle('d-none');
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const roomCounters = document.querySelectorAll('.room-counter');
+    //document.addEventListener('DOMContentLoaded', function () {
+    //    const roomCounters = document.querySelectorAll('.room-counter');
 
+    //    roomCounters.forEach(counter => {
+    //        const decreaseBtn = counter.querySelector('[data-action="decrease"]');
+    //        const increaseBtn = counter.querySelector('[data-action="increase"]');
+    //        const countDisplay = counter.querySelector('.room-count');
+    //        const roomQuantityInput = counter.querySelector('.room-quantity');
+    //        const maxRooms = parseInt(roomQuantityInput.getAttribute('data-max'));
+
+    //        decreaseBtn.addEventListener('click', function () {
+    //            let currentValue = parseInt(countDisplay.textContent);
+    //            if (currentValue > 1) {
+    //                currentValue--;
+    //                countDisplay.textContent = currentValue;
+    //                roomQuantityInput.value = currentValue;
+    //            }
+    //        });
+
+    //        increaseBtn.addEventListener('click', function () {
+    //            let currentValue = parseInt(countDisplay.textContent);
+    //            if (currentValue < maxRooms) {
+    //                currentValue++;
+    //                countDisplay.textContent = currentValue;
+    //                roomQuantityInput.value = currentValue;
+    //            }
+    //        });
+    //    });
+    //});
+
+    function initializeRoomCounters() {
+        const roomCounters = document.querySelectorAll('.room-counter');
         roomCounters.forEach(counter => {
             const decreaseBtn = counter.querySelector('[data-action="decrease"]');
             const increaseBtn = counter.querySelector('[data-action="increase"]');
@@ -182,23 +211,35 @@ else
             const roomQuantityInput = counter.querySelector('.room-quantity');
             const maxRooms = parseInt(roomQuantityInput.getAttribute('data-max'));
 
-            decreaseBtn.addEventListener('click', function () {
+            // Remove old event listeners
+            const newDecreaseBtn = decreaseBtn.cloneNode(true);
+            const newIncreaseBtn = increaseBtn.cloneNode(true);
+            decreaseBtn.parentNode.replaceChild(newDecreaseBtn, decreaseBtn);
+            increaseBtn.parentNode.replaceChild(newIncreaseBtn, increaseBtn);
+
+            newDecreaseBtn.addEventListener('click', function () {
                 let currentValue = parseInt(countDisplay.textContent);
                 if (currentValue > 1) {
                     currentValue--;
                     countDisplay.textContent = currentValue;
                     roomQuantityInput.value = currentValue;
+                    roomQuantityInput.dispatchEvent(new Event('change'));
                 }
             });
 
-            increaseBtn.addEventListener('click', function () {
+            newIncreaseBtn.addEventListener('click', function () {
                 let currentValue = parseInt(countDisplay.textContent);
                 if (currentValue < maxRooms) {
                     currentValue++;
                     countDisplay.textContent = currentValue;
                     roomQuantityInput.value = currentValue;
+                    roomQuantityInput.dispatchEvent(new Event('change'));
                 }
             });
         });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initializeRoomCounters();
     });
 </script>

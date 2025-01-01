@@ -185,35 +185,5 @@ namespace Project_64132675.Areas.Employee_64132675.Controllers
                 data = serviceRevenue.Select(x => x.Revenue)
             }, JsonRequestBehavior.AllowGet);
         }
-
-        [HttpGet]
-        public JsonResult GetRecentBookings()
-        {
-            try
-            {
-                var recentBookings = db.BOOKING
-                    .Include(b => b.CUSTOMER)
-                    .Include(b => b.ROOM.Select(r => r.ROOMCLASS))
-                    .OrderByDescending(b => b.BOOKING_DATE)
-                    .Take(10)
-                    .ToList()
-                    .Select(b => new
-                    {
-                        CustomerName = b.CUSTOMER.LAST_NAME + " " + b.CUSTOMER.FIRST_NAME,
-                        RoomTypes = string.Join(", ", b.ROOM.Select(r => r.ROOMCLASS.CLASS_NAME).Distinct()),
-                        CheckIn = b.CHECKIN_DATE,
-                        CheckOut = b.CHECKOUT_DATE,
-                        Amount = b.BOOKING_AMOUNT
-                    })
-                    .ToList();
-
-                return Json(recentBookings, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                return Json(new { error = "Error fetching bookings data" }, JsonRequestBehavior.AllowGet);
-            }
-        }
     }
 }

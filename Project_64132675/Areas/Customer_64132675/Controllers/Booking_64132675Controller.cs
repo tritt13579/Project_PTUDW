@@ -242,7 +242,7 @@ namespace Project_64132675.Areas.Customer_64132675.Controllers
                     db.BOOKING.Add(booking);
                     db.SaveChanges();
 
-                    return RedirectToAction("Index", "Home_64132675", new { area = "Customer_64132675" });
+                    return RedirectToAction("MyBookings", "Booking_64132675", new { area = "Customer_64132675" });
                 }
             }
             catch (Exception ex)

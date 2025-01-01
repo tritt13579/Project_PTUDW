@@ -90,7 +90,7 @@
                                 {
                                     <div class="d-flex justify-content-between small mb-2">
                                         <span>@room.Name x @room.Quantity @room.RoomNumber</span>
-                                        <span>@((room.Price * room.Quantity).ToString("N0"))₫</span>
+                                        <span>@((room.Price * room.Quantity * Model.Nights).ToString("N0"))₫</span>
                                     </div>
                                 }
                             </div>
