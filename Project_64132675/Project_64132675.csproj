@@ -177,6 +177,7 @@
     <Compile Include="ViewModels\RegisterViewModel_64132675.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bookingDetail.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -193,6 +194,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\myBooking.css" />
     <Content Include="Content\StyleAuth.css" />
     <Content Include="Content\StyleBooking.css" />
     <Content Include="Content\StyleEmployee.css" />

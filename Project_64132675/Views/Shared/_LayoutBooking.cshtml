@@ -97,7 +97,6 @@
     </footer>
 
     @Scripts.Render("~/bundles/jquery")
-    @*<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3-alpha1/dist/js/bootstrap.bundle.min.js"></script>*@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -117,6 +116,7 @@
         });
     </script>
     @RenderSection("scripts", required: false)
+    @RenderSection("styles", required: false)
 
     <script>
         // Khởi tạo mảng để lưu phòng và dịch vụ được chọn
@@ -346,7 +346,7 @@
                 const container = this.closest('.booking-actions');
                 const button = container.querySelector('.select-room');
                 const roomNumbers = button.getAttribute('data-roomnumbers');
-            
+
                 const existingRoomIndex = selectedRooms.findIndex(r => r.RoomNumbers === roomNumbers);
                 if (existingRoomIndex !== -1) {
                     const quantity = parseInt(this.value);
@@ -474,7 +474,7 @@
 
             function updateDisplayText() {
                 const total = guestState.adults + guestState.children;
-                roomGuestsInput.value = `${total} Guest${total > 1 ? 's' : ''}`;
+                roomGuestsInput.value = `${total} khách`;
             }
 
             // Initialize display
@@ -606,12 +606,12 @@
                         selectedServices.push(serviceId);
                         this.classList.add('btn-danger');
                         this.classList.remove('btn-primary');
-                        this.textContent = 'Xóa'; 
+                        this.textContent = 'Xóa';
                     } else {
                         selectedServices.splice(serviceIndex, 1);
                         this.classList.remove('btn-danger');
                         this.classList.add('btn-primary');
-                        this.textContent = 'Thêm'; 
+                        this.textContent = 'Thêm';
                     }
 
                     UpdateBookingSummaryWithRoomsAndServices();

@@ -214,6 +214,7 @@
                     document.getElementById('totalRevenue').textContent = formatVND(data.TotalRevenue);
                     document.getElementById('occupancy').textContent =
                         `${Math.round((data.Occupancy.Booked / data.Occupancy.Total) * 100)}%`;
+                    console.log(data.TotalRevenue);
                     document.getElementById('topService').textContent = data.TopService?.Name || '-';
                     document.getElementById('currentGuests').textContent = data.CurrentGuests.toLocaleString('vi-VN');
                 })

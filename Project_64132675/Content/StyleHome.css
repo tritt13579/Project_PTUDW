@@ -107,6 +107,22 @@ body {
     overflow: hidden;
 }
 
+
+.border-overlay {
+    position: absolute;
+    top: 15%;
+    left: 13%;
+    right: 13%;
+    bottom: 10%;
+    background: transparent;
+    z-index: 5;
+    border: 30px solid transparent;
+    padding: 15px;
+    border-image: url(/Public/Images/border.png);
+    border-image-slice: 30;
+    border-image-repeat: round;
+    border-image-outset: 2px;
+}
 .carousel {
     height: 100%;
 }
@@ -134,7 +150,7 @@ body {
 }
 
 .carousel-caption {
-    z-index: 2;
+    z-index: 6;
     bottom: 50%;
     transform: translateY(50%);
     text-align: left;
